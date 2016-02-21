@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">HelpingHand</string>
-
-    <!-- Options menu -->
-    <string name="exit">Exit</string>
-    <string name="bt">Bluetooth Adapter</string>
-    <string name="button_scan">Scan</string>
-</resources>
