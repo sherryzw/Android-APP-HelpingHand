@@ -1,4 +1,4 @@
-package com.example.wenzhao.helpinghand.BLEHandler;
+package com.example.wenzhao.helpinghand.ble.pro.BLEManager;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -16,11 +16,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -43,6 +42,8 @@ public class BluetoothLeService extends Service {
 	public final static String EXTRA_STATUS = "com.example.ti.ble.common.EXTRA_STATUS";
 	public final static String EXTRA_ADDRESS = "com.example.ti.ble.common.EXTRA_ADDRESS";
     public final static int GATT_TIMEOUT = 150;
+
+	public static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
 	// BLE
 	private BluetoothManager mBluetoothManager = null;
@@ -140,7 +141,7 @@ public class BluetoothLeService extends Service {
 		public void onCharacteristicChanged(BluetoothGatt gatt,
 		    BluetoothGattCharacteristic characteristic) {
 			broadcastUpdate(ACTION_DATA_NOTIFY, characteristic,
-			    BluetoothGatt.GATT_SUCCESS);
+					BluetoothGatt.GATT_SUCCESS);
 		}
 
 		@Override
@@ -339,26 +340,6 @@ public class BluetoothLeService extends Service {
 	 * @param characteristic
 	 *          The characteristic to read from.
 	 */
-	public int readCharacteristic(BluetoothGattCharacteristic characteristic) {
-        bleRequest req = new bleRequest();
-        req.status = bleRequestStatus.not_queued;
-        req.characteristic = characteristic;
-        req.operation = bleRequestOperation.rdBlocking;
-        addRequestToQueue(req);
-        boolean finished = false;
-        while (!finished) {
-            bleRequestStatus stat = pollForStatusofRequest(req);
-            if (stat == bleRequestStatus.done) {
-                finished = true;
-                return 0;
-            }
-            else if (stat == bleRequestStatus.timeout) {
-                finished = true;
-                return -3;
-            }
-        }
-        return -2;
-	}
 
 	public int writeCharacteristic(
 	    BluetoothGattCharacteristic characteristic, byte b) {
@@ -409,35 +390,6 @@ public class BluetoothLeService extends Service {
         }
         return -2;
 		}
-	public int writeCharacteristic(BluetoothGattCharacteristic characteristic) {
-        bleRequest req = new bleRequest();
-        req.status = bleRequestStatus.not_queued;
-        req.characteristic = characteristic;
-        req.operation = bleRequestOperation.wrBlocking;
-        addRequestToQueue(req);
-        boolean finished = false;
-        while (!finished) {
-            bleRequestStatus stat = pollForStatusofRequest(req);
-            if (stat == bleRequestStatus.done) {
-                finished = true;
-                return 0;
-            }
-            else if (stat == bleRequestStatus.timeout) {
-                finished = true;
-                return -3;
-            }
-        }
-        return -2;
-	}
-
-    public boolean writeCharacteristicNonBlock(BluetoothGattCharacteristic characteristic) {
-        bleRequest req = new bleRequest();
-        req.status = bleRequestStatus.not_queued;
-        req.characteristic = characteristic;
-        req.operation = bleRequestOperation.wr;
-        addRequestToQueue(req);
-        return true;
-    }
 
 	/**
 	 * Retrieves the number of GATT services on the connected device. This should
@@ -467,14 +419,7 @@ public class BluetoothLeService extends Service {
 		return mBluetoothGatt.getServices();
 	}
 
-	/**
-	 * Enables or disables notification on a give characteristic.
-	 * 
-	 *  characteristic
-	 *          Characteristic to act on.
-	 *  enabled
-	 *          If true, enable notification. False otherwise.
-	 */
+
 	public int setCharacteristicNotification(
 	    BluetoothGattCharacteristic characteristic, boolean enable) {
         bleRequest req = new bleRequest();
@@ -498,78 +443,17 @@ public class BluetoothLeService extends Service {
         return -2;
 	}
 
-	/**
-	 * Connects to the GATT server hosted on the Bluetooth LE device.
-	 * 
-	 * @param address
-	 *          The device address of the destination device.
-	 * 
-	 * @return Return true if the connection is initiated successfully. The
-	 *         connection result is reported asynchronously through the
-	 *         {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
-	 *         callback.
-	 */
-	public boolean connect(final String address) {
-		if (mBtAdapter == null || address == null) {
-			// Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
-			return false;
-		}
+	public void connect(final String address) {
 		final BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
-		int connectionState = mBluetoothManager.getConnectionState(device,
-		    BluetoothProfile.GATT);
-
-		if (connectionState == BluetoothProfile.STATE_DISCONNECTED) {
-
-			// Previously connected device. Try to reconnect.
-			if (mBluetoothDeviceAddress != null
-			    && address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null) {
-				// Log.d(TAG, "Re-use GATT connection");
-				if (mBluetoothGatt.connect()) {
-					return true;
-				} else {
-					// Log.w(TAG, "GATT re-connect failed.");
-					return false;
-				}
-			}
-
-			if (device == null) {
-				// Log.w(TAG, "Device not found.  Unable to connect.");
-				return false;
-			}
-			// We want to directly connect to the device, so we are setting the
-			// autoConnect parameter to false.
-			// Log.d(TAG, "Create a new GATT connection.");
-			mBluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
-			mBluetoothDeviceAddress = address;
-		} else {
-			// Log.w(TAG, "Attempt to connect in state: " + connectionState);
-			return false;
-		}
-		return true;
+        mBluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
 	}
 
-	/**
-	 * Disconnects an existing connection or cancel a pending connection. The
-	 * disconnection result is reported asynchronously through the
-	 * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
-	 * callback.
-	 */
 	public void disconnect(String address) {
-		if (mBtAdapter == null) {
-			// Log.w(TAG, "disconnect: BluetoothAdapter not initialized");
-			return;
-		}
 		final BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
-		int connectionState = mBluetoothManager.getConnectionState(device,
-		    BluetoothProfile.GATT);
-
-		if (mBluetoothGatt != null) {
-			if (connectionState != BluetoothProfile.STATE_DISCONNECTED) {
-				mBluetoothGatt.disconnect();
-			} else {
-				// Log.w(TAG, "Attempt to disconnect in state: " + connectionState);
-			}
-		}
+		int connectionState = mBluetoothManager.getConnectionState(device, BluetoothProfile.GATT);
+        if (connectionState != BluetoothProfile.STATE_DISCONNECTED) {
+            mBluetoothGatt.disconnect();
+        }
 	}
 
 	/**
@@ -619,45 +503,6 @@ public class BluetoothLeService extends Service {
             }
         }
     }
-
-	public boolean refreshDeviceCache(BluetoothGatt gatt){
-	    try {
-	        BluetoothGatt localBluetoothGatt = gatt;
-	        Method localMethod = localBluetoothGatt.getClass().getMethod("refresh", new Class[0]);
-	        if (localMethod != null) {
-	           boolean bool = ((Boolean) localMethod.invoke(localBluetoothGatt, new Object[0])).booleanValue();
-	            return bool;
-	         }
-	    } 
-	    catch (Exception localException) {
-	        Log.e(TAG, "An exception occured while refreshing device");
-	    }
-	    return false;
-	}
-	
-	public void timedDisconnect() {
-		disconnectTimerTask disconnectionTimerTask;
-		this.disconnectionTimer = new Timer();
-		disconnectionTimerTask = new disconnectTimerTask(this);
-		this.disconnectionTimer.schedule(disconnectionTimerTask, 20000);
-	}
-	public void abortTimedDisconnect() {
-		if (this.disconnectionTimer != null) {
-			this.disconnectionTimer.cancel();
-		}
-	}
-	class disconnectTimerTask extends TimerTask {
-		BluetoothLeService param;
-
-	     public disconnectTimerTask(final BluetoothLeService param) {
-	    	 this.param = param;
-	     }
-
-	     @Override
-	     public void run() {
-	    	 this.param.disconnect(mBluetoothDeviceAddress);
-	     }
-	}
 
     public boolean addRequestToQueue(bleRequest req) {
         lock.lock();
@@ -773,16 +618,6 @@ public class BluetoothLeService extends Service {
         lock.unlock();
     }
 
-    public int sendNonBlockingReadRequest(bleRequest request) {
-        request.status = bleRequestStatus.processing;
-        if (!checkGatt()) {
-            request.status = bleRequestStatus.failed;
-            return -2;
-        }
-        mBluetoothGatt.readCharacteristic(request.characteristic);
-        return 0;
-    }
-
     public int sendNonBlockingWriteRequest(bleRequest request) {
         request.status = bleRequestStatus.processing;
         if (!checkGatt()) {
@@ -840,7 +675,7 @@ public class BluetoothLeService extends Service {
         if (mBluetoothGatt.setCharacteristicNotification(request.characteristic, request.notifyenable)) {
 
             BluetoothGattDescriptor clientConfig = request.characteristic
-                    .getDescriptor(GattInfo.CLIENT_CHARACTERISTIC_CONFIG);
+                    .getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
             if (clientConfig != null) {
 
                 if (request.notifyenable) {
