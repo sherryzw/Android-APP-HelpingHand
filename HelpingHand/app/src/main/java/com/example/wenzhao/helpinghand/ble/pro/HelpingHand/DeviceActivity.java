@@ -25,13 +25,13 @@ public class DeviceActivity extends Activity {
 	public static final String EXTRA_DEVICE = "EXTRA_DEVICE";
 	// BLE
 	private BluetoothLeService mBtLeService = null;
-	private ArrayList<BluetoothDevice> mCallBackDeviceList = new ArrayList<BluetoothDevice>();
-	private BluetoothDevice mBluetoothDevice = null;
-	private BluetoothGatt mBtGatt = null;
+	private ArrayList<BluetoothDevice> mBluetoothDevice = null;
+	private ArrayList<BluetoothGatt> mBtGatt = null;
 	private List<BluetoothGattService> mServiceList = null;
 	private List<GenericBluetoothProfile> mProfiles;
 	//GUI
 	private TextView accText = null;
+	private int dnum = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,8 @@ public class DeviceActivity extends Activity {
 		Intent intent = getIntent();
 		// BLE
 		mBtLeService = BluetoothLeService.getInstance();
-		mBluetoothDevice = intent.getParcelableExtra(EXTRA_DEVICE);
+		mBluetoothDevice =BluetoothLeService.getDevice();
+				//mBluetoothDevice = intent.getParcelableExtra(EXTRA_DEVICE);
 		mBtGatt = BluetoothLeService.getBtGatt();
 
 		mServiceList = new ArrayList<BluetoothGattService>();
@@ -48,7 +49,8 @@ public class DeviceActivity extends Activity {
 
 		accText = (TextView)findViewById(R.id.acc_data);
 
-		mBtGatt.discoverServices();
+		mBtGatt.get(0).discoverServices();
+		mBtGatt.get(1).discoverServices();
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class DeviceActivity extends Activity {
         List<BluetoothGattCharacteristic> charList = new ArrayList<BluetoothGattCharacteristic>();
 
 		@Override
-		public void onReceive(final Context context, Intent intent) {
+		public void onReceive(final Context context, final Intent intent) {
 			final String action = intent.getAction();
 			final int status = intent.getIntExtra(BluetoothLeService.EXTRA_STATUS,
 					BluetoothGatt.GATT_SUCCESS);
@@ -91,8 +93,18 @@ public class DeviceActivity extends Activity {
                         public void run() {
                             for (BluetoothGattService s : serviceList) {
                                 if (s.getUuid().toString().compareTo(SensorTagGatt.UUID_MOV_SERV.toString()) == 0) {
-									GenericBluetoothProfile mov = new GenericBluetoothProfile(context,mBluetoothDevice,s,mBtLeService);
-									mProfiles.add(mov);
+									if( dnum == 0){
+										GenericBluetoothProfile mov1 = new GenericBluetoothProfile(context,mBluetoothDevice.get(0),s,mBtLeService);
+										mProfiles.add(mov1);
+										dnum ++;
+									}
+									else if(dnum ==1 ){
+										GenericBluetoothProfile mov2 = new GenericBluetoothProfile(context,mBluetoothDevice.get(1),s,mBtLeService);
+										mProfiles.add(mov2);
+
+									}
+
+
                                 }
                             }
                             for (final GenericBluetoothProfile p : mProfiles) {

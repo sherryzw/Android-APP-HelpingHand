@@ -64,7 +64,9 @@ public class BluetoothLeService extends Service {
 
     private volatile bleRequest curBleRequest = null;
 
-    public enum bleRequestOperation {
+
+
+	public enum bleRequestOperation {
         wrBlocking,
         wr,
         rdBlocking,
@@ -454,7 +456,7 @@ public class BluetoothLeService extends Service {
 		}
 		mBluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
 		connectionQueue.add(mBluetoothGatt);
-		//(mBluetoothGatt.getDevice());
+		connectedDevice.add(mBluetoothGatt.getDevice());
 	}
 
 	public void disconnect(String address) {
@@ -487,12 +489,14 @@ public class BluetoothLeService extends Service {
 		}
 		return n;
 	}
-
+	public static ArrayList<BluetoothDevice> getDevice() {
+		return mThis.connectedDevice;
+	}
 	//
 	// Utility functions
 	//
-	public static BluetoothGatt getBtGatt() {
-		return mThis.mBluetoothGatt;
+	public static ArrayList<BluetoothGatt> getBtGatt() {
+		return mThis.connectionQueue;
 	}
 
 	public static BluetoothManager getBtManager() {
