@@ -30,7 +30,8 @@ public class DeviceActivity extends Activity {
 	private List<BluetoothGattService> mServiceList = null;
 	private List<GenericBluetoothProfile> mProfiles;
 	//GUI
-	private TextView accText = null;
+	private TextView accText1 = null;
+	private TextView accText2 = null;
 	private int dnum = 0;
 
 	@Override
@@ -47,8 +48,8 @@ public class DeviceActivity extends Activity {
 		mServiceList = new ArrayList<BluetoothGattService>();
 		mProfiles = new ArrayList<GenericBluetoothProfile>();
 
-		accText = (TextView)findViewById(R.id.acc_data);
-
+		accText1 = (TextView)findViewById(R.id.acc_data1);
+		accText2 = (TextView)findViewById(R.id.acc_data2);
 		mBtGatt.get(0).discoverServices();
 		mBtGatt.get(1).discoverServices();
 	}
@@ -103,8 +104,6 @@ public class DeviceActivity extends Activity {
 										mProfiles.add(mov2);
 
 									}
-
-
                                 }
                             }
                             for (final GenericBluetoothProfile p : mProfiles) {
@@ -121,14 +120,17 @@ public class DeviceActivity extends Activity {
                     worker.start();
                 }
 			} else if (BluetoothLeService.ACTION_DATA_NOTIFY.equals(action)) {
+				dnum = 0;
 				// Notification
 				String uuidStr = intent.getStringExtra(BluetoothLeService.EXTRA_UUID);
 				for (BluetoothGattCharacteristic tempC : charList) {
 					if ((tempC.getUuid().toString().equals(uuidStr))) {
 						for (GenericBluetoothProfile p : mProfiles) {
 							if (p.isDataC(tempC)) {
-								p.didUpdateValueForCharacteristic(tempC);
-								accText.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", GenericBluetoothProfile.accData.x, GenericBluetoothProfile.accData.y, GenericBluetoothProfile.accData.z));
+								p.didUpdateValueForCharacteristic(tempC , dnum);
+								dnum ++;
+								accText1.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", GenericBluetoothProfile.accData1.x, GenericBluetoothProfile.accData1.y, GenericBluetoothProfile.accData1.z));
+								accText2.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", GenericBluetoothProfile.accData2.x, GenericBluetoothProfile.accData2.y, GenericBluetoothProfile.accData2.z));
 							}
 						}
 						break;

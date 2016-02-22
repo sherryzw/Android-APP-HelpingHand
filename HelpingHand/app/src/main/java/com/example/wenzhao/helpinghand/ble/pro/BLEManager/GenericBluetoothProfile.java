@@ -13,7 +13,8 @@ import com.example.wenzhao.helpinghand.ble.pro.ACCInfo.SensorTagGatt;
 import java.util.List;
 
 public class GenericBluetoothProfile {
-	public static Point3D accData;
+	public static Point3D accData1;
+	public static Point3D accData2;
 
 	protected BluetoothDevice mBTDevice;
 	protected BluetoothLeService mBTLeService;
@@ -45,7 +46,8 @@ public class GenericBluetoothProfile {
 				this.periodC = c;
 			}
 		}
-		accData = new Point3D(0,0,0);
+		accData1 = new Point3D(0,0,0);
+		accData2 = new Point3D(0,0,0);
 	}
 
 	public void enableService() {
@@ -60,15 +62,25 @@ public class GenericBluetoothProfile {
 		else return false;
 	}
 
-	public void didUpdateValueForCharacteristic(BluetoothGattCharacteristic c) {
+	public void didUpdateValueForCharacteristic(BluetoothGattCharacteristic c,int dnum) {
 		byte[] value = c.getValue();
 		if (c.equals(this.dataC)){
-			Point3D v;
-			v = convert(value);
-			accData.x = v.x;
-			accData.y = v.y;
-			accData.z = v.z;
-			Log.e("acc", String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", accData.x, accData.y, accData.z));
+			if ( dnum == 0) {
+				Point3D v;
+				v = convert(value);
+				accData1.x = v.x;
+				accData1.y = v.y;
+				accData1.z = v.z;
+				Log.e("acc", String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", accData1.x, accData1.y, accData1.z));
+			}
+			else if(dnum ==1){
+				Point3D v;
+				v = convert(value);
+				accData2.x = v.x;
+				accData2.y = v.y;
+				accData2.z = v.z;
+				Log.e("acc", String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", accData2.x, accData2.y, accData2.z));
+			}
 		}
 	}
 
