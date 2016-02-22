@@ -23,6 +23,8 @@ import java.util.List;
 
 public class DeviceActivity extends Activity {
 	public static final String EXTRA_DEVICE = "EXTRA_DEVICE";
+	public final static String EXTRA_ADDRESS = "com.example.ti.ble.common.EXTRA_ADDRESS";
+	public static String deviceAddress = null;
 	// BLE
 	private BluetoothLeService mBtLeService = null;
 	private ArrayList<BluetoothDevice> mBluetoothDevice = null;
@@ -94,10 +96,10 @@ public class DeviceActivity extends Activity {
                         public void run() {
                             for (BluetoothGattService s : serviceList) {
                                 if (s.getUuid().toString().compareTo(SensorTagGatt.UUID_MOV_SERV.toString()) == 0) {
-									if( dnum == 0){
+									if(deviceAddress == null){
 										GenericBluetoothProfile mov1 = new GenericBluetoothProfile(context,mBluetoothDevice.get(0),s,mBtLeService);
 										mProfiles.add(mov1);
-										dnum ++;
+										deviceAddress = intent.getStringExtra(EXTRA_ADDRESS);
 									}
 									else if(dnum ==1 ){
 										GenericBluetoothProfile mov2 = new GenericBluetoothProfile(context,mBluetoothDevice.get(1),s,mBtLeService);
