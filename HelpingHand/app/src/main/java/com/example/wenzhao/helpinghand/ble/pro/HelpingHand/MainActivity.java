@@ -22,6 +22,7 @@ import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.BluetoothLeService;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 // import android.util.Log;
@@ -39,6 +40,7 @@ public class MainActivity extends FragmentActivity {
 	private boolean mScanning = false;
 	private int mConnIndex = NO_DEVICE;
 	private List<BluetoothDevice> mDeviceList;
+	private LinkedList<BluetoothDevice> mDeviceContainer = new LinkedList<BluetoothDevice>();
 	private BluetoothManager mBluetoothManager;
 	private BluetoothAdapter mBtAdapter = null;
 	private BluetoothDevice mBluetoothDevice = null;
@@ -129,14 +131,22 @@ public class MainActivity extends FragmentActivity {
 	//点击设备列表的处理函数，若此时仍在扫描，则先关闭扫描来省电
 	//若当前没有设备连接，则对此设备进行BLEGATT连接，并设置当前连接设备的Index
 	public void onDeviceClick(final int pos) {
-		if (mScanning) {
-			mScanning = false;
-			mBtAdapter.stopLeScan(mLeScanCallback);
-		}
+
 		mBluetoothDevice = mDeviceList.get(pos);
-		if (mConnIndex == NO_DEVICE) {
-			mConnIndex = pos;
-			mBluetoothLeService.connect(mBluetoothDevice.getAddress());
+		mDeviceContainer.add(mBluetoothDevice);
+		mConnIndex = pos;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				mBluetoothLeService.connect(mBluetoothDevice.getAddress());
+			}
+		}).start();
+
+		if (mDeviceContainer.size()== 2){
+			if (mScanning) {
+				mScanning = false;
+				mBtAdapter.stopLeScan(mLeScanCallback);
+			}
 		}
 	}
 	//处理相应新开启Activity结束后返回的结果
@@ -183,7 +193,7 @@ public class MainActivity extends FragmentActivity {
 			} else if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
 				int status = intent.getIntExtra(BluetoothLeService.EXTRA_STATUS,
 				    BluetoothGatt.GATT_FAILURE);
-				if (status == BluetoothGatt.GATT_SUCCESS) {
+				if (mDeviceContainer.size()== 2 && status == BluetoothGatt.GATT_SUCCESS) {
 					startDeviceActivity();
 				}
 			} else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {

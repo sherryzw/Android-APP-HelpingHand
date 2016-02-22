@@ -16,6 +16,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
@@ -49,6 +50,9 @@ public class BluetoothLeService extends Service {
 	private BluetoothManager mBluetoothManager = null;
 	private BluetoothAdapter mBtAdapter = null;
 	private BluetoothGatt mBluetoothGatt = null;
+	private ArrayList<BluetoothGatt> connectionQueue = new ArrayList<BluetoothGatt>();
+	private ArrayList<BluetoothGatt> connecedDevice = new ArrayList<BluetoothGatt>();
+
 	private static BluetoothLeService mThis = null;
 	private String mBluetoothDeviceAddress;
 
@@ -445,7 +449,12 @@ public class BluetoothLeService extends Service {
 
 	public void connect(final String address) {
 		final BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
+		if (device == null) {
+			Log.w(TAG, "Device not found.  Unable to connect.");
+		}
+		mBluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
+		connectionQueue.add(mBluetoothGatt);
+		//(mBluetoothGatt.getDevice());
 	}
 
 	public void disconnect(String address) {

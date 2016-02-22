@@ -25,6 +25,7 @@ public class DeviceActivity extends Activity {
 	public static final String EXTRA_DEVICE = "EXTRA_DEVICE";
 	// BLE
 	private BluetoothLeService mBtLeService = null;
+	private ArrayList<BluetoothDevice> mCallBackDeviceList = new ArrayList<BluetoothDevice>();
 	private BluetoothDevice mBluetoothDevice = null;
 	private BluetoothGatt mBtGatt = null;
 	private List<BluetoothGattService> mServiceList = null;
