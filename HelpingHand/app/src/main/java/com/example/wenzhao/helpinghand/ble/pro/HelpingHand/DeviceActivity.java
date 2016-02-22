@@ -84,7 +84,10 @@ public class DeviceActivity extends Activity {
 					BluetoothGatt.GATT_SUCCESS);
             if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
-                    serviceList = mBtLeService.getSupportedGattServices();
+                    serviceList = mBtLeService.getSupportedGattServices(0);
+					for( BluetoothGattService service:mBtLeService.getSupportedGattServices(1)){
+						serviceList.add(service);
+					}
                     if (serviceList.size() > 0) {
                         for (BluetoothGattService s : serviceList) {
                             List<BluetoothGattCharacteristic> c = s.getCharacteristics();
@@ -127,13 +130,14 @@ public class DeviceActivity extends Activity {
 				String uuidStr = intent.getStringExtra(BluetoothLeService.EXTRA_UUID);
 				for (BluetoothGattCharacteristic tempC : charList) {
 					if ((tempC.getUuid().toString().equals(uuidStr))) {
-						for (GenericBluetoothProfile p : mProfiles) {
+						GenericBluetoothProfile p = mProfiles.get(dnum);
+						//for (GenericBluetoothProfile p : mProfiles) {
 							if (p.isDataC(tempC)) {
 								p.didUpdateValueForCharacteristic(tempC , dnum);
 								dnum ++;
 								accText1.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", GenericBluetoothProfile.accData1.x, GenericBluetoothProfile.accData1.y, GenericBluetoothProfile.accData1.z));
 								accText2.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", GenericBluetoothProfile.accData2.x, GenericBluetoothProfile.accData2.y, GenericBluetoothProfile.accData2.z));
-							}
+							//}
 						}
 						break;
 					}

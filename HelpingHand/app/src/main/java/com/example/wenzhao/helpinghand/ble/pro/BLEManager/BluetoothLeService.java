@@ -422,12 +422,12 @@ public class BluetoothLeService extends Service {
 	 * 
 	 * @return A {@code List} of supported services.
 	 */
-	public List<BluetoothGattService> getSupportedGattServices() {
+	public List<BluetoothGattService> getSupportedGattServices( int num) {
 
 		if (connectionQueue == null)
 			return null;
 
-		return connectionQueue.get(0).getServices();
+		return connectionQueue.get(num).getServices();
 	}
 
 
