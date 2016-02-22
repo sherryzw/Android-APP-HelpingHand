@@ -18,8 +18,6 @@ import com.example.ti.ble.sensortag.R;
 
 import java.util.List;
 
-// import android.util.Log;
-
 public class ScanView extends Fragment {
 
   private MainActivity mActivity = null;
