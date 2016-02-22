@@ -101,7 +101,7 @@ public class DeviceActivity extends Activity {
 										mProfiles.add(mov1);
 										deviceAddress = intent.getStringExtra(EXTRA_ADDRESS);
 									}
-									else if(dnum ==1 ){
+									else if(deviceAddress != null){
 										GenericBluetoothProfile mov2 = new GenericBluetoothProfile(context,mBluetoothDevice.get(1),s,mBtLeService);
 										mProfiles.add(mov2);
 
