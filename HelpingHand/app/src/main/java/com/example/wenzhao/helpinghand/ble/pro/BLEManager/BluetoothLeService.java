@@ -51,7 +51,7 @@ public class BluetoothLeService extends Service {
 	private BluetoothAdapter mBtAdapter = null;
 	private BluetoothGatt mBluetoothGatt = null;
 	private ArrayList<BluetoothGatt> connectionQueue = new ArrayList<BluetoothGatt>();
-	private ArrayList<BluetoothGatt> connecedDevice = new ArrayList<BluetoothGatt>();
+	private ArrayList<BluetoothDevice> connectedDevice = new ArrayList<BluetoothDevice>();
 
 	private static BluetoothLeService mThis = null;
 	private String mBluetoothDeviceAddress;
