@@ -34,15 +34,18 @@ public class BluetoothLeService extends Service {
 
 	public final static String ACTION_GATT_CONNECTED = "com.example.ti.ble.common.ACTION_GATT_CONNECTED";
 	public final static String ACTION_GATT_DISCONNECTED = "com.example.ti.ble.common.ACTION_GATT_DISCONNECTED";
-	public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.example.ti.ble.common.ACTION_GATT_SERVICES_DISCOVERED";
+	public final static String ACTION_GATT_SERVICES_DISCOVERED1 = "com.example.ti.ble.common.ACTION_GATT_SERVICES_DISCOVERED1";
+	public final static String ACTION_GATT_SERVICES_DISCOVERED2 = "com.example.ti.ble.common.ACTION_GATT_SERVICES_DISCOVERED2";
 	public final static String ACTION_DATA_READ = "com.example.ti.ble.common.ACTION_DATA_READ";
 	public final static String ACTION_DATA_NOTIFY = "com.example.ti.ble.common.ACTION_DATA_NOTIFY";
+	public final static String ACTION_DATA_NOTIFY1 = "com.example.ti.ble.common.ACTION_DATA_NOTIFY1";
 	public final static String ACTION_DATA_WRITE = "com.example.ti.ble.common.ACTION_DATA_WRITE";
 	public final static String EXTRA_DATA = "com.example.ti.ble.common.EXTRA_DATA";
 	public final static String EXTRA_UUID = "com.example.ti.ble.common.EXTRA_UUID";
 	public final static String EXTRA_STATUS = "com.example.ti.ble.common.EXTRA_STATUS";
 	public final static String EXTRA_ADDRESS = "com.example.ti.ble.common.EXTRA_ADDRESS";
     public final static int GATT_TIMEOUT = 150;
+	public int cnum = 0;
 
 	public static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
@@ -87,7 +90,8 @@ public class BluetoothLeService extends Service {
     public class bleRequest {
         public int id;
         public BluetoothGattCharacteristic characteristic;
-        public bleRequestOperation operation;
+		public BluetoothGatt gatt;
+		public bleRequestOperation operation;
         public volatile bleRequestStatus status;
         public int timeout;
         public int curTimeout;
@@ -113,15 +117,14 @@ public class BluetoothLeService extends Service {
 			System.out.println("onConnectionStateChange (" + address + ") " + newState +
 					" status: " + status);
 			//Log.i(TAG, "oldStatus=" + status + " NewStates=" + newState);
-			if(status == BluetoothGatt.GATT_SUCCESS)
-			{
+
 				if (newState == BluetoothProfile.STATE_CONNECTED) {
 					broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
 					Log.i(TAG, "Connected to GATT server.");
 					Log.i(TAG, "Attempting to start service discovery:" + gatt.discoverServices());
 				}
 
-			}
+
 			//Log.d(TAG, "onConnectionStateChange (" + address + ") " + newState +
 			// " status: " + status);
 			try {
@@ -146,17 +149,17 @@ public class BluetoothLeService extends Service {
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
 			BluetoothDevice device = gatt.getDevice();
-			System.out.println("~~~~~~~"+device.getAddress());
-			broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED, device.getAddress(),
+			System.out.println("1~~~~~~~"+device.getAddress());
+			broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED1, device.getAddress(),
 					status);
-			System.out.println("~~~~finish~~~" + device.getAddress());
+			System.out.println("1~~~~finish~~~" + device.getAddress());
 
 		}
 
 		@Override
 		public void onCharacteristicChanged(BluetoothGatt gatt,
 		    BluetoothGattCharacteristic characteristic) {
-			Log.e(TAG," Address~~" + gatt.getDevice().getAddress());
+			Log.e(TAG," Address1~~" + gatt.getDevice().getAddress());
 			broadcastUpdate(ACTION_DATA_NOTIFY, characteristic,
 					BluetoothGatt.GATT_SUCCESS);
 		}
@@ -164,6 +167,7 @@ public class BluetoothLeService extends Service {
 		@Override
 		public void onCharacteristicRead(BluetoothGatt gatt,
 		    BluetoothGattCharacteristic characteristic, int status) {
+			System.out.println(TAG+ gatt.getDevice().getAddress() +" ~onCharacteristc Read 1~~  ");
             if (blocking)unlockBlockingThread(status);
             if (nonBlockQueue.size() > 0) {
                 lock.lock();
@@ -183,6 +187,7 @@ public class BluetoothLeService extends Service {
 		@Override
 		public void onCharacteristicWrite(BluetoothGatt gatt,
 		    BluetoothGattCharacteristic characteristic, int status) {
+			System.out.println(TAG + gatt.getDevice().getAddress() + " ~onCharacteristc Write 1~~  ");
             if (blocking)unlockBlockingThread(status);
             if (nonBlockQueue.size() > 0) {
                 lock.lock();
@@ -210,6 +215,118 @@ public class BluetoothLeService extends Service {
 		public void onDescriptorWrite(BluetoothGatt gatt,
 		    BluetoothGattDescriptor descriptor, int status) {
             if (blocking)unlockBlockingThread(status);
+			// Log.i(TAG, "onDescriptorWrite: " + descriptor.getUuid().toString());
+		}
+	};
+	private BluetoothGattCallback mGattCallbacks1 = new BluetoothGattCallback() {
+
+		@Override
+		public void onConnectionStateChange(BluetoothGatt gatt, int status,
+											int newState) {
+			BluetoothDevice device = gatt.getDevice();
+			String address = device.getAddress();
+			System.out.println("onConnectionStateChange2 (" + address + ") " + newState +
+					" status: " + status);
+			//Log.i(TAG, "oldStatus=" + status + " NewStates=" + newState);
+			if(status == BluetoothGatt.GATT_SUCCESS)
+			{
+				if (newState == BluetoothProfile.STATE_CONNECTED) {
+					broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
+					Log.i(TAG, "Connected to GATT server2.");
+					Log.i(TAG, "Attempting to start service discovery2:" + gatt.discoverServices());
+				}
+
+			}
+			//Log.d(TAG, "onConnectionStateChange (" + address + ") " + newState +
+			// " status: " + status);
+			try {
+				switch (newState) {
+					case BluetoothProfile.STATE_CONNECTED:
+						//refreshDeviceCache(mBluetoothGatt);
+						broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
+						break;
+					case BluetoothProfile.STATE_DISCONNECTED:
+						broadcastUpdate(ACTION_GATT_DISCONNECTED, address, status);
+						break;
+					default:
+						// Log.e(TAG, "New state not processed: " + newState);
+						break;
+				}
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+
+			BluetoothDevice device = gatt.getDevice();
+			System.out.println("2~~~~~~~"+device.getAddress());
+			broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED2, device.getAddress(),
+					status);
+			System.out.println("2~~~~finish~~~" + device.getAddress());
+
+		}
+
+		@Override
+		public void onCharacteristicChanged(BluetoothGatt gatt,
+											BluetoothGattCharacteristic characteristic) {
+			Log.e(TAG," Address2~~" + gatt.getDevice().getAddress());
+			broadcastUpdate(ACTION_DATA_NOTIFY1, characteristic,
+					BluetoothGatt.GATT_SUCCESS);
+		}
+
+		@Override
+		public void onCharacteristicRead(BluetoothGatt gatt,
+										 BluetoothGattCharacteristic characteristic, int status) {
+			System.out.println(TAG+ gatt.getDevice().getAddress() +" ~onCharacteristc Read 2~~  ");
+			if (blocking)unlockBlockingThread(status);
+			if (nonBlockQueue.size() > 0) {
+				lock.lock();
+				for (int ii = 0; ii < nonBlockQueue.size(); ii++) {
+					bleRequest req = nonBlockQueue.get(ii);
+					if (req.characteristic == characteristic) {
+						req.status = bleRequestStatus.done;
+						nonBlockQueue.remove(ii);
+						break;
+					}
+				}
+				lock.unlock();
+			}
+			broadcastUpdate(ACTION_DATA_READ, characteristic, status);
+		}
+
+		@Override
+		public void onCharacteristicWrite(BluetoothGatt gatt,
+										  BluetoothGattCharacteristic characteristic, int status) {
+			System.out.println(TAG+ gatt.getDevice().getAddress() +" ~onCharacteristc Write 2~~  ");
+			if (blocking)unlockBlockingThread(status);
+			if (nonBlockQueue.size() > 0) {
+				lock.lock();
+				for (int ii = 0; ii < nonBlockQueue.size(); ii++) {
+					bleRequest req = nonBlockQueue.get(ii);
+					if (req.characteristic == characteristic) {
+						req.status = bleRequestStatus.done;
+						nonBlockQueue.remove(ii);
+						break;
+					}
+				}
+				lock.unlock();
+			}
+			broadcastUpdate(ACTION_DATA_WRITE, characteristic, status);
+		}
+
+		@Override
+		public void onDescriptorRead(BluetoothGatt gatt,
+									 BluetoothGattDescriptor descriptor, int status) {
+			if (blocking)unlockBlockingThread(status);
+			unlockBlockingThread(status);
+		}
+
+		@Override
+		public void onDescriptorWrite(BluetoothGatt gatt,
+									  BluetoothGattDescriptor descriptor, int status) {
+			if (blocking)unlockBlockingThread(status);
 			// Log.i(TAG, "onDescriptorWrite: " + descriptor.getUuid().toString());
 		}
 	};
@@ -367,7 +484,8 @@ public class BluetoothLeService extends Service {
 	 */
 
 	public int writeCharacteristic(
-	    BluetoothGattCharacteristic characteristic, byte b) {
+	    BluetoothGattCharacteristic characteristic,BluetoothGatt gatt , byte b) {
+		Log.i(TAG,"~~~write~~~"+gatt.getDevice().getAddress());
 
 
         byte[] val = new byte[1];
@@ -376,6 +494,7 @@ public class BluetoothLeService extends Service {
 
         bleRequest req = new bleRequest();
         req.status = bleRequestStatus.not_queued;
+		req.gatt = gatt;
         req.characteristic = characteristic;
         req.operation = bleRequestOperation.wrBlocking;
         addRequestToQueue(req);
@@ -394,12 +513,14 @@ public class BluetoothLeService extends Service {
         return -2;
 	}
 	public int writeCharacteristic(
-		    BluetoothGattCharacteristic characteristic, byte[] b) {
+		    BluetoothGattCharacteristic characteristic, BluetoothGatt gatt,byte[] b) {
         characteristic.setValue(b);
         bleRequest req = new bleRequest();
+		req.gatt = gatt;
         req.status = bleRequestStatus.not_queued;
         req.characteristic = characteristic;
         req.operation = bleRequestOperation.wrBlocking;
+
         addRequestToQueue(req);
         boolean finished = false;
         while (!finished) {
@@ -446,9 +567,11 @@ public class BluetoothLeService extends Service {
 
 
 	public int setCharacteristicNotification(
-	    BluetoothGattCharacteristic characteristic, boolean enable) {
+	    BluetoothGattCharacteristic characteristic,BluetoothGatt gatt, boolean enable) {
         bleRequest req = new bleRequest();
         req.status = bleRequestStatus.not_queued;
+		req.gatt =gatt;
+		System.out.println("SetNotification ~~" + gatt.getDevice().getAddress());
         req.characteristic = characteristic;
         req.operation = bleRequestOperation.nsBlocking;
         req.notifyenable = enable;
@@ -474,11 +597,22 @@ public class BluetoothLeService extends Service {
 			Log.w(TAG, "Device not found.  Unable to connect.");
 		}
 
-		BluetoothGatt bluetoothGatt;
-		bluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
-		mBluetoothGatt =bluetoothGatt;
-		connectionQueue.add(bluetoothGatt);
-		connectedDevice.add(bluetoothGatt.getDevice());
+		if (cnum ==0){
+			BluetoothGatt bluetoothGatt;
+			bluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
+			mBluetoothGatt =bluetoothGatt;
+			connectionQueue.add(bluetoothGatt);
+			connectedDevice.add(bluetoothGatt.getDevice());
+			cnum++;
+		}else if (cnum ==1){
+			BluetoothGatt bluetoothGatt;
+			bluetoothGatt = device.connectGatt(this, false, mGattCallbacks1);
+			mBluetoothGatt =bluetoothGatt;
+			connectionQueue.add(bluetoothGatt);
+			connectedDevice.add(bluetoothGatt.getDevice());
+			cnum++;
+		}
+
 	}
 
 	public void disconnect(String address) {
@@ -663,9 +797,9 @@ public class BluetoothLeService extends Service {
             request.status = bleRequestStatus.failed;
             return -2;
         }
-		for(BluetoothGatt bluetoothGatt:connectionQueue){
+		BluetoothGatt bluetoothGatt = request.gatt;
 			bluetoothGatt.writeCharacteristic(request.characteristic);
-		}
+
         return 0;
     }
 
@@ -676,9 +810,9 @@ public class BluetoothLeService extends Service {
             request.status = bleRequestStatus.failed;
             return -2;
         }
-		for(BluetoothGatt bluetoothGatt:connectionQueue) {
-			bluetoothGatt.readCharacteristic(request.characteristic);
-		}
+		BluetoothGatt bluetoothGatt = request.gatt;
+		bluetoothGatt.readCharacteristic(request.characteristic);
+
         this.blocking = true; // Set read to be blocking
         while (this.blocking) {
             timeout ++;
@@ -696,8 +830,8 @@ public class BluetoothLeService extends Service {
             request.status = bleRequestStatus.failed;
             return -2;
         }
-		for(BluetoothGatt bluetoothGatt:connectionQueue){
-       bluetoothGatt.writeCharacteristic(request.characteristic);}
+		BluetoothGatt bluetoothGatt =request.gatt;
+       bluetoothGatt.writeCharacteristic(request.characteristic);
         this.blocking = true; // Set read to be blocking
         while (this.blocking) {
             timeout ++;
@@ -716,7 +850,7 @@ public class BluetoothLeService extends Service {
         if (!checkGatt())
             return -2;
 
-		for(BluetoothGatt bluetoothGatt:connectionQueue){
+		BluetoothGatt bluetoothGatt = request.gatt;
         if (bluetoothGatt.setCharacteristicNotification(request.characteristic, request.notifyenable)) {
 
             BluetoothGattDescriptor clientConfig = request.characteristic
@@ -724,8 +858,7 @@ public class BluetoothLeService extends Service {
             if (clientConfig != null) {
 
                 if (request.notifyenable) {
-                    // Log.i(TAG, "Enable notification: " +
-                    // characteristic.getUuid().toString());
+                    Log.i(TAG, "Enable notification: " + request.gatt.getDevice().getAddress());
                     clientConfig
                             .setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                 } else {
@@ -746,8 +879,7 @@ public class BluetoothLeService extends Service {
                 request.status = bleRequestStatus.done;
                 return lastGattStatus;
             }
-        }
-		}
+        	}
         return -3; // Set notification to android was wrong ...
     }
 }
