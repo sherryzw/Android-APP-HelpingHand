@@ -108,12 +108,22 @@ public class BluetoothLeService extends Service {
 		@Override
 		public void onConnectionStateChange(BluetoothGatt gatt, int status,
 		    int newState) {
-
 			BluetoothDevice device = gatt.getDevice();
 			String address = device.getAddress();
-			// Log.d(TAG, "onConnectionStateChange (" + address + ") " + newState +
-			// " status: " + status);
+			System.out.println("onConnectionStateChange (" + address + ") " + newState +
+					" status: " + status);
+			//Log.i(TAG, "oldStatus=" + status + " NewStates=" + newState);
+			if(status == BluetoothGatt.GATT_SUCCESS)
+			{
+				if (newState == BluetoothProfile.STATE_CONNECTED) {
+					broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
+					Log.i(TAG, "Connected to GATT server.");
+					Log.i(TAG, "Attempting to start service discovery:" + gatt.discoverServices());
+				}
 
+			}
+			//Log.d(TAG, "onConnectionStateChange (" + address + ") " + newState +
+			// " status: " + status);
 			try {
 				switch (newState) {
 				case BluetoothProfile.STATE_CONNECTED:
@@ -134,14 +144,19 @@ public class BluetoothLeService extends Service {
 
 		@Override
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+
 			BluetoothDevice device = gatt.getDevice();
+			System.out.println("~~~~~~~"+device.getAddress());
 			broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED, device.getAddress(),
-			    status);
+					status);
+			System.out.println("~~~~finish~~~" + device.getAddress());
+
 		}
 
 		@Override
 		public void onCharacteristicChanged(BluetoothGatt gatt,
 		    BluetoothGattCharacteristic characteristic) {
+			Log.e(TAG," Address~~" + gatt.getDevice().getAddress());
 			broadcastUpdate(ACTION_DATA_NOTIFY, characteristic,
 					BluetoothGatt.GATT_SUCCESS);
 		}
@@ -422,12 +437,11 @@ public class BluetoothLeService extends Service {
 	 * 
 	 * @return A {@code List} of supported services.
 	 */
-	public List<BluetoothGattService> getSupportedGattServices( int num) {
-
-		if (connectionQueue == null)
+	public List<BluetoothGattService> getSupportedGattServices() {
+		if (mBluetoothGatt == null)
 			return null;
 
-		return connectionQueue.get(num).getServices();
+		return mBluetoothGatt.getServices();
 	}
 
 
@@ -455,12 +469,14 @@ public class BluetoothLeService extends Service {
 	}
 
 	public void connect(final String address) {
-		final BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
+		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
 		if (device == null) {
 			Log.w(TAG, "Device not found.  Unable to connect.");
 		}
+
 		BluetoothGatt bluetoothGatt;
 		bluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
+		mBluetoothGatt =bluetoothGatt;
 		connectionQueue.add(bluetoothGatt);
 		connectedDevice.add(bluetoothGatt.getDevice());
 	}
