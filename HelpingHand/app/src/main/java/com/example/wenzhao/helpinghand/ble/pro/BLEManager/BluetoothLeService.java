@@ -44,7 +44,7 @@ public class BluetoothLeService extends Service {
 	public final static String EXTRA_UUID = "com.example.ti.ble.common.EXTRA_UUID";
 	public final static String EXTRA_STATUS = "com.example.ti.ble.common.EXTRA_STATUS";
 	public final static String EXTRA_ADDRESS = "com.example.ti.ble.common.EXTRA_ADDRESS";
-    public final static int GATT_TIMEOUT = 150;
+	public final static int GATT_TIMEOUT = 150;
 	public int cnum = 0;
 
 	public static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
@@ -60,49 +60,49 @@ public class BluetoothLeService extends Service {
 	private String mBluetoothDeviceAddress;
 
 	public Timer disconnectionTimer;
-    private final Lock lock = new ReentrantLock();
+	private final Lock lock = new ReentrantLock();
 
-    private volatile boolean blocking = false;
-    private volatile int lastGattStatus = 0; //Success
+	private volatile boolean blocking = false;
+	private volatile int lastGattStatus = 0; //Success
 
-    private volatile bleRequest curBleRequest = null;
+	private volatile bleRequest curBleRequest = null;
 
 
 
 	public enum bleRequestOperation {
-        wrBlocking,
-        wr,
-        rdBlocking,
-        rd,
-        nsBlocking,
-    }
+		wrBlocking,
+		wr,
+		rdBlocking,
+		rd,
+		nsBlocking,
+	}
 
-    public enum bleRequestStatus {
-        not_queued,
-        queued,
-        processing,
-        timeout,
-        done,
-        no_such_request,
-        failed,
-    }
+	public enum bleRequestStatus {
+		not_queued,
+		queued,
+		processing,
+		timeout,
+		done,
+		no_such_request,
+		failed,
+	}
 
-    public class bleRequest {
-        public int id;
-        public BluetoothGattCharacteristic characteristic;
+	public class bleRequest {
+		public int id;
+		public BluetoothGattCharacteristic characteristic;
 		public BluetoothGatt gatt;
 		public bleRequestOperation operation;
-        public volatile bleRequestStatus status;
-        public int timeout;
-        public int curTimeout;
-        public boolean notifyenable;
-    }
+		public volatile bleRequestStatus status;
+		public int timeout;
+		public int curTimeout;
+		public boolean notifyenable;
+	}
 
-    // Queuing for fast application response.
-    private volatile LinkedList<bleRequest> procQueue;
-    private volatile LinkedList<bleRequest> nonBlockQueue;
+	// Queuing for fast application response.
+	private volatile LinkedList<bleRequest> procQueue;
+	private volatile LinkedList<bleRequest> nonBlockQueue;
 
-    //
+	//
 
 	/**
 	 * GATT client callbacks
@@ -111,145 +111,22 @@ public class BluetoothLeService extends Service {
 
 		@Override
 		public void onConnectionStateChange(BluetoothGatt gatt, int status,
-		    int newState) {
-			BluetoothDevice device = gatt.getDevice();
-			String address = device.getAddress();
-			System.out.println("onConnectionStateChange (" + address + ") " + newState +
-					" status: " + status);
-			//Log.i(TAG, "oldStatus=" + status + " NewStates=" + newState);
-
-				if (newState == BluetoothProfile.STATE_CONNECTED) {
-					broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
-					Log.i(TAG, "Connected to GATT server.");
-					Log.i(TAG, "Attempting to start service discovery:" + gatt.discoverServices());
-				}
-
-
-			//Log.d(TAG, "onConnectionStateChange (" + address + ") " + newState +
-			// " status: " + status);
-			try {
-				switch (newState) {
-				case BluetoothProfile.STATE_CONNECTED:
-                    //refreshDeviceCache(mBluetoothGatt);
-					broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
-					break;
-				case BluetoothProfile.STATE_DISCONNECTED:
-					broadcastUpdate(ACTION_GATT_DISCONNECTED, address, status);
-					break;
-				default:
-					// Log.e(TAG, "New state not processed: " + newState);
-					break;
-				}
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-
-			BluetoothDevice device = gatt.getDevice();
-			System.out.println("1~~~~~~~"+device.getAddress());
-			broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED1, device.getAddress(),
-					status);
-			System.out.println("1~~~~finish~~~" + device.getAddress());
-
-		}
-
-		@Override
-		public void onCharacteristicChanged(BluetoothGatt gatt,
-		    BluetoothGattCharacteristic characteristic) {
-			Log.e(TAG," Address1~~" + gatt.getDevice().getAddress());
-			broadcastUpdate(ACTION_DATA_NOTIFY, characteristic,
-					BluetoothGatt.GATT_SUCCESS);
-		}
-
-		@Override
-		public void onCharacteristicRead(BluetoothGatt gatt,
-		    BluetoothGattCharacteristic characteristic, int status) {
-			System.out.println(TAG+ gatt.getDevice().getAddress() +" ~onCharacteristc Read 1~~  ");
-            if (blocking)unlockBlockingThread(status);
-            if (nonBlockQueue.size() > 0) {
-                lock.lock();
-                for (int ii = 0; ii < nonBlockQueue.size(); ii++) {
-                    bleRequest req = nonBlockQueue.get(ii);
-                    if (req.characteristic == characteristic) {
-                        req.status = bleRequestStatus.done;
-                        nonBlockQueue.remove(ii);
-                        break;
-                    }
-                }
-                lock.unlock();
-            }
-			broadcastUpdate(ACTION_DATA_READ, characteristic, status);
-		}
-
-		@Override
-		public void onCharacteristicWrite(BluetoothGatt gatt,
-		    BluetoothGattCharacteristic characteristic, int status) {
-			System.out.println(TAG + gatt.getDevice().getAddress() + " ~onCharacteristc Write 1~~  ");
-            if (blocking)unlockBlockingThread(status);
-            if (nonBlockQueue.size() > 0) {
-                lock.lock();
-                for (int ii = 0; ii < nonBlockQueue.size(); ii++) {
-                    bleRequest req = nonBlockQueue.get(ii);
-                    if (req.characteristic == characteristic) {
-                        req.status = bleRequestStatus.done;
-                        nonBlockQueue.remove(ii);
-                        break;
-                    }
-                }
-                lock.unlock();
-            }
-			broadcastUpdate(ACTION_DATA_WRITE, characteristic, status);
-		}
-
-		@Override
-		public void onDescriptorRead(BluetoothGatt gatt,
-		    BluetoothGattDescriptor descriptor, int status) {
-            if (blocking)unlockBlockingThread(status);
-            unlockBlockingThread(status);
-		}
-
-		@Override
-		public void onDescriptorWrite(BluetoothGatt gatt,
-		    BluetoothGattDescriptor descriptor, int status) {
-            if (blocking)unlockBlockingThread(status);
-			// Log.i(TAG, "onDescriptorWrite: " + descriptor.getUuid().toString());
-		}
-	};
-	private BluetoothGattCallback mGattCallbacks1 = new BluetoothGattCallback() {
-
-		@Override
-		public void onConnectionStateChange(BluetoothGatt gatt, int status,
 											int newState) {
 			BluetoothDevice device = gatt.getDevice();
 			String address = device.getAddress();
-			System.out.println("onConnectionStateChange2 (" + address + ") " + newState +
-					" status: " + status);
-			//Log.i(TAG, "oldStatus=" + status + " NewStates=" + newState);
-			if(status == BluetoothGatt.GATT_SUCCESS)
-			{
-				if (newState == BluetoothProfile.STATE_CONNECTED) {
-					broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
-					Log.i(TAG, "Connected to GATT server2.");
-					Log.i(TAG, "Attempting to start service discovery2:" + gatt.discoverServices());
-				}
-
+			if (newState == BluetoothProfile.STATE_CONNECTED) {
+				broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
+				gatt.discoverServices();
 			}
-			//Log.d(TAG, "onConnectionStateChange (" + address + ") " + newState +
-			// " status: " + status);
 			try {
 				switch (newState) {
 					case BluetoothProfile.STATE_CONNECTED:
-						//refreshDeviceCache(mBluetoothGatt);
 						broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
 						break;
 					case BluetoothProfile.STATE_DISCONNECTED:
 						broadcastUpdate(ACTION_GATT_DISCONNECTED, address, status);
 						break;
 					default:
-						// Log.e(TAG, "New state not processed: " + newState);
 						break;
 				}
 			} catch (NullPointerException e) {
@@ -261,25 +138,20 @@ public class BluetoothLeService extends Service {
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
 			BluetoothDevice device = gatt.getDevice();
-			System.out.println("2~~~~~~~"+device.getAddress());
-			broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED2, device.getAddress(),
+			broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED1, device.getAddress(),
 					status);
-			System.out.println("2~~~~finish~~~" + device.getAddress());
-
 		}
 
 		@Override
 		public void onCharacteristicChanged(BluetoothGatt gatt,
 											BluetoothGattCharacteristic characteristic) {
-			Log.e(TAG," Address2~~" + gatt.getDevice().getAddress());
-			broadcastUpdate(ACTION_DATA_NOTIFY1, characteristic,
+			broadcastUpdate(ACTION_DATA_NOTIFY, characteristic,
 					BluetoothGatt.GATT_SUCCESS);
 		}
 
 		@Override
 		public void onCharacteristicRead(BluetoothGatt gatt,
 										 BluetoothGattCharacteristic characteristic, int status) {
-			System.out.println(TAG+ gatt.getDevice().getAddress() +" ~onCharacteristc Read 2~~  ");
 			if (blocking)unlockBlockingThread(status);
 			if (nonBlockQueue.size() > 0) {
 				lock.lock();
@@ -299,7 +171,6 @@ public class BluetoothLeService extends Service {
 		@Override
 		public void onCharacteristicWrite(BluetoothGatt gatt,
 										  BluetoothGattCharacteristic characteristic, int status) {
-			System.out.println(TAG+ gatt.getDevice().getAddress() +" ~onCharacteristc Write 2~~  ");
 			if (blocking)unlockBlockingThread(status);
 			if (nonBlockQueue.size() > 0) {
 				lock.lock();
@@ -327,17 +198,112 @@ public class BluetoothLeService extends Service {
 		public void onDescriptorWrite(BluetoothGatt gatt,
 									  BluetoothGattDescriptor descriptor, int status) {
 			if (blocking)unlockBlockingThread(status);
-			// Log.i(TAG, "onDescriptorWrite: " + descriptor.getUuid().toString());
+		}
+	};
+	private BluetoothGattCallback mGattCallbacks1 = new BluetoothGattCallback() {
+
+		@Override
+		public void onConnectionStateChange(BluetoothGatt gatt, int status,
+											int newState) {
+			BluetoothDevice device = gatt.getDevice();
+			String address = device.getAddress();
+			if(status == BluetoothGatt.GATT_SUCCESS)
+			{
+				if (newState == BluetoothProfile.STATE_CONNECTED) {
+					broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
+					gatt.discoverServices();
+				}
+
+			}
+			try {
+				switch (newState) {
+					case BluetoothProfile.STATE_CONNECTED:
+						broadcastUpdate(ACTION_GATT_CONNECTED, address, status);
+						break;
+					case BluetoothProfile.STATE_DISCONNECTED:
+						broadcastUpdate(ACTION_GATT_DISCONNECTED, address, status);
+						break;
+					default:
+						break;
+				}
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+			BluetoothDevice device = gatt.getDevice();
+			broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED2, device.getAddress(),
+					status);
+		}
+
+		@Override
+		public void onCharacteristicChanged(BluetoothGatt gatt,
+											BluetoothGattCharacteristic characteristic) {
+			broadcastUpdate(ACTION_DATA_NOTIFY1, characteristic,
+					BluetoothGatt.GATT_SUCCESS);
+		}
+
+		@Override
+		public void onCharacteristicRead(BluetoothGatt gatt,
+										 BluetoothGattCharacteristic characteristic, int status) {
+			if (blocking)unlockBlockingThread(status);
+			if (nonBlockQueue.size() > 0) {
+				lock.lock();
+				for (int ii = 0; ii < nonBlockQueue.size(); ii++) {
+					bleRequest req = nonBlockQueue.get(ii);
+					if (req.characteristic == characteristic) {
+						req.status = bleRequestStatus.done;
+						nonBlockQueue.remove(ii);
+						break;
+					}
+				}
+				lock.unlock();
+			}
+			broadcastUpdate(ACTION_DATA_READ, characteristic, status);
+		}
+
+		@Override
+		public void onCharacteristicWrite(BluetoothGatt gatt,
+										  BluetoothGattCharacteristic characteristic, int status) {
+			if (blocking)unlockBlockingThread(status);
+			if (nonBlockQueue.size() > 0) {
+				lock.lock();
+				for (int ii = 0; ii < nonBlockQueue.size(); ii++) {
+					bleRequest req = nonBlockQueue.get(ii);
+					if (req.characteristic == characteristic) {
+						req.status = bleRequestStatus.done;
+						nonBlockQueue.remove(ii);
+						break;
+					}
+				}
+				lock.unlock();
+			}
+			broadcastUpdate(ACTION_DATA_WRITE, characteristic, status);
+		}
+
+		@Override
+		public void onDescriptorRead(BluetoothGatt gatt,
+									 BluetoothGattDescriptor descriptor, int status) {
+			if (blocking)unlockBlockingThread(status);
+			unlockBlockingThread(status);
+		}
+
+		@Override
+		public void onDescriptorWrite(BluetoothGatt gatt,
+									  BluetoothGattDescriptor descriptor, int status) {
+			if (blocking)unlockBlockingThread(status);
 		}
 	};
 
-    private void unlockBlockingThread(int status) {
-        this.lastGattStatus = status;
-        this.blocking = false;
-    }
+	private void unlockBlockingThread(int status) {
+		this.lastGattStatus = status;
+		this.blocking = false;
+	}
 
 	private void broadcastUpdate(final String action, final String address,
-	    final int status) {
+								 final int status) {
 		final Intent intent = new Intent(action);
 		intent.putExtra(EXTRA_ADDRESS, address);
 		intent.putExtra(EXTRA_STATUS, status);
@@ -345,7 +311,7 @@ public class BluetoothLeService extends Service {
 	}
 
 	private void broadcastUpdate(final String action,
-	    final BluetoothGattCharacteristic characteristic, final int status) {
+								 final BluetoothGattCharacteristic characteristic, final int status) {
 		final Intent intent = new Intent(action);
 		intent.putExtra(EXTRA_UUID, characteristic.getUuid().toString());
 		intent.putExtra(EXTRA_DATA, characteristic.getValue());
@@ -355,13 +321,11 @@ public class BluetoothLeService extends Service {
 
 	public boolean checkGatt() {
 		if (mBtAdapter == null) {
-			// Log.w(TAG, "BluetoothAdapter not initialized");
 			return false;
 		}
-        if (this.blocking) {
-            Log.d(TAG, "Cannot start operation : Blocked");
-            return false;
-        }
+		if (this.blocking) {
+			return false;
+		}
 		return true;
 	}
 
@@ -392,11 +356,6 @@ public class BluetoothLeService extends Service {
 
 	@Override
 	public boolean onUnbind(Intent intent) {
-		// After using a given device, you should make sure that
-		// BluetoothGatt.close() is called
-		// such that resources are cleaned up properly. In this particular example,
-		// close() is
-		// invoked when the UI is disconnected from the Service.
 		close();
 		return super.onUnbind(intent);
 	}
@@ -405,7 +364,7 @@ public class BluetoothLeService extends Service {
 
 	/**
 	 * Initializes a reference to the local Bluetooth adapter.
-	 * 
+	 *
 	 * @return Return true if the initialization is successful.
 	 */
 	public boolean initialize() {
@@ -426,26 +385,26 @@ public class BluetoothLeService extends Service {
 			return false;
 		}
 
-        procQueue = new LinkedList<bleRequest>();
-        nonBlockQueue = new LinkedList<bleRequest>();
+		procQueue = new LinkedList<bleRequest>();
+		nonBlockQueue = new LinkedList<bleRequest>();
 
 
-        Thread queueThread = new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    executeQueue();
-                    try {
-                        Thread.sleep(0, 100000);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
+		Thread queueThread = new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					executeQueue();
+					try {
+						Thread.sleep(0, 100000);
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
 
-        queueThread.start();
+		queueThread.start();
 		return true;
 	}
 
@@ -454,7 +413,7 @@ public class BluetoothLeService extends Service {
 		// Log.i(TAG, "Received start id " + startId + ": " + intent);
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
-        this.initialize();
+		this.initialize();
 		return START_STICKY;
 	}
 
@@ -478,70 +437,67 @@ public class BluetoothLeService extends Service {
 	 * result is reported asynchronously through the
 	 * {@code BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
 	 * callback.
-	 * 
+	 *
 	 * @param characteristic
 	 *          The characteristic to read from.
 	 */
 
 	public int writeCharacteristic(
-	    BluetoothGattCharacteristic characteristic,BluetoothGatt gatt , byte b) {
-		Log.i(TAG,"~~~write~~~"+gatt.getDevice().getAddress());
+			BluetoothGattCharacteristic characteristic,BluetoothGatt gatt , byte b) {
+		byte[] val = new byte[1];
+		val[0] = b;
+		characteristic.setValue(val);
 
-
-        byte[] val = new byte[1];
-        val[0] = b;
-        characteristic.setValue(val);
-
-        bleRequest req = new bleRequest();
-        req.status = bleRequestStatus.not_queued;
+		bleRequest req = new bleRequest();
+		req.status = bleRequestStatus.not_queued;
 		req.gatt = gatt;
-        req.characteristic = characteristic;
-        req.operation = bleRequestOperation.wrBlocking;
-        addRequestToQueue(req);
-        boolean finished = false;
-        while (!finished) {
-            bleRequestStatus stat = pollForStatusofRequest(req);
-            if (stat == bleRequestStatus.done) {
-                finished = true;
-                return 0;
-            }
-            else if (stat == bleRequestStatus.timeout) {
-                finished = true;
-                return -3;
-            }
-        }
-        return -2;
+		req.characteristic = characteristic;
+		req.operation = bleRequestOperation.wrBlocking;
+		addRequestToQueue(req);
+		boolean finished = false;
+		while (!finished) {
+			bleRequestStatus stat = pollForStatusofRequest(req);
+			if (stat == bleRequestStatus.done) {
+				finished = true;
+				return 0;
+			}
+			else if (stat == bleRequestStatus.timeout) {
+				finished = true;
+				return -3;
+			}
+		}
+		return -2;
 	}
 	public int writeCharacteristic(
-		    BluetoothGattCharacteristic characteristic, BluetoothGatt gatt,byte[] b) {
-        characteristic.setValue(b);
-        bleRequest req = new bleRequest();
+			BluetoothGattCharacteristic characteristic, BluetoothGatt gatt,byte[] b) {
+		characteristic.setValue(b);
+		bleRequest req = new bleRequest();
 		req.gatt = gatt;
-        req.status = bleRequestStatus.not_queued;
-        req.characteristic = characteristic;
-        req.operation = bleRequestOperation.wrBlocking;
+		req.status = bleRequestStatus.not_queued;
+		req.characteristic = characteristic;
+		req.operation = bleRequestOperation.wrBlocking;
 
-        addRequestToQueue(req);
-        boolean finished = false;
-        while (!finished) {
-            bleRequestStatus stat = pollForStatusofRequest(req);
-            if (stat == bleRequestStatus.done) {
-                finished = true;
-                return 0;
-            }
-            else if (stat == bleRequestStatus.timeout) {
-                finished = true;
-                return -3;
-            }
-        }
-        return -2;
+		addRequestToQueue(req);
+		boolean finished = false;
+		while (!finished) {
+			bleRequestStatus stat = pollForStatusofRequest(req);
+			if (stat == bleRequestStatus.done) {
+				finished = true;
+				return 0;
+			}
+			else if (stat == bleRequestStatus.timeout) {
+				finished = true;
+				return -3;
+			}
 		}
+		return -2;
+	}
 
 	/**
 	 * Retrieves the number of GATT services on the connected device. This should
 	 * be invoked only after {@code BluetoothGatt#discoverServices()} completes
 	 * successfully.
-	 * 
+	 *
 	 * @return A {@code integer} number of supported services.
 	 */
 	public int getNumServices() {
@@ -555,7 +511,7 @@ public class BluetoothLeService extends Service {
 	 * Retrieves a list of supported GATT services on the connected device. This
 	 * should be invoked only after {@code BluetoothGatt#discoverServices()}
 	 * completes successfully.
-	 * 
+	 *
 	 * @return A {@code List} of supported services.
 	 */
 	public List<BluetoothGattService> getSupportedGattServices() {
@@ -567,62 +523,56 @@ public class BluetoothLeService extends Service {
 
 
 	public int setCharacteristicNotification(
-	    BluetoothGattCharacteristic characteristic,BluetoothGatt gatt, boolean enable) {
-        bleRequest req = new bleRequest();
-        req.status = bleRequestStatus.not_queued;
+			BluetoothGattCharacteristic characteristic,BluetoothGatt gatt, boolean enable) {
+		bleRequest req = new bleRequest();
+		req.status = bleRequestStatus.not_queued;
 		req.gatt =gatt;
-		System.out.println("SetNotification ~~" + gatt.getDevice().getAddress());
-        req.characteristic = characteristic;
-        req.operation = bleRequestOperation.nsBlocking;
-        req.notifyenable = enable;
-        addRequestToQueue(req);
-        boolean finished = false;
-        while (!finished) {
-            bleRequestStatus stat = pollForStatusofRequest(req);
-            if (stat == bleRequestStatus.done) {
-                finished = true;
-                return 0;
-            }
-            else if (stat == bleRequestStatus.timeout) {
-                finished = true;
-                return -3;
-            }
-        }
-        return -2;
+		req.characteristic = characteristic;
+		req.operation = bleRequestOperation.nsBlocking;
+		req.notifyenable = enable;
+		addRequestToQueue(req);
+		boolean finished = false;
+		while (!finished) {
+			bleRequestStatus stat = pollForStatusofRequest(req);
+			if (stat == bleRequestStatus.done) {
+				finished = true;
+				return 0;
+			}
+			else if (stat == bleRequestStatus.timeout) {
+				finished = true;
+				return -3;
+			}
+		}
+		return -2;
 	}
 
 	public void connect(final String address) {
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
-		if (device == null) {
-			Log.w(TAG, "Device not found.  Unable to connect.");
-		}
-
-		if (cnum ==0){
-			BluetoothGatt bluetoothGatt;
-			bluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
-			mBluetoothGatt =bluetoothGatt;
+		if (cnum == 0){
+			BluetoothGatt bluetoothGatt = device.connectGatt(this, false, mGattCallbacks);
+			mBluetoothGatt = bluetoothGatt;
 			connectionQueue.add(bluetoothGatt);
 			connectedDevice.add(bluetoothGatt.getDevice());
 			cnum++;
-		}else if (cnum ==1){
-			BluetoothGatt bluetoothGatt;
-			bluetoothGatt = device.connectGatt(this, false, mGattCallbacks1);
-			mBluetoothGatt =bluetoothGatt;
+		}else if (cnum == 1){
+			BluetoothGatt bluetoothGatt = device.connectGatt(this, false, mGattCallbacks1);
+			mBluetoothGatt = bluetoothGatt;
 			connectionQueue.add(bluetoothGatt);
 			connectedDevice.add(bluetoothGatt.getDevice());
-			cnum++;
+			cnum = 0;
 		}
-
 	}
 
 	public void disconnect(String address) {
 		final BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
 		int connectionState = mBluetoothManager.getConnectionState(device, BluetoothProfile.GATT);
-        if (connectionState != BluetoothProfile.STATE_DISCONNECTED) {
+		if (connectionState != BluetoothProfile.STATE_DISCONNECTED) {
 			for(BluetoothGatt bluetoothGatt:connectionQueue){
 				bluetoothGatt.disconnect();
 			}
-        }
+			connectionQueue.clear();
+			connectedDevice.clear();
+		}
 	}
 
 	/**
@@ -637,7 +587,7 @@ public class BluetoothLeService extends Service {
 			}
 			connectionQueue =null;
 		}
-  }
+	}
 
 	public int numConnectedDevices() {
 		int n = 0;
@@ -667,219 +617,210 @@ public class BluetoothLeService extends Service {
 		return mThis;
 	}
 
-    public void waitIdle(int timeout) {
-        while (timeout-- > 0) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+	public void waitIdle(int timeout) {
+		while (timeout-- > 0) {
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-    public boolean addRequestToQueue(bleRequest req) {
-        lock.lock();
-        if (procQueue.peekLast() != null) {
-            req.id = procQueue.peek().id++;
-        }
-        else {
-            req.id = 0;
-            procQueue.add(req);
-        }
-        lock.unlock();
-        return true;
-    }
+	public boolean addRequestToQueue(bleRequest req) {
+		lock.lock();
+		if (procQueue.peekLast() != null) {
+			req.id = procQueue.peek().id++;
+		}
+		else {
+			req.id = 0;
+			procQueue.add(req);
+		}
+		lock.unlock();
+		return true;
+	}
 
-    public bleRequestStatus pollForStatusofRequest(bleRequest req) {
-        lock.lock();
-        if (req == curBleRequest) {
-            bleRequestStatus stat = curBleRequest.status;
-            if (stat == bleRequestStatus.done) {
-                curBleRequest = null;
-            }
-            if (stat == bleRequestStatus.timeout) {
-                curBleRequest = null;
-            }
-            lock.unlock();
-            return stat;
-        }
-        else {
-            lock.unlock();
-            return bleRequestStatus.no_such_request;
-        }
-    }
-    private void executeQueue() {
-        // Everything here is done on the queue
-        lock.lock();
-        if (curBleRequest != null) {
-                Log.d(TAG, "executeQueue, curBleRequest running");
-                try {
-                    curBleRequest.curTimeout++;
-                    if (curBleRequest.curTimeout > GATT_TIMEOUT) {
-                        curBleRequest.status = bleRequestStatus.timeout;
-                        curBleRequest = null;
-                    }
-                    Thread.sleep(10, 0);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            lock.unlock();
-                return;
-        }
-        if (procQueue == null) {
-            lock.unlock();
-            return;
-        }
-        if (procQueue.size() == 0) {
-            lock.unlock();
-            return;
-        }
-        bleRequest procReq = procQueue.removeFirst();
+	public bleRequestStatus pollForStatusofRequest(bleRequest req) {
+		lock.lock();
+		if (req == curBleRequest) {
+			bleRequestStatus stat = curBleRequest.status;
+			if (stat == bleRequestStatus.done) {
+				curBleRequest = null;
+			}
+			if (stat == bleRequestStatus.timeout) {
+				curBleRequest = null;
+			}
+			lock.unlock();
+			return stat;
+		}
+		else {
+			lock.unlock();
+			return bleRequestStatus.no_such_request;
+		}
+	}
+	private void executeQueue() {
+		// Everything here is done on the queue
+		lock.lock();
+		if (curBleRequest != null) {
+			try {
+				curBleRequest.curTimeout++;
+				if (curBleRequest.curTimeout > GATT_TIMEOUT) {
+					curBleRequest.status = bleRequestStatus.timeout;
+					curBleRequest = null;
+				}
+				Thread.sleep(10, 0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			lock.unlock();
+			return;
+		}
+		if (procQueue == null) {
+			lock.unlock();
+			return;
+		}
+		if (procQueue.size() == 0) {
+			lock.unlock();
+			return;
+		}
+		bleRequest procReq = procQueue.removeFirst();
 
-        switch (procReq.operation) {
-            case rd:
-                //Read, do non blocking read
-                break;
-            case rdBlocking:
-                //Normal (blocking) read
-                if (procReq.timeout == 0) {
-                    procReq.timeout = GATT_TIMEOUT;
-                }
-                procReq.curTimeout = 0;
-                curBleRequest = procReq;
-                int stat = sendBlockingReadRequest(procReq);
-                if (stat == -2) {
-                    Log.d(TAG, "executeQueue rdBlocking: error, BLE was busy or device disconnected");
-                    lock.unlock();
-                    return;
-                }
-                break;
-            case wr:
-                //Write, do non blocking write (Ex: OAD)
-                nonBlockQueue.add(procReq);
-                sendNonBlockingWriteRequest(procReq);
-                break;
-            case wrBlocking:
-                //Normal (blocking) write
-                if (procReq.timeout == 0) {
-                    procReq.timeout = GATT_TIMEOUT;
-                }
-                curBleRequest = procReq;
-                stat = sendBlockingWriteRequest(procReq);
-                if (stat == -2) {
-                    Log.d(TAG, "executeQueue wrBlocking: error, BLE was busy or device disconnected");
-                    lock.unlock();
-                    return;
-                }
-                break;
-            case nsBlocking:
-                if (procReq.timeout == 0) {
-                    procReq.timeout = GATT_TIMEOUT;
-                }
-                curBleRequest = procReq;
-                stat = sendBlockingNotifySetting(procReq);
-                if (stat == -2) {
-                    Log.d(TAG, "executeQueue nsBlocking: error, BLE was busy or device disconnected");
-                    lock.unlock();
-                    return;
-                }
-                break;
-            default:
-                break;
+		switch (procReq.operation) {
+			case rd:
+				//Read, do non blocking read
+				break;
+			case rdBlocking:
+				//Normal (blocking) read
+				if (procReq.timeout == 0) {
+					procReq.timeout = GATT_TIMEOUT;
+				}
+				procReq.curTimeout = 0;
+				curBleRequest = procReq;
+				int stat = sendBlockingReadRequest(procReq);
+				if (stat == -2) {
+					lock.unlock();
+					return;
+				}
+				break;
+			case wr:
+				//Write, do non blocking write (Ex: OAD)
+				nonBlockQueue.add(procReq);
+				sendNonBlockingWriteRequest(procReq);
+				break;
+			case wrBlocking:
+				//Normal (blocking) write
+				if (procReq.timeout == 0) {
+					procReq.timeout = GATT_TIMEOUT;
+				}
+				curBleRequest = procReq;
+				stat = sendBlockingWriteRequest(procReq);
+				if (stat == -2) {
+					lock.unlock();
+					return;
+				}
+				break;
+			case nsBlocking:
+				if (procReq.timeout == 0) {
+					procReq.timeout = GATT_TIMEOUT;
+				}
+				curBleRequest = procReq;
+				stat = sendBlockingNotifySetting(procReq);
+				if (stat == -2) {
+					lock.unlock();
+					return;
+				}
+				break;
+			default:
+				break;
 
-        }
-        lock.unlock();
-    }
+		}
+		lock.unlock();
+	}
 
-    public int sendNonBlockingWriteRequest(bleRequest request) {
-        request.status = bleRequestStatus.processing;
-        if (!checkGatt()) {
-            request.status = bleRequestStatus.failed;
-            return -2;
-        }
+	public int sendNonBlockingWriteRequest(bleRequest request) {
+		request.status = bleRequestStatus.processing;
+		if (!checkGatt()) {
+			request.status = bleRequestStatus.failed;
+			return -2;
+		}
 		BluetoothGatt bluetoothGatt = request.gatt;
-			bluetoothGatt.writeCharacteristic(request.characteristic);
+		bluetoothGatt.writeCharacteristic(request.characteristic);
 
-        return 0;
-    }
+		return 0;
+	}
 
-    public int sendBlockingReadRequest(bleRequest request) {
-        request.status = bleRequestStatus.processing;
-        int timeout = 0;
-        if (!checkGatt()) {
-            request.status = bleRequestStatus.failed;
-            return -2;
-        }
+	public int sendBlockingReadRequest(bleRequest request) {
+		request.status = bleRequestStatus.processing;
+		int timeout = 0;
+		if (!checkGatt()) {
+			request.status = bleRequestStatus.failed;
+			return -2;
+		}
 		BluetoothGatt bluetoothGatt = request.gatt;
 		bluetoothGatt.readCharacteristic(request.characteristic);
 
-        this.blocking = true; // Set read to be blocking
-        while (this.blocking) {
-            timeout ++;
-            waitIdle(1);
-            if (timeout > GATT_TIMEOUT) {this.blocking = false; request.status = bleRequestStatus.timeout; return -1;}  //Read failed TODO: Fix this to follow connection interval !
-        }
-        request.status = bleRequestStatus.done;
-        return lastGattStatus;
-    }
+		this.blocking = true; // Set read to be blocking
+		while (this.blocking) {
+			timeout ++;
+			waitIdle(1);
+			if (timeout > GATT_TIMEOUT) {this.blocking = false; request.status = bleRequestStatus.timeout; return -1;}  //Read failed TODO: Fix this to follow connection interval !
+		}
+		request.status = bleRequestStatus.done;
+		return lastGattStatus;
+	}
 
-    public int sendBlockingWriteRequest(bleRequest request) {
-        request.status = bleRequestStatus.processing;
-        int timeout = 0;
-        if (!checkGatt()) {
-            request.status = bleRequestStatus.failed;
-            return -2;
-        }
+	public int sendBlockingWriteRequest(bleRequest request) {
+		request.status = bleRequestStatus.processing;
+		int timeout = 0;
+		if (!checkGatt()) {
+			request.status = bleRequestStatus.failed;
+			return -2;
+		}
 		BluetoothGatt bluetoothGatt =request.gatt;
-       bluetoothGatt.writeCharacteristic(request.characteristic);
-        this.blocking = true; // Set read to be blocking
-        while (this.blocking) {
-            timeout ++;
-            waitIdle(1);
-            if (timeout > GATT_TIMEOUT) {this.blocking = false; request.status = bleRequestStatus.timeout; return -1;}  //Read failed TODO: Fix this to follow connection interval !
-        }
-        request.status = bleRequestStatus.done;
-        return lastGattStatus;
-    }
-    public int sendBlockingNotifySetting(bleRequest request) {
-        request.status = bleRequestStatus.processing;
-        int timeout = 0;
-        if (request.characteristic == null) {
-            return -1;
-        }
-        if (!checkGatt())
-            return -2;
+		bluetoothGatt.writeCharacteristic(request.characteristic);
+		this.blocking = true; // Set read to be blocking
+		while (this.blocking) {
+			timeout ++;
+			waitIdle(1);
+			if (timeout > GATT_TIMEOUT) {this.blocking = false; request.status = bleRequestStatus.timeout; return -1;}  //Read failed TODO: Fix this to follow connection interval !
+		}
+		request.status = bleRequestStatus.done;
+		return lastGattStatus;
+	}
+	public int sendBlockingNotifySetting(bleRequest request) {
+		request.status = bleRequestStatus.processing;
+		int timeout = 0;
+		if (request.characteristic == null) {
+			return -1;
+		}
+		if (!checkGatt())
+			return -2;
 
 		BluetoothGatt bluetoothGatt = request.gatt;
-        if (bluetoothGatt.setCharacteristicNotification(request.characteristic, request.notifyenable)) {
+		if (bluetoothGatt.setCharacteristicNotification(request.characteristic, request.notifyenable)) {
 
-            BluetoothGattDescriptor clientConfig = request.characteristic
-                    .getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
-            if (clientConfig != null) {
+			BluetoothGattDescriptor clientConfig = request.characteristic
+					.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
+			if (clientConfig != null) {
 
-                if (request.notifyenable) {
-                    Log.i(TAG, "Enable notification: " + request.gatt.getDevice().getAddress());
-                    clientConfig
-                            .setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                } else {
-                    // Log.i(TAG, "Disable notification: " +
-                    // characteristic.getUuid().toString());
-                    clientConfig
-                            .setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
-                }
-                bluetoothGatt.writeDescriptor(clientConfig);
-                // Log.i(TAG, "writeDescriptor: " +
-                // characteristic.getUuid().toString());
-                this.blocking = true; // Set read to be blocking
-                while (this.blocking) {
-                    timeout ++;
-                    waitIdle(1);
-                    if (timeout > GATT_TIMEOUT) {this.blocking = false; request.status = bleRequestStatus.timeout; return -1;}  //Read failed TODO: Fix this to follow connection interval !
-                }
-                request.status = bleRequestStatus.done;
-                return lastGattStatus;
-            }
-        	}
-        return -3; // Set notification to android was wrong ...
-    }
+				if (request.notifyenable) {
+					clientConfig
+							.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+				} else {
+					clientConfig
+							.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
+				}
+				bluetoothGatt.writeDescriptor(clientConfig);
+				this.blocking = true; // Set read to be blocking
+				while (this.blocking) {
+					timeout ++;
+					waitIdle(1);
+					if (timeout > GATT_TIMEOUT) {this.blocking = false; request.status = bleRequestStatus.timeout; return -1;}  //Read failed TODO: Fix this to follow connection interval !
+				}
+				request.status = bleRequestStatus.done;
+				return lastGattStatus;
+			}
+		}
+		return -3; // Set notification to android was wrong ...
+	}
 }

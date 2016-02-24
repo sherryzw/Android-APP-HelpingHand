@@ -11,10 +11,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,40 +24,32 @@ import android.widget.Toast;
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.BluetoothLeService;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-
-// import android.util.Log;
 
 public class MainActivity extends FragmentActivity {
 
 	// Requests to other activities
 	private static final int REQ_ENABLE_BT = 0;
 	private static final int REQ_DEVICE_ACT = 1;
-
 	// GUI
 	private ScanView mScanView;
 	private BluetoothLeService mBtLeService = null;
 	// BLE management
 	private boolean mScanning = false;
-	private int mConnIndex = NO_DEVICE;
 	private List<BluetoothDevice> mDeviceList;
-	private LinkedList<BluetoothDevice> mDeviceContainer = new LinkedList<BluetoothDevice>();
 	private BluetoothManager mBluetoothManager;
 	private BluetoothAdapter mBtAdapter = null;
-	private BluetoothDevice mBluetoothDevice = null;
+	private List<BluetoothDevice> mBluetoothDeviceList = null;
 	private BluetoothLeService mBluetoothLeService = null;
 	public static List<BluetoothGattService> serviceList1 = new ArrayList<BluetoothGattService>();
 	public static List<BluetoothGattService> serviceList2 = new ArrayList<BluetoothGattService>();
 	public static List<BluetoothGattCharacteristic> charList1 = new ArrayList<BluetoothGattCharacteristic>();
 	public static List<BluetoothGattCharacteristic> charList2 = new ArrayList<BluetoothGattCharacteristic>();
-	private  int dnum = 0;
+	private int dnum = 0;
+	private int connectedNum = 0;
 	private IntentFilter mFilter;
 
-	// Housekeeping
-	private static final int NO_DEVICE = -1;
 	private boolean mInitialised = false;
 
 	@Override
@@ -70,6 +61,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_view);
 		mDeviceList = new ArrayList<BluetoothDevice>();
+		mBluetoothDeviceList = new ArrayList<BluetoothDevice>();
 		//开启ScanView Fragment
 		mScanView = ScanView.newInstance();
 		getSupportFragmentManager().beginTransaction()
@@ -80,7 +72,7 @@ public class MainActivity extends FragmentActivity {
 		mFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
 		mFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED1);
 		mFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED2);
-    }
+	}
 
 
 	@Override
@@ -93,17 +85,17 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
-		case R.id.opt_bt:
-			Intent settingsIntent = new Intent(
-					android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
-			startActivity(settingsIntent);
-			break;
-		case R.id.opt_exit:
-			Toast.makeText(this, "Exit...", Toast.LENGTH_SHORT).show();
-			finish();
-			break;
-		default:
-			return super.onOptionsItemSelected(item);
+			case R.id.opt_bt:
+				Intent settingsIntent = new Intent(
+						android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+				startActivity(settingsIntent);
+				break;
+			case R.id.opt_exit:
+				Toast.makeText(this, "Exit...", Toast.LENGTH_SHORT).show();
+				finish();
+				break;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
@@ -117,20 +109,20 @@ public class MainActivity extends FragmentActivity {
 
 	//扫描前从服务中获取蓝牙设备 并注册广播
 	void onScanViewReady() {
-		 if (!mInitialised) {
-			 mBluetoothLeService = BluetoothLeService.getInstance();
-			 mBluetoothManager = mBluetoothLeService.getBtManager();
-			 mBtAdapter = mBluetoothManager.getAdapter();
+		if (!mInitialised) {
+			mBluetoothLeService = BluetoothLeService.getInstance();
+			mBluetoothManager = mBluetoothLeService.getBtManager();
+			mBtAdapter = mBluetoothManager.getAdapter();
 
-			 registerReceiver(mReceiver, mFilter);
-			 boolean mBtAdapterEnabled;
-		 	 mBtAdapterEnabled = mBtAdapter.isEnabled();
-		 	 if (!mBtAdapterEnabled) {
-			 	Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		 		startActivityForResult(enableIntent, REQ_ENABLE_BT);
-		 	 }
-			 mInitialised = true;
-		 }
+			registerReceiver(mReceiver, mFilter);
+			boolean mBtAdapterEnabled;
+			mBtAdapterEnabled = mBtAdapter.isEnabled();
+			if (!mBtAdapterEnabled) {
+				Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				startActivityForResult(enableIntent, REQ_ENABLE_BT);
+			}
+			mInitialised = true;
+		}
 	}
 	//按键响应函数 点击后先清空当前list内容 然后开启BLE设备扫描
 	public void onBtnScan(View view) {
@@ -140,23 +132,18 @@ public class MainActivity extends FragmentActivity {
 
 		mScanning = mBtAdapter.startLeScan(mLeScanCallback);
 	}
-	//点击设备列表的处理函数，若此时仍在扫描，则先关闭扫描来省电
-	//若当前没有设备连接，则对此设备进行BLEGATT连接，并设置当前连接设备的Index
+
 	public void onDeviceClick(final int pos) {
-		if (mDeviceContainer.size() ==0){
-
-		}
-
-		mBluetoothDevice = mDeviceList.get(pos);
-		mDeviceContainer.add(mBluetoothDevice);
-		mConnIndex = pos;
-	    mBluetoothLeService.connect(mBluetoothDevice.getAddress());
-
-
-		if (mDeviceContainer.size()== 2){
+		mBluetoothDeviceList.add(mDeviceList.get(pos));
+		connectedNum++;
+		Log.e("connectedNum",String.valueOf(connectedNum));
+		if(connectedNum == 1) mBluetoothLeService.connect(mBluetoothDeviceList.get(0).getAddress());
+		if(connectedNum == 2) mBluetoothLeService.connect(mBluetoothDeviceList.get(1).getAddress());
+		if (connectedNum == 2){
 			if (mScanning) {
 				mScanning = false;
 				mBtAdapter.stopLeScan(mLeScanCallback);
+				connectedNum = 0;
 			}
 		}
 	}
@@ -166,21 +153,21 @@ public class MainActivity extends FragmentActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
-		//case REQ_DEVICE_ACT:
-			/*if (mConnIndex != NO_DEVICE) {
-				mBluetoothLeService.disconnect(mBluetoothDevice.getAddress());
-			}
-			break;*/
-		case REQ_ENABLE_BT:
-			if (resultCode == Activity.RESULT_OK) {
-				Toast.makeText(this, R.string.bt_on, Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(this, R.string.bt_not_on, Toast.LENGTH_SHORT).show();
-				finish();
-			}
-			break;
-		default:
-			break;
+			case REQ_DEVICE_ACT:
+				mBluetoothLeService.disconnect(mBluetoothDeviceList.get(0).getAddress());
+				mBluetoothLeService.disconnect(mBluetoothDeviceList.get(1).getAddress());
+				mBluetoothDeviceList.clear();
+				break;
+			case REQ_ENABLE_BT:
+				if (resultCode == Activity.RESULT_OK) {
+					Toast.makeText(this, R.string.bt_on, Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(this, R.string.bt_not_on, Toast.LENGTH_SHORT).show();
+					finish();
+				}
+				break;
+			default:
+				break;
 		}
 	}
 	//当蓝牙适配器和BLE服务状态改变时 接收其所发出的广播 并进行相应处理
@@ -188,7 +175,6 @@ public class MainActivity extends FragmentActivity {
 	//2.BLE服务状态改变为连接成功时： 开启DeviceActivity
 	//3.BLE服务状态改变为失去连接时： 关闭DeviceActivity，并且关闭BLE服务
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
@@ -196,28 +182,19 @@ public class MainActivity extends FragmentActivity {
 
 			if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
 				switch (mBtAdapter.getState()) {
-				case BluetoothAdapter.STATE_OFF:
-					Toast.makeText(context, R.string.app_closing, Toast.LENGTH_LONG)
-					    .show();
-					finish();
-					break;
-				default:
-					break;
+					case BluetoothAdapter.STATE_OFF:
+						Toast.makeText(context, R.string.app_closing, Toast.LENGTH_LONG)
+								.show();
+						finish();
+						break;
+					default:
+						break;
 				}
-			} else if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-				int status1 = intent.getIntExtra(BluetoothLeService.EXTRA_STATUS,
-				    BluetoothGatt.GATT_FAILURE);
-				if (dnum== 2 && status1 == BluetoothGatt.GATT_SUCCESS) {
-					startDeviceActivity();
-				}
-			} else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+			}else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
 				stopDeviceActivity();
-				mConnIndex = NO_DEVICE;
 				mBluetoothLeService.close();
 			}
 			else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED1.equals(action)) {
-				System.out.println("MainActivity ~~~ Broadcast receive");
-
 				int status2 = intent.getIntExtra(BluetoothLeService.EXTRA_STATUS,
 						BluetoothGatt.GATT_SUCCESS);
 				if (status2 == BluetoothGatt.GATT_SUCCESS) {
@@ -234,17 +211,14 @@ public class MainActivity extends FragmentActivity {
 						}
 					}
 					dnum++;
-					if (dnum== 2 ) {
-
+					if (dnum == 2) {
 						startDeviceActivity();
+						dnum = 0;
 					}
 				}
-				System.out.println("MainActivity ~~~ finish receiving");
 
 			}
 			else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED2.equals(action)) {
-				System.out.println("MainActivity ~~~ Broadcast receive");
-
 				int status2 = intent.getIntExtra(BluetoothLeService.EXTRA_STATUS,
 						BluetoothGatt.GATT_SUCCESS);
 				if (status2 == BluetoothGatt.GATT_SUCCESS) {
@@ -261,13 +235,11 @@ public class MainActivity extends FragmentActivity {
 						}
 					}
 					dnum++;
-					if (dnum== 2 ) {
-
+					if (dnum == 2) {
 						startDeviceActivity();
+						dnum = 0;
 					}
 				}
-				System.out.println("MainActivity ~~~ finish receiving");
-
 			}
 		}
 	};
@@ -275,7 +247,7 @@ public class MainActivity extends FragmentActivity {
 	//如果是则将新的设备信息加入List并刷新屏幕显示
 	private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 		public void onLeScan(final BluetoothDevice device, final int rssi,
-		    byte[] scanRecord) {
+							 byte[] scanRecord) {
 			runOnUiThread(new Runnable() {
 				public void run() {
 					String deviceName = device.getName();
@@ -311,11 +283,7 @@ public class MainActivity extends FragmentActivity {
 	}
 	private void startDeviceActivity() {
 		Intent mDeviceIntent = new Intent(this, DeviceActivity.class);
-		System.out.println("~~~~~~~Start Device~1~~~~~"+serviceList1.size());
-		System.out.println("~~~~~~~Start Device~2~~~~~"+serviceList2.size());
-		System.out.println("~~~~~~~Start Device~3~~~~~"+charList1.size());
-		System.out.println("~~~~~~~Start Device~4~~~~~"+charList2.size());
-		startActivity(mDeviceIntent);
+		startActivityForResult(mDeviceIntent, REQ_DEVICE_ACT);
 
 	}
 	private void stopDeviceActivity() {

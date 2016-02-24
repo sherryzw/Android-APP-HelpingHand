@@ -105,7 +105,7 @@ public class ScanView extends Fragment {
       String name;
       name = device.getName();
       if (name == null) {
-      	name = new String("Unknown device");
+        name = new String("Unknown device");
       }
 
       String descr = name + "\n" + device.getAddress();
