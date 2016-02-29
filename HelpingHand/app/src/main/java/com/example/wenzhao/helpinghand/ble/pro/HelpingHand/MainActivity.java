@@ -135,6 +135,7 @@ public class MainActivity extends FragmentActivity {
 
 	public void onDeviceClick(final int pos) {
 		mBluetoothDeviceList.add(mDeviceList.get(pos));
+
 		connectedNum++;
 		Log.e("connectedNum",String.valueOf(connectedNum));
 		if(connectedNum == 1) mBluetoothLeService.connect(mBluetoothDeviceList.get(0).getAddress());
