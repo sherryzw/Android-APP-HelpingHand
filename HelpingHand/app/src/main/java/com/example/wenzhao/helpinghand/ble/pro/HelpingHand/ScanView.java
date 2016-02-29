@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.ti.ble.sensortag.R;
-
 import java.util.List;
 
 public class ScanView extends Fragment {
@@ -114,5 +113,4 @@ public class ScanView extends Fragment {
       return vg;
     }
   }
-
 }

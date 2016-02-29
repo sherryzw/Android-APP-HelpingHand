@@ -32,6 +32,10 @@ public class DeviceActivity extends Activity {
 	//GUI
 	private TextView accText1 = null;
 	private TextView accText2 = null;
+	private TextView ratioText1 = null;
+	private TextView ratioText2 = null;
+
+	double ratio1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,9 @@ public class DeviceActivity extends Activity {
 
 		accText1 = (TextView) findViewById(R.id.acc_data1);
 		accText2 = (TextView) findViewById(R.id.acc_data2);
+		ratioText1 = (TextView) findViewById(R.id.ratio1);
+		ratioText2 = (TextView) findViewById(R.id.ratio2);
+
 		Thread worker = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -109,7 +116,17 @@ public class DeviceActivity extends Activity {
 						GenericBluetoothProfile p = mProfiles.get(0);
 						if (p.isDataC(tempC)) {
 							p.didUpdateValueForCharacteristic(tempC, 0);
-							accText1.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", GenericBluetoothProfile.accData1.x, GenericBluetoothProfile.accData1.y, GenericBluetoothProfile.accData1.z));
+							double ax1 = GenericBluetoothProfile.accData1.x;
+							double ay1 = GenericBluetoothProfile.accData1.y;
+							double az1 = GenericBluetoothProfile.accData1.z;
+							double ax2 = GenericBluetoothProfile.accData2.x;
+							double ay2 = GenericBluetoothProfile.accData2.y;
+							double az2 = GenericBluetoothProfile.accData2.z;
+							accText1.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", ax1, ay1, az1));
+							ratio1 = Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) / (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) + Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2));
+							ratio1 = ratio1 * 100;
+							ratioText1.setText(String.format("RATIO1:%.2f",ratio1)+"%");
+							ratioText2.setText(String.format("RATIO2:%.2f",100-ratio1)+ "%");
 						}
 						break;
 					}
@@ -124,7 +141,10 @@ public class DeviceActivity extends Activity {
 						GenericBluetoothProfile p = mProfiles.get(1);
 						if (p.isDataC(tempC)) {
 							p.didUpdateValueForCharacteristic(tempC, 1);
-							accText2.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", GenericBluetoothProfile.accData2.x, GenericBluetoothProfile.accData2.y, GenericBluetoothProfile.accData2.z));
+							double ax2 = GenericBluetoothProfile.accData2.x;
+							double ay2 = GenericBluetoothProfile.accData2.y;
+							double az2 = GenericBluetoothProfile.accData2.z;
+							accText2.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", ax2, ay2, az2));
 						}
 						break;
 					}
