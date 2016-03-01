@@ -56,7 +56,8 @@ public class MainActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		Intent bindIntent = new Intent(this, BluetoothLeService.class);
 		startService(bindIntent);
-
+		dnum = 0;
+		connectedNum = 0;
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_view);
@@ -142,9 +143,10 @@ public class MainActivity extends FragmentActivity {
 		if(connectedNum == 2) mBluetoothLeService.connect(mBluetoothDeviceList.get(1).getAddress());
 		if (connectedNum == 2){
 			if (mScanning) {
+				connectedNum = 0;
 				mScanning = false;
 				mBtAdapter.stopLeScan(mLeScanCallback);
-				connectedNum = 0;
+
 			}
 		}
 	}
@@ -213,8 +215,9 @@ public class MainActivity extends FragmentActivity {
 					}
 					dnum++;
 					if (dnum == 2) {
-						startDeviceActivity();
 						dnum = 0;
+						startDeviceActivity();
+
 					}
 				}
 
@@ -237,8 +240,9 @@ public class MainActivity extends FragmentActivity {
 					}
 					dnum++;
 					if (dnum == 2) {
-						startDeviceActivity();
 						dnum = 0;
+						startDeviceActivity();
+
 					}
 				}
 			}
