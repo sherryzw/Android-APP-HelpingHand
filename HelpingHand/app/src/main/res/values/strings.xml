@@ -5,7 +5,7 @@
     <string name="app_name">HelpingHand</string>
     <string name="button_scan">Scan</string>
     <string name="connect">Connect</string>
-    
+
     <!-- Options menu -->
     <string name="progress"></string>
     <string name="bt">Bluetooth Adapter</string>
