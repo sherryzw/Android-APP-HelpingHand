@@ -426,8 +426,9 @@ public class BluetoothLeService extends Service {
 				bluetoothGatt = null;
 			}
 			connectionQueue = null;
-			connectedDevice = null;
 		}
+		connectedDevice = null;
+
 	}
 
 	//

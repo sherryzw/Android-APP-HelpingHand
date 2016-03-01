@@ -95,6 +95,7 @@ public class DeviceActivity extends Activity {
 			}
 		}
 		mBtGatt = null;
+		mBluetoothDevice =null;
 		unregisterReceiver(mGattUpdateReceiver1);
 		this.mProfiles = null;
 	}
