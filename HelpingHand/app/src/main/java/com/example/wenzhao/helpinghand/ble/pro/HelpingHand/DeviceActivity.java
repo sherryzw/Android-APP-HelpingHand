@@ -94,6 +94,7 @@ public class DeviceActivity extends Activity {
 				gatt = null;
 			}
 		}
+		mBtGatt = null;
 		unregisterReceiver(mGattUpdateReceiver1);
 		this.mProfiles = null;
 	}
