@@ -68,19 +68,24 @@ public class DeviceActivity extends Activity {
 					}
 				}
 
-				for (final GenericBluetoothProfile p : mProfiles) {
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							p.enableService();
-						}
-					});
-				}
+
 
 			}
 		});
 		worker.start();
 
+	}
+
+
+	public void onStart(){
+		for (final GenericBluetoothProfile p : mProfiles) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					p.enableService();
+				}
+			});
+		}
 	}
 
 	@Override
