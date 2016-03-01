@@ -423,6 +423,7 @@ public class BluetoothLeService extends Service {
 		if (connectionQueue.size() != 0) {
 			for(BluetoothGatt bluetoothGatt:connectionQueue){
 				bluetoothGatt.close();
+				bluetoothGatt = null;
 			}
 			connectionQueue = null;
 		}
