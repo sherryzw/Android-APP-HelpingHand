@@ -88,9 +88,11 @@ public class DeviceActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		for (BluetoothGatt gatt:mBtGatt ){
-			gatt.close();
-			gatt = null;
+		if (mBtGatt.size() != 0) {
+			for (BluetoothGatt gatt : mBtGatt) {
+				gatt.close();
+				gatt = null;
+			}
 		}
 		unregisterReceiver(mGattUpdateReceiver1);
 		this.mProfiles = null;

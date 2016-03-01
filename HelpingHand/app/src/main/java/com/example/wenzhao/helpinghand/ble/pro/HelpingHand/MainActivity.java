@@ -42,10 +42,10 @@ public class MainActivity extends FragmentActivity {
 	private BluetoothAdapter mBtAdapter = null;
 	private List<BluetoothDevice> mBluetoothDeviceList = null;
 	private BluetoothLeService mBluetoothLeService = null;
-	public static List<BluetoothGattService> serviceList1 = new ArrayList<BluetoothGattService>();
-	public static List<BluetoothGattService> serviceList2 = new ArrayList<BluetoothGattService>();
-	public static List<BluetoothGattCharacteristic> charList1 = new ArrayList<BluetoothGattCharacteristic>();
-	public static List<BluetoothGattCharacteristic> charList2 = new ArrayList<BluetoothGattCharacteristic>();
+	public static List<BluetoothGattService> serviceList1;
+	public static List<BluetoothGattService> serviceList2;
+	public static List<BluetoothGattCharacteristic> charList1;
+	public static List<BluetoothGattCharacteristic> charList2;
 	private int dnum = 0;
 	private int connectedNum = 0;
 	private IntentFilter mFilter;
@@ -63,6 +63,10 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.main_view);
 		mDeviceList = new ArrayList<BluetoothDevice>();
 		mBluetoothDeviceList = new ArrayList<BluetoothDevice>();
+		serviceList1 = new ArrayList<BluetoothGattService>();
+		serviceList2 = new ArrayList<BluetoothGattService>();
+		charList1 = new ArrayList<BluetoothGattCharacteristic>();
+		charList2 = new ArrayList<BluetoothGattCharacteristic>();
 		//开启ScanView Fragment
 		mScanView = ScanView.newInstance();
 		getSupportFragmentManager().beginTransaction()
@@ -79,7 +83,12 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		mDeviceList = null;
 		mBtAdapter = null;
+		serviceList1 = null;
+		serviceList2 = null;
+		charList1 = null;
+		charList2 = null;
 	}
 
 	@Override
