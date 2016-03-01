@@ -67,7 +67,14 @@ public class DeviceActivity extends Activity {
 						mProfiles.add(mov2);
 					}
 				}
-
+				for (final GenericBluetoothProfile p : mProfiles) {
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							p.enableService();
+						}
+					});
+				}
 
 
 			}
@@ -77,16 +84,6 @@ public class DeviceActivity extends Activity {
 	}
 
 
-	public void onStart(){
-		for (final GenericBluetoothProfile p : mProfiles) {
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					p.enableService();
-				}
-			});
-		}
-	}
 
 	@Override
 	public void onDestroy() {
