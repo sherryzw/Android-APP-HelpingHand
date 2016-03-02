@@ -15,10 +15,6 @@
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
 
-    <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <application
         android:allowBackup="false"
         android:icon="@drawable/app_icon"
@@ -32,7 +28,8 @@
             android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name"
-            android:screenOrientation="unspecified">
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Light.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,7 +42,11 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:parentActivityName="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity"
             android:screenOrientation="unspecified" />
-        <activity android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.InstruActivity"></activity>
+        <activity
+            android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.InstrcActivity"
+            android:label="@string/title_activity_instrc"
+            android:theme="@android:style/Theme.Light.NoTitleBar">
+        </activity>
     </application>
 
 </manifest>

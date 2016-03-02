@@ -1,5 +1,6 @@
 package com.example.wenzhao.helpinghand.ble.pro.HelpingHand;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -18,11 +19,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.BluetoothLeService;
+import com.example.wenzhao.helpinghand.ble.pro.Fragment.ScanView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +55,13 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Intent mInstrcIntent = new Intent(this, InstrcActivity.class);
+		startActivity(mInstrcIntent);
+
 		Intent bindIntent = new Intent(this, BluetoothLeService.class);
 		startService(bindIntent);
 		dnum = 0;
 		connectedNum = 0;
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_view);
 		mDeviceList = new ArrayList<BluetoothDevice>();
@@ -117,7 +120,6 @@ public class MainActivity extends FragmentActivity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	//扫描前从服务中获取蓝牙设备 并注册广播
 	void onScanViewReady() {
 		if (!mInitialised) {
 			mBluetoothLeService = BluetoothLeService.getInstance();
@@ -134,12 +136,11 @@ public class MainActivity extends FragmentActivity {
 			mInitialised = true;
 		}
 	}
-	//按键响应函数 点击后先清空当前list内容 然后开启BLE设备扫描
+
 	public void onBtnScan(View view) {
 		onScanViewReady();
 		mDeviceList.clear();
 		mScanView.notifyDataSetChanged();
-
 		mScanning = mBtAdapter.startLeScan(mLeScanCallback);
 	}
 
@@ -292,7 +293,7 @@ public class MainActivity extends FragmentActivity {
 		}
 		return false;
 	}
-	List<BluetoothDevice> getDeviceList() {
+	public List<BluetoothDevice> getDeviceList() {
 		return mDeviceList;
 	}
 	private void startDeviceActivity() {
