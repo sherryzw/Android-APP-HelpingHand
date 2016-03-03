@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.DeviceActivity;
 import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity;
+import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ResultActivity;
 
 import java.util.List;
 
@@ -83,6 +84,15 @@ public class ScanView extends Fragment {
     super.onDestroy();
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+    if(ResultActivity.Finish == 1){
+      ResultActivity.Finish = 0;
+      getActivity().finish();
+    }
+  }
+
   public void notifyDataSetChanged() {
     List<BluetoothDevice> deviceList = mActivity.getDeviceList();
     if (mDeviceAdapter == null) {
@@ -95,7 +105,6 @@ public class ScanView extends Fragment {
   // Listener for device list
   private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-      //mActivity.onDeviceClick(pos);
     }
   };
 

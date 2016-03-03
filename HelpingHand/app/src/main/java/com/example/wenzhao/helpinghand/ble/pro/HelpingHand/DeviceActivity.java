@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -20,6 +21,7 @@ import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.ACCInfo.SensorTagGatt;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.BluetoothLeService;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.GenericBluetoothProfile;
+import com.example.wenzhao.helpinghand.ble.pro.Fragment.InputFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +33,13 @@ public class DeviceActivity extends Activity {
 	private ArrayList<BluetoothGatt> mBtGatt = null;
 	private List<GenericBluetoothProfile> mProfiles;
 
+
 	//GUI
-	private TextView accText1 = null;
-	private TextView accText2 = null;
+	private TextView infoText = null;
 	private TextView ratioText1 = null;
-	private TextView ratioText2 = null;
+	private ImageView imageView1 = null;
+	private ImageView imageView2 = null;
+	private ImageView imageView3 = null;
 
 	private Button btnFinish;
 	public double ratio;
@@ -55,12 +59,20 @@ public class DeviceActivity extends Activity {
 		mProfiles = new ArrayList<GenericBluetoothProfile>();
 		ratioOverTime = new ArrayList<Double>();
 
-		accText1 = (TextView) findViewById(R.id.acc_data1);
-		accText2 = (TextView) findViewById(R.id.acc_data2);
 		ratioText1 = (TextView) findViewById(R.id.ratio1);
-		ratioText2 = (TextView) findViewById(R.id.ratio2);
-
+		infoText = (TextView) findViewById(R.id.textView18);
 		btnFinish = (Button) findViewById(R.id.btn_finish);
+
+		imageView1 = (ImageView) findViewById(R.id.imageView3);
+		imageView2 = (ImageView) findViewById(R.id.imageView4);
+		imageView3 = (ImageView) findViewById(R.id.imageView5);
+
+		imageView1.setImageResource(R.drawable.tabletop1);
+		imageView2.setImageResource(R.drawable.tabletop2);
+		imageView3.setImageResource(R.drawable.tabletop3);
+
+		infoText.setText("Keep going, " + InputFragment.curChild.getName() +
+				". Use both hands to make these towers.");
 
 		Thread worker = new Thread(new Runnable() {
 			@Override
@@ -102,6 +114,7 @@ public class DeviceActivity extends Activity {
 		});
 	}
 
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -120,6 +133,7 @@ public class DeviceActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if(ResultActivity.Finish == 1) finish();
 		startTime = System.currentTimeMillis();
 		ratioOverTime.clear();
 		final IntentFilter fi = new IntentFilter();
@@ -150,13 +164,13 @@ public class DeviceActivity extends Activity {
 							double ax2 = GenericBluetoothProfile.accData2.x;
 							double ay2 = GenericBluetoothProfile.accData2.y;
 							double az2 = GenericBluetoothProfile.accData2.z;
-							accText1.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", ax1, ay1, az1));
 							ratio = Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) / (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) + Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2));
 							ratio = ratio * 100;
 							if(ratio != 100){
 								ratioOverTime.add(ratio);
 							}
-							ratioText1.setText(String.format("RATIO1:%.2f",ratio)+"%");
+							ratioText1.setText("Weak arm("+InputFragment.curChild.getWeakArm()
+									+")"+String.format(":%.2f",ratio)+"%");
 						}
 						break;
 					}
@@ -174,7 +188,6 @@ public class DeviceActivity extends Activity {
 							double ax2 = GenericBluetoothProfile.accData2.x;
 							double ay2 = GenericBluetoothProfile.accData2.y;
 							double az2 = GenericBluetoothProfile.accData2.z;
-							accText2.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", ax2, ay2, az2));
 						}
 						break;
 					}

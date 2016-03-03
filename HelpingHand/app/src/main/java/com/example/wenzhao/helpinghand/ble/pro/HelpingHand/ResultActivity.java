@@ -14,10 +14,13 @@ import com.example.wenzhao.helpinghand.ble.pro.Fragment.InputFragment;
 
 public class ResultActivity extends Activity {
     private Button btnReplay;
+    private Button btnExit;
     private double finalRatio = 0;
     TextView resultText;
     RatingBar ratingBar;
     ImageView imageView;
+
+    public static int Finish = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,7 @@ public class ResultActivity extends Activity {
         setContentView(R.layout.activity_result);
         resultText = (TextView)findViewById(R.id.textView17);
         btnReplay = (Button)findViewById(R.id.btn_replay);
+        btnExit = (Button)findViewById(R.id.btn_exit);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         imageView = (ImageView)findViewById(R.id.imageView2);
         for(int i = 1;i < DeviceActivity.ratioOverTime.size();i++) finalRatio += DeviceActivity.ratioOverTime.get(i);
@@ -32,14 +36,22 @@ public class ResultActivity extends Activity {
         setImage(finalRatio);
         setRating(finalRatio);
 
-        resultText.setText("Finished in " + String.valueOf(DeviceActivity.time) + " s. "
+        resultText.setText("Finished in " + String.format("%.1f", DeviceActivity.time) + " s. "
                 + "Your " + InputFragment.curChild.getWeakArm() + " hand did "
-                + String.valueOf(finalRatio) + "% of the work! Try again to beat your" +
+                + String.format("%.2f", finalRatio) + "% of the work! Try again to beat your" +
                 " score.");
 
         btnReplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Finish = 1;
                 finish();
             }
         });
