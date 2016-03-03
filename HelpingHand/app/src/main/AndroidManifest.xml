@@ -45,8 +45,8 @@
         <activity
             android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.InstrcActivity"
             android:label="@string/title_activity_instrc"
-            android:theme="@android:style/Theme.Light.NoTitleBar">
-        </activity>
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
+        <activity android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ResultActivity" />
     </application>
 
 </manifest>

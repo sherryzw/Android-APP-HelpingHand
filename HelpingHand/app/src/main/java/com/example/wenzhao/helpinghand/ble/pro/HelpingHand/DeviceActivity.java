@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -35,6 +37,8 @@ public class DeviceActivity extends Activity {
 	private TextView ratioText1 = null;
 	private TextView ratioText2 = null;
 
+	private Button btnFinish;
+
 	double ratio1;
 
 	@Override
@@ -51,6 +55,8 @@ public class DeviceActivity extends Activity {
 		accText2 = (TextView) findViewById(R.id.acc_data2);
 		ratioText1 = (TextView) findViewById(R.id.ratio1);
 		ratioText2 = (TextView) findViewById(R.id.ratio2);
+
+		btnFinish = (Button) findViewById(R.id.btn_finish);
 
 		Thread worker = new Thread(new Runnable() {
 			@Override
@@ -81,6 +87,13 @@ public class DeviceActivity extends Activity {
 		});
 		worker.start();
 
+		final Intent mResultIntent = new Intent(this, ResultActivity.class);
+		btnFinish.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(mResultIntent);
+			}
+		});
 	}
 
 
@@ -162,4 +175,6 @@ public class DeviceActivity extends Activity {
 			}
 		}
 	};
+
+
 }
