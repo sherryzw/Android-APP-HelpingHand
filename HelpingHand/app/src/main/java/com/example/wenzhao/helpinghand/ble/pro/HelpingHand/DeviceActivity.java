@@ -40,10 +40,11 @@ public class DeviceActivity extends Activity {
 	private Button btnFinish;
 	public double ratio1;
 	public static float time = 0;
+	long startTime;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		final long startTime = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.acc_view);
 		// BLE
@@ -93,7 +94,7 @@ public class DeviceActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				long endTime = System.currentTimeMillis() - startTime;
-				time = endTime/1000;
+				time = (float) endTime / 1000;
 				startActivity(mResultIntent);
 			}
 		});
@@ -123,6 +124,7 @@ public class DeviceActivity extends Activity {
 		fi.addAction(BluetoothLeService.ACTION_DATA_NOTIFY1);
 		registerReceiver(mGattUpdateReceiver1, fi);
 
+		startTime = System.currentTimeMillis();
 	}
 
 	private final BroadcastReceiver mGattUpdateReceiver1 = new BroadcastReceiver() {
