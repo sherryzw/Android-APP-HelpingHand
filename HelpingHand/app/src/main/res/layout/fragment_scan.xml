@@ -32,7 +32,7 @@
         android:layout_height="80dp"
         android:id="@+id/imageView"
         android:layout_marginBottom="41dp"
-        android:layout_above="@+id/btn_scan"
+        android:layout_above="@+id/btn_start"
         android:layout_alignStart="@+id/showimg" />
 
     <ImageView
@@ -43,7 +43,7 @@
         android:layout_alignEnd="@+id/showimg" />
 
     <Button
-        android:id="@+id/btn_scan"
+        android:id="@+id/btn_start"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:text="Start"

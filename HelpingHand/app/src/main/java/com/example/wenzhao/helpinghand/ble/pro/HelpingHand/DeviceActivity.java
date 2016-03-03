@@ -96,8 +96,6 @@ public class DeviceActivity extends Activity {
 		});
 	}
 
-
-
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

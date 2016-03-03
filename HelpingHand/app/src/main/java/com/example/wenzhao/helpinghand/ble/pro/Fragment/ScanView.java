@@ -2,6 +2,7 @@ package com.example.wenzhao.helpinghand.ble.pro.Fragment;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.ti.ble.sensortag.R;
+import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.DeviceActivity;
 import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity;
 
 import java.util.List;
@@ -24,7 +26,7 @@ public class ScanView extends Fragment {
 
   private MainActivity mActivity = null;
   private DeviceListAdapter mDeviceAdapter = null;
-  private Button mBtnScan = null;
+  private Button mBtnStart = null;
   private ListView mDeviceListView = null;
 
   private ImageView showView;
@@ -44,7 +46,7 @@ public class ScanView extends Fragment {
     View view = inflater.inflate(R.layout.fragment_scan, container, false);
     mActivity = (MainActivity)getActivity();
     // Initialize widgets
-    mBtnScan = (Button) view.findViewById(R.id.btn_scan);
+    mBtnStart = (Button) view.findViewById(R.id.btn_start);
     mDeviceListView = (ListView) view.findViewById(R.id.device_list);
     mDeviceListView.setClickable(true);
     mDeviceListView.setOnItemClickListener(mDeviceClickListener);
@@ -57,7 +59,23 @@ public class ScanView extends Fragment {
     rightView.setImageResource(R.drawable.failed);
     showView.setImageResource(R.drawable.app_icon);
 
+    mBtnStart.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (MainActivity.dnum == 2) {
+          MainActivity.dnum = 0;
+          startDeviceActivity();
+        }
+      }
+    });
+
     return view;
+  }
+
+  private void startDeviceActivity() {
+    Intent mDeviceIntent = new Intent(getActivity(), DeviceActivity.class);
+    startActivityForResult(mDeviceIntent, MainActivity.REQ_DEVICE_ACT);
+
   }
 
   @Override

@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -33,7 +34,7 @@ public class MainActivity extends FragmentActivity {
 
 	// Requests to other activities
 	private static final int REQ_ENABLE_BT = 0;
-	private static final int REQ_DEVICE_ACT = 1;
+	public static final int REQ_DEVICE_ACT = 1;
 	private static final int REQ_SCAN_DEV = 2;
 	// GUI
 	private ScanView mScanView;
@@ -49,7 +50,7 @@ public class MainActivity extends FragmentActivity {
 	public static List<BluetoothGattService> serviceList2;
 	public static List<BluetoothGattCharacteristic> charList1;
 	public static List<BluetoothGattCharacteristic> charList2;
-	private int dnum = 0;
+	public static int dnum = 0;
 	private int connectedNum = 0;
 	private IntentFilter mFilter;
 
@@ -84,7 +85,6 @@ public class MainActivity extends FragmentActivity {
 		mFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED2);
 
 	}
-
 
 	@Override
 	public void onDestroy() {
@@ -229,11 +229,7 @@ public class MainActivity extends FragmentActivity {
 						}
 					}
 					dnum++;
-					if (dnum == 2) {
-						dnum = 0;
-						startDeviceActivity();
 
-					}
 				}
 
 			}
@@ -254,11 +250,7 @@ public class MainActivity extends FragmentActivity {
 						}
 					}
 					dnum++;
-					if (dnum == 2) {
-						dnum = 0;
-						startDeviceActivity();
 
-					}
 				}
 			}
 		}
@@ -307,11 +299,7 @@ public class MainActivity extends FragmentActivity {
 	public List<BluetoothDevice> getDeviceList() {
 		return mDeviceList;
 	}
-	private void startDeviceActivity() {
-		Intent mDeviceIntent = new Intent(this, DeviceActivity.class);
-		startActivityForResult(mDeviceIntent, REQ_DEVICE_ACT);
 
-	}
 	private void stopDeviceActivity() {
 		finishActivity(REQ_DEVICE_ACT);
 	}
