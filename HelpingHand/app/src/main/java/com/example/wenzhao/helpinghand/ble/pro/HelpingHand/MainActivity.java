@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.ti.ble.sensortag.R;
@@ -33,6 +34,7 @@ public class MainActivity extends FragmentActivity {
 	// Requests to other activities
 	private static final int REQ_ENABLE_BT = 0;
 	private static final int REQ_DEVICE_ACT = 1;
+	private static final int REQ_SCAN_DEV = 2;
 	// GUI
 	private ScanView mScanView;
 	private BluetoothLeService mBtLeService = null;
@@ -56,7 +58,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Intent mInstrcIntent = new Intent(this, InstrcActivity.class);
-		startActivity(mInstrcIntent);
+		startActivityForResult(mInstrcIntent, REQ_SCAN_DEV);
 
 		Intent bindIntent = new Intent(this, BluetoothLeService.class);
 		startService(bindIntent);
@@ -80,6 +82,7 @@ public class MainActivity extends FragmentActivity {
 		mFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
 		mFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED1);
 		mFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED2);
+
 	}
 
 
@@ -137,7 +140,7 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	public void onBtnScan(View view) {
+	public void onBtnScan() {
 		onScanViewReady();
 		mDeviceList.clear();
 		mScanView.notifyDataSetChanged();
@@ -146,7 +149,6 @@ public class MainActivity extends FragmentActivity {
 
 	public void onDeviceClick(final int pos) {
 		mBluetoothDeviceList.add(mDeviceList.get(pos));
-
 		connectedNum++;
 		Log.e("connectedNum",String.valueOf(connectedNum));
 		if(connectedNum == 1) mBluetoothLeService.connect(mBluetoothDeviceList.get(0).getAddress());
@@ -178,6 +180,9 @@ public class MainActivity extends FragmentActivity {
 					Toast.makeText(this, R.string.bt_not_on, Toast.LENGTH_SHORT).show();
 					finish();
 				}
+				break;
+			case REQ_SCAN_DEV:
+				onBtnScan();
 				break;
 			default:
 				break;
@@ -258,6 +263,7 @@ public class MainActivity extends FragmentActivity {
 			}
 		}
 	};
+	int i = 0;
 	//蓝牙扫描回调函数 当扫描到新的设备时 通过设备MAC地址判断是否为新扫描到的SensorTag
 	//如果是则将新的设备信息加入List并刷新屏幕显示
 	private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
@@ -272,6 +278,11 @@ public class MainActivity extends FragmentActivity {
 						if (!deviceInfoExists(device.getAddress())) {
 							mDeviceList.add(device);
 							mScanView.notifyDataSetChanged();
+							onDeviceClick(i);
+							if(i == 0) ScanView.leftView.setImageResource(R.drawable.success);
+							if(i == 1) ScanView.rightView.setImageResource(R.drawable.success);
+							i++;
+							if(i==2)i = 0;
 						}
 					}
 				}

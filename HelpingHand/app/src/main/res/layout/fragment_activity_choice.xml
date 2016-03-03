@@ -11,8 +11,8 @@
         android:text="Helping"
         android:textSize="38dp"
         android:id="@+id/textView10"
-        android:layout_marginTop="28dp"
-        android:layout_marginStart="22dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginStart="39dp"
         android:textColor="#ffffff"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
@@ -25,5 +25,102 @@
         android:layout_below="@+id/textView10"
         android:layout_alignEnd="@+id/textView10"
         android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="For Child:"
+        android:textSize="22dp"
+        android:textColor="#ffffff"
+        android:id="@+id/textView12"
+        android:layout_below="@+id/textView11"
+        android:layout_alignStart="@+id/textView11" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="15dp"
+        android:textColor="#ca5948"
+        android:id="@+id/textView14"
+        android:layout_below="@+id/textView12"
+        android:layout_alignStart="@+id/textView12" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="15dp"
+        android:textColor="#ca5948"
+        android:id="@+id/textView15"
+        android:layout_below="@+id/textView14"
+        android:layout_alignStart="@+id/textView14" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please choose activity:"
+        android:textSize="22dp"
+        android:textColor="#ffffff"
+        android:id="@+id/textView16"
+        android:layout_below="@+id/textView15"
+        android:layout_alignStart="@+id/textView15" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textView16"
+        android:layout_alignStart="@+id/textView16"
+        android:layout_marginBottom="100dp"
+        android:layout_alignEnd="@+id/textView16">
+
+        <RadioButton
+            android:id="@+id/radioGroupButton0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Block tower" />
+
+        <RadioButton
+            android:id="@+id/radioGroupButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Coin sorting" />
+
+        <RadioButton
+            android:id="@+id/radioGroupButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Playdough fun" />
+
+        <RadioButton
+            android:id="@+id/radioGroupButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Necklace making" />
+
+        <RadioButton
+            android:id="@+id/radioGroupButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Pantomime (on-screen)" />
+
+    </RadioGroup>
+
+    <Button
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:text="Next"
+        android:id="@+id/btn_next_choice"
+        android:layout_marginBottom="28dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/shape"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Left"
-        android:id="@+id/checkBox"
+        android:id="@+id/checkBoxLeft"
         android:layout_below="@+id/textView8"
         android:layout_alignStart="@+id/textView8"
         android:checked="false"
@@ -81,9 +81,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Right"
-        android:id="@+id/checkBox2"
+        android:id="@+id/checkBoxRight"
         android:checked="false"
-        android:layout_alignTop="@+id/checkBox"
+        android:layout_alignTop="@+id/checkBoxLeft"
         android:layout_toEndOf="@+id/textView8"
         android:textColor="#ffffff" />
 
@@ -94,14 +94,14 @@
         android:id="@+id/textView9"
         android:textColor="#ca5948"
         android:textSize="18dp"
-        android:layout_below="@+id/checkBox"
-        android:layout_alignStart="@+id/checkBox" />
+        android:layout_below="@+id/checkBoxLeft"
+        android:layout_alignStart="@+id/checkBoxLeft" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Yes"
-        android:id="@+id/checkBox3"
+        android:id="@+id/checkBoxYes"
         android:checked="false"
         android:textColor="#ffffff"
         android:layout_below="@+id/textView9"
@@ -111,10 +111,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No"
-        android:id="@+id/checkBox4"
+        android:id="@+id/checkBoxNo"
         android:checked="false"
         android:textColor="#ffffff"
-        android:layout_alignTop="@+id/checkBox3"
+        android:layout_alignTop="@+id/checkBoxYes"
         android:layout_toEndOf="@+id/textView8" />
 
     <Button
@@ -124,7 +124,7 @@
         android:textSize="20dp"
         android:id="@+id/btn_next_input"
         android:layout_marginTop="42dp"
-        android:layout_below="@+id/checkBox4"
+        android:layout_below="@+id/checkBoxNo"
         android:layout_centerHorizontal="true"
         android:textColor="#ffffff"
         android:background="@drawable/shape"/>
