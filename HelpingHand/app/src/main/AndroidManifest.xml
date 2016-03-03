@@ -42,12 +42,16 @@
             android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.DeviceActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:parentActivityName="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity"
-            android:screenOrientation="unspecified" />
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Light.NoTitleBar"/>
         <activity
             android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.InstrcActivity"
             android:label="@string/title_activity_instrc"
             android:theme="@android:style/Theme.Light.NoTitleBar" />
-        <activity android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ResultActivity" />
+        <activity
+            android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ResultActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar"/>
+
     </application>
 
 </manifest>

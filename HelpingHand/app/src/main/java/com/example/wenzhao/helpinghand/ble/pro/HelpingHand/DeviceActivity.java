@@ -153,7 +153,9 @@ public class DeviceActivity extends Activity {
 							accText1.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", ax1, ay1, az1));
 							ratio = Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) / (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) + Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2));
 							ratio = ratio * 100;
-							ratioOverTime.add(ratio);
+							if(ratio != 100){
+								ratioOverTime.add(ratio);
+							}
 							ratioText1.setText(String.format("RATIO1:%.2f",ratio)+"%");
 						}
 						break;
