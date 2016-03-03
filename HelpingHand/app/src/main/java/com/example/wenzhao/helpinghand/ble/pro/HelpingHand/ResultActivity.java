@@ -2,6 +2,7 @@ package com.example.wenzhao.helpinghand.ble.pro.HelpingHand;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -16,6 +17,8 @@ public class ResultActivity extends Activity {
         setContentView(R.layout.activity_result);
 
         btnReplay = (Button)findViewById(R.id.btn_replay);
+
+        Log.e("error",String.valueOf(DeviceActivity.time));
 
         btnReplay.setOnClickListener(new View.OnClickListener() {
             @Override

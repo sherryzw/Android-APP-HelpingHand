@@ -38,11 +38,12 @@ public class DeviceActivity extends Activity {
 	private TextView ratioText2 = null;
 
 	private Button btnFinish;
-
-	double ratio1;
+	public double ratio1;
+	public static float time = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		final long startTime = System.currentTimeMillis();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.acc_view);
 		// BLE
@@ -91,6 +92,8 @@ public class DeviceActivity extends Activity {
 		btnFinish.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				long endTime = System.currentTimeMillis() - startTime;
+				time = endTime/1000;
 				startActivity(mResultIntent);
 			}
 		});

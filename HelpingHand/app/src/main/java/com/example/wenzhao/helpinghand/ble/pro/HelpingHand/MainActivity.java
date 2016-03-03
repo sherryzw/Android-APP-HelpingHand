@@ -158,7 +158,6 @@ public class MainActivity extends FragmentActivity {
 				connectedNum = 0;
 				mScanning = false;
 				mBtAdapter.stopLeScan(mLeScanCallback);
-
 			}
 		}
 	}
