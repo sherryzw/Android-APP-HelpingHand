@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ti.ble.sensortag"
     android:versionCode="5"
-    android:versionName="2.20 Beta">
+    android:versionName="2.20 Beta" >
 
     <uses-sdk
         android:minSdkVersion="18"
@@ -23,7 +23,7 @@
         android:allowBackup="false"
         android:icon="@drawable/app_icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo.Light">
+        android:theme="@android:style/Theme.Holo.Light" >
         <service
             android:name="com.example.wenzhao.helpinghand.ble.pro.BLEManager.BluetoothLeService"
             android:enabled="true" />
@@ -32,7 +32,7 @@
             android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name"
-            android:screenOrientation="unspecified">
+            android:screenOrientation="unspecified" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,7 +45,8 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:parentActivityName="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity"
             android:screenOrientation="unspecified" />
-        <activity android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.InstruActivity"></activity>
+        <activity android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.InstruActivity" >
+        </activity>
     </application>
 
 </manifest>
