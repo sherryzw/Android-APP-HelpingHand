@@ -38,7 +38,8 @@ public class DeviceActivity extends Activity {
 	private TextView ratioText2 = null;
 
 	private Button btnFinish;
-	public double ratio1;
+	public double ratio;
+	public static List<Double> ratioOverTime;
 	public static float time = 0;
 	long startTime;
 
@@ -52,6 +53,7 @@ public class DeviceActivity extends Activity {
 		mBluetoothDevice = BluetoothLeService.getDevice();
 		mBtGatt = BluetoothLeService.getBtGatt();
 		mProfiles = new ArrayList<GenericBluetoothProfile>();
+		ratioOverTime = new ArrayList<Double>();
 
 		accText1 = (TextView) findViewById(R.id.acc_data1);
 		accText2 = (TextView) findViewById(R.id.acc_data2);
@@ -118,13 +120,13 @@ public class DeviceActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		startTime = System.currentTimeMillis();
+		ratioOverTime.clear();
 		final IntentFilter fi = new IntentFilter();
 		fi.addAction(BluetoothLeService.ACTION_DATA_READ);
 		fi.addAction(BluetoothLeService.ACTION_DATA_NOTIFY);
 		fi.addAction(BluetoothLeService.ACTION_DATA_NOTIFY1);
 		registerReceiver(mGattUpdateReceiver1, fi);
-
-		startTime = System.currentTimeMillis();
 	}
 
 	private final BroadcastReceiver mGattUpdateReceiver1 = new BroadcastReceiver() {
@@ -149,10 +151,10 @@ public class DeviceActivity extends Activity {
 							double ay2 = GenericBluetoothProfile.accData2.y;
 							double az2 = GenericBluetoothProfile.accData2.z;
 							accText1.setText(String.format("X:%.2fG, Y:%.2fG, Z:%.2fG", ax1, ay1, az1));
-							ratio1 = Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) / (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) + Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2));
-							ratio1 = ratio1 * 100;
-							ratioText1.setText(String.format("RATIO1:%.2f",ratio1)+"%");
-							ratioText2.setText(String.format("RATIO2:%.2f",100-ratio1)+ "%");
+							ratio = Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) / (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) + Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2));
+							ratio = ratio * 100;
+							ratioOverTime.add(ratio);
+							ratioText1.setText(String.format("RATIO1:%.2f",ratio)+"%");
 						}
 						break;
 					}
