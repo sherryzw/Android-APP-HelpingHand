@@ -34,10 +34,10 @@
         android:layout_alignParentEnd="true" />
 
     <ImageView
-        android:layout_width="160dp"
-        android:layout_height="140dp"
+        android:layout_width="180dp"
+        android:layout_height="160dp"
         android:id="@+id/imageView2"
-        android:background="@drawable/showresult"
+
         android:layout_below="@+id/ratingBar"
         android:layout_centerHorizontal="true" />
 
