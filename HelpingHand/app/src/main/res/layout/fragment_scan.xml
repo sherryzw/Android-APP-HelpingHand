@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,22 +12,57 @@
 
     <ListView
         android:id="@+id/device_list"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="10dp"
         android:layout_weight="0.43"
         android:choiceMode="singleChoice"
         android:padding="3dp" />
 
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:id="@+id/showimg"
+        android:layout_above="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="19dp" />
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/imageView"
+        android:layout_marginBottom="41dp"
+        android:layout_above="@+id/btn_scan"
+        android:layout_alignStart="@+id/showimg" />
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/imageView1"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_alignEnd="@+id/showimg" />
+
     <Button
         android:id="@+id/btn_scan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fadingEdge="vertical"
-        android:gravity="center_horizontal|center"
-        android:linksClickable="false"
-        android:onClick="onBtnScan"
-        android:padding="10dp"
-        android:text="@string/button_scan" />
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="Start"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:background="@drawable/shape"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="17dp" />
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please ensure both sensors are connected"
+        android:textSize="25dp"
+        android:textColor="#ffffff"
+        android:layout_centerVertical="true"
+        android:id="@+id/textView13"
+        android:layout_alignTop="@+id/device_list"
+        android:layout_above="@+id/showimg"
+        android:layout_toEndOf="@+id/device_list" />
+</RelativeLayout>
