@@ -13,7 +13,7 @@
         android:id="@+id/textView2"
         android:layout_marginTop="28dp"
         android:layout_marginStart="22dp"
-        android:textColor="#ffffff"
+        android:textColor="#dd43f2fb"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
     <TextView
@@ -24,7 +24,7 @@
         android:id="@+id/textView3"
         android:layout_below="@+id/textView2"
         android:layout_alignEnd="@+id/textView2"
-        android:textColor="#ffffff" />
+        android:textColor="#dd43f2fb" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
         android:textSize="20dp"
         android:id="@+id/textView6"
         android:layout_marginTop="23dp"
-        android:textColor="#ffffff"
+        android:textColor="#fb43bb"
         android:layout_below="@+id/textView3"
         android:layout_alignStart="@+id/textView7" />
 
@@ -75,7 +75,7 @@
         android:layout_below="@+id/textView8"
         android:layout_alignStart="@+id/textView8"
         android:checked="false"
-        android:textColor="#ffffff" />
+        android:textColor="#fb43bb" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
         android:checked="false"
         android:layout_alignTop="@+id/checkBoxLeft"
         android:layout_toEndOf="@+id/textView8"
-        android:textColor="#ffffff" />
+        android:textColor="#fb43bb" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -103,7 +103,7 @@
         android:text="Yes"
         android:id="@+id/checkBoxYes"
         android:checked="false"
-        android:textColor="#ffffff"
+        android:textColor="#fb43bb"
         android:layout_below="@+id/textView9"
         android:layout_alignStart="@+id/textView9" />
 
@@ -113,7 +113,7 @@
         android:text="No"
         android:id="@+id/checkBoxNo"
         android:checked="false"
-        android:textColor="#ffffff"
+        android:textColor="#fb43bb"
         android:layout_alignTop="@+id/checkBoxYes"
         android:layout_toEndOf="@+id/textView8" />
 
@@ -126,7 +126,7 @@
         android:layout_marginTop="42dp"
         android:layout_below="@+id/checkBoxNo"
         android:layout_centerHorizontal="true"
-        android:textColor="#ffffff"
+        android:textColor="#fb43bb"
         android:background="@drawable/shape"/>
 
 </RelativeLayout>

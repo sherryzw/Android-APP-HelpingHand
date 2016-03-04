@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:textSize="20dp"
-        android:textColor="#ffffff"
+        android:textColor="#dd43f2fb"
         android:id="@+id/textView18"
         android:layout_below="@+id/ratio1"
         android:layout_centerHorizontal="true" />
