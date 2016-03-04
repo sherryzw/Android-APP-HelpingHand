@@ -58,7 +58,7 @@ public class ScanView extends Fragment {
 
     leftView.setImageResource(R.drawable.failed);
     rightView.setImageResource(R.drawable.failed);
-    showView.setImageResource(R.drawable.app_icon);
+    showView.setImageResource(R.drawable.hands);
 
     mBtnStart.setOnClickListener(new View.OnClickListener() {
       @Override
