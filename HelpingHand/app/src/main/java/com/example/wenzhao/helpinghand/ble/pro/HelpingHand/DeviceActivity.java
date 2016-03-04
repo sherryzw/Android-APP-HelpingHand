@@ -109,6 +109,7 @@ public class DeviceActivity extends Activity {
 			public void onClick(View v) {
 				long endTime = System.currentTimeMillis() - startTime;
 				time = (float) endTime / 1000;
+				unregisterReceiver(mGattUpdateReceiver1);
 				startActivity(mResultIntent);
 			}
 		});
@@ -142,7 +143,7 @@ public class DeviceActivity extends Activity {
 			}
 			mBtGatt = null;
 			mBluetoothDevice =null;
-			unregisterReceiver(mGattUpdateReceiver1);
+
 			this.mProfiles = null;
 			finish();
 		}
