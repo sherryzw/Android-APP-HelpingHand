@@ -71,7 +71,7 @@ public class DeviceActivity extends Activity {
 		imageView2.setImageResource(R.drawable.tabletop2);
 		imageView3.setImageResource(R.drawable.tabletop3);
 
-		infoText.setText("Keep going, " + InputFragment.curChild.getName() +
+		infoText.setText("Keep going, " + InputFragment.ChildName +
 				". Use both hands to make these towers.");
 
 		Thread worker = new Thread(new Runnable() {
@@ -181,7 +181,7 @@ public class DeviceActivity extends Activity {
 							if(ratio != 100){
 								ratioOverTime.add(ratio);
 							}
-							ratioText1.setText("Weak arm("+InputFragment.curChild.getWeakArm()
+							ratioText1.setText("Weak arm("+InputFragment.WeakArm
 									+")"+String.format(":%.2f",ratio)+"%");
 						}
 						break;
