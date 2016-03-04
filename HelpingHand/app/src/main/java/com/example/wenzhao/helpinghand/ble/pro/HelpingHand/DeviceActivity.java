@@ -32,7 +32,9 @@ public class DeviceActivity extends Activity {
 	private ArrayList<BluetoothDevice> mBluetoothDevice = null;
 	private ArrayList<BluetoothGatt> mBtGatt = null;
 	private List<GenericBluetoothProfile> mProfiles;
-
+	private boolean ActivateTwo;
+	private  double realtimesum1;
+	private  double realtimesum2;
 
 	//GUI
 	private TextView infoText = null;
@@ -43,7 +45,9 @@ public class DeviceActivity extends Activity {
 
 	private Button btnFinish;
 	public double ratio;
-	public static List<Double> ratioOverTime;
+	public static List<Double> M1OverTime;
+	public static List<Double> M2OverTime;
+
 	public static float time = 0;
 	long startTime;
 
@@ -53,12 +57,15 @@ public class DeviceActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.acc_view);
 		// BLE
+		ActivateTwo = false;
 		mBtLeService = BluetoothLeService.getInstance();
 		mBluetoothDevice = BluetoothLeService.getDevice();
 		mBtGatt = BluetoothLeService.getBtGatt();
 		mProfiles = new ArrayList<GenericBluetoothProfile>();
-		ratioOverTime = new ArrayList<Double>();
-
+		M1OverTime = new ArrayList<Double>();
+		M2OverTime = new ArrayList<Double>();
+		realtimesum1 = 0;
+		realtimesum1 = 0;
 		ratioText1 = (TextView) findViewById(R.id.ratio1);
 		infoText = (TextView) findViewById(R.id.textView18);
 		btnFinish = (Button) findViewById(R.id.btn_finish);
@@ -147,7 +154,8 @@ public class DeviceActivity extends Activity {
 			finish();
 		}
 		startTime = System.currentTimeMillis();
-		ratioOverTime.clear();
+		M1OverTime.clear();
+		M2OverTime.clear();
 		final IntentFilter fi = new IntentFilter();
 		fi.addAction(BluetoothLeService.ACTION_DATA_READ);
 		fi.addAction(BluetoothLeService.ACTION_DATA_NOTIFY);
@@ -172,17 +180,11 @@ public class DeviceActivity extends Activity {
 							p.didUpdateValueForCharacteristic(tempC, 0);
 							double ax1 = GenericBluetoothProfile.accData1.x;
 							double ay1 = GenericBluetoothProfile.accData1.y;
-							double az1 = GenericBluetoothProfile.accData1.z;
-							double ax2 = GenericBluetoothProfile.accData2.x;
-							double ay2 = GenericBluetoothProfile.accData2.y;
-							double az2 = GenericBluetoothProfile.accData2.z;
-							ratio = Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) / (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) + Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2));
-							ratio = ratio * 100;
-							if(ratio != 100){
-								ratioOverTime.add(ratio);
+							double az1 = 1+GenericBluetoothProfile.accData1.z;
+							if(ActivateTwo){
+
+
 							}
-							ratioText1.setText("Weak arm("+InputFragment.WeakArm
-									+")"+String.format(":%.2f",ratio)+"%");
 						}
 						break;
 					}
@@ -191,6 +193,7 @@ public class DeviceActivity extends Activity {
 
 			if (BluetoothLeService.ACTION_DATA_NOTIFY1.equals(action)) {
 				// Notification
+				ActivateTwo = true;
 				String uuidStr = intent.getStringExtra(BluetoothLeService.EXTRA_UUID);
 				for (BluetoothGattCharacteristic tempC : MainActivity.charList2) {
 					if ((tempC.getUuid().toString().equals(uuidStr))) {
@@ -199,7 +202,33 @@ public class DeviceActivity extends Activity {
 							p.didUpdateValueForCharacteristic(tempC, 1);
 							double ax2 = GenericBluetoothProfile.accData2.x;
 							double ay2 = GenericBluetoothProfile.accData2.y;
-							double az2 = GenericBluetoothProfile.accData2.z;
+							double az2 = 1+GenericBluetoothProfile.accData2.z;
+							double ax1 = GenericBluetoothProfile.accData1.x;
+							double ay1 = GenericBluetoothProfile.accData1.y;
+							double az1 = 1+GenericBluetoothProfile.accData1.z;
+							//ratio = Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) / (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) + Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2));
+							//ratio = ratio * 100;
+
+							if(Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2)>0.06){
+								M2OverTime.add(Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2));
+								realtimesum2 += Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2);
+							}else{
+								M2OverTime.add(0.0);
+							}
+
+							if (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1)>0.06){
+								M1OverTime.add(Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1));
+								realtimesum1 +=Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1);
+							}else{
+								M1OverTime.add(0.0);
+							}
+							if (realtimesum1<realtimesum2) {
+								ratio = 100 *realtimesum1/(realtimesum1+realtimesum2);
+							}else {
+								ratio = 100 *realtimesum2/(realtimesum1+realtimesum2);
+							}
+							ratioText1.setText("Weak arm(" + InputFragment.WeakArm
+									+ ")" + String.format(":%.2f", ratio) + "%");
 						}
 						break;
 					}
@@ -207,6 +236,4 @@ public class DeviceActivity extends Activity {
 			}
 		}
 	};
-
-
 }

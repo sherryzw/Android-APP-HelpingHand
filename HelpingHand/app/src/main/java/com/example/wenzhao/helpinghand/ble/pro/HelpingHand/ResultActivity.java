@@ -15,6 +15,10 @@ import com.example.wenzhao.helpinghand.ble.pro.Fragment.InputFragment;
 public class ResultActivity extends Activity {
     private Button btnReplay;
     private Button btnExit;
+    private double sum1;
+    private double sum2;
+    private double forsum1;
+    private double forsum2;
     private double finalRatio = 0;
     TextView resultText;
     RatingBar ratingBar;
@@ -31,8 +35,30 @@ public class ResultActivity extends Activity {
         btnExit = (Button)findViewById(R.id.btn_exit);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         imageView = (ImageView)findViewById(R.id.imageView2);
-        for(int i = 1;i < DeviceActivity.ratioOverTime.size();i++) finalRatio += DeviceActivity.ratioOverTime.get(i);
-        finalRatio /= (DeviceActivity.ratioOverTime.size() - 1);
+        sum1 = 0;
+        sum2 = 0;
+        forsum1 = 0;
+        forsum2 = 0;
+        for (int i = 1;i < DeviceActivity.M1OverTime.size();i++){
+            forsum1+= DeviceActivity.M1OverTime.get(i);
+        }
+        Log.i("~~ average sum1~~"," = "+forsum1/DeviceActivity.M1OverTime.size());
+
+        for (int i = 1;i < DeviceActivity.M2OverTime.size();i++){
+            forsum2+= DeviceActivity.M2OverTime.get(i);
+        }
+        Log.i("~~ average sum2~~"," = "+forsum2/DeviceActivity.M2OverTime.size());
+
+        for(int i = 1;i < Math.min(DeviceActivity.M2OverTime.size(), DeviceActivity.M1OverTime.size());i++) {
+            sum2 += DeviceActivity.M2OverTime.get(i);
+            sum1 += DeviceActivity.M1OverTime.get(i);
+        }
+        //finalRatio /= (DeviceActivity.ratioOverTime.size() - 1);
+        if (sum1<sum2){
+            finalRatio = 100*sum1/(sum2+sum1);
+        }else{
+            finalRatio = 100*sum2/(sum1+sum2);
+        }
         setImage(finalRatio);
         setRating(finalRatio);
 
