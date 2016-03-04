@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,10 @@ import com.example.wenzhao.helpinghand.ble.pro.Database.ChildInfo;
 
 public class InputFragment extends Fragment {
     public static ChildInfo curChild;
+
+    public static String ChildName;
+    public static String WeakArm;
+    public static boolean AbleToRead;
 
     Button btnNextInput;
     EditText nickNameText;
@@ -50,9 +53,9 @@ public class InputFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     checkBoxRight.setChecked(false);
-                    curChild.setWeakArm("Left");
+                    WeakArm = "Left";
                 }else{
-                    curChild.setWeakArm("");
+                    WeakArm = "";
                 }
             }
         });
@@ -62,9 +65,9 @@ public class InputFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     checkBoxLeft.setChecked(false);
-                    curChild.setWeakArm("Right");
+                    WeakArm = "Right";
                 }else{
-                    curChild.setWeakArm("");
+                    WeakArm = "";
                 }
             }
         });
@@ -74,9 +77,9 @@ public class InputFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     checkBoxNo.setChecked(false);
-                    curChild.setAbleToTalk(true);
+                    AbleToRead = true;
                 } else {
-                    curChild.setAbleToTalk(false);
+                    AbleToRead = false;
                 }
             }
         });
@@ -86,9 +89,9 @@ public class InputFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     checkBoxYes.setChecked(false);
-                    curChild.setAbleToTalk(false);
+                    AbleToRead =false;
                 } else {
-                    curChild.setAbleToTalk(false);
+                    AbleToRead = false;
                 }
             }
         });
@@ -97,7 +100,7 @@ public class InputFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String tempName = nickNameText.getText().toString();
-                curChild.setName(tempName);
+                ChildName = tempName;
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

@@ -36,11 +36,11 @@ public class ActivityChoiceFragment extends Fragment {
         textViewChoice = (TextView)view.findViewById(R.id.textView16);
         btnNextChoice = (Button)view.findViewById(R.id.btn_next_choice);
 
-        textViewName.setText("For "+InputFragment.curChild.getName()+":");
-        textViewWeakArm.setText("Weak arm: "+InputFragment.curChild.getWeakArm());
+        textViewName.setText("For "+InputFragment.ChildName+":");
+        textViewWeakArm.setText("Weak arm: "+InputFragment.WeakArm);
 
         String temp = null;
-        if(InputFragment.curChild.isAbleToTalk()){
+        if(InputFragment.AbleToRead){
             temp = "Yes";
         }else{
             temp = "No";

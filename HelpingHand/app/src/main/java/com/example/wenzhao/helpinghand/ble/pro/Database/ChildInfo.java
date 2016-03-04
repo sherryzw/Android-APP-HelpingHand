@@ -1,82 +1,54 @@
 package com.example.wenzhao.helpinghand.ble.pro.Database;
 
-import java.util.ArrayList;
+import android.app.Activity;
+
+import java.lang.Double;import java.lang.String;import java.util.ArrayList;
 import java.util.List;
 
 public class ChildInfo {
     private long id;
-    private String name;
-    private String weakArm;
-    private String activityName;
-    private boolean ableToTalk;
-    private List<Double> finalRatio;
+    private String activity;
+    private Double ratio;
 
     public ChildInfo(){
-        this.finalRatio = new ArrayList<Double>();
+
     }
 
-    public ChildInfo(String name, String weakArm, boolean ableToTalk, String activityName){
-        this.name = name;
-        this.weakArm = weakArm;
-        this.ableToTalk = ableToTalk;
-        this.activityName = activityName;
-        this.finalRatio = new ArrayList<Double>();
+    public ChildInfo( String activity, double finalRatio){
+        this.activity = activity;
+        this.ratio = finalRatio;
     }
 
-    public ChildInfo(long id,String name, String weakArm, boolean ableToTalk, String activityName){
+    public ChildInfo(long id, String activity,double finalRatio ){
         this.id = id;
-        this.name = name;
-        this.weakArm = weakArm;
-        this.ableToTalk = ableToTalk;
-        this.activityName = activityName;
-        this.finalRatio = new ArrayList<Double>();
+        this.activity = activity;
+        this.ratio = finalRatio;
     }
     //setter
-    public void setAbleToTalk(boolean ableToTalk) {
-        this.ableToTalk = ableToTalk;
-    }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setActivity(String activityName) {
+        this.activity = activityName;
     }
 
-    public void setWeakArm(String weakArm) {
-        this.weakArm = weakArm;
-    }
-
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
-    }
-
-    public void setFinalRatio(){
-        finalRatio = new ArrayList<Double>();
+    public void setFinalRatio(double finalRatio ){
+        this.ratio = finalRatio;
     }
     //getter
-    public boolean isAbleToTalk() {
-        return ableToTalk;
-    }
 
-    public List<Double> getFinalRatio() {
-        return finalRatio;
+    public double getFinalRatio() {
+        return ratio;
     }
 
     public long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getActivity(){
+        return activity;
     }
 
-    public String getWeakArm() {
-        return weakArm;
-    }
-
-    public String getActivityName() {
-        return activityName;
-    }
 }

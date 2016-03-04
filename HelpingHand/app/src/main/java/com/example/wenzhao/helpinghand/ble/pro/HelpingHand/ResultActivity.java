@@ -37,7 +37,7 @@ public class ResultActivity extends Activity {
         setRating(finalRatio);
 
         resultText.setText("Finished in " + String.format("%.1f", DeviceActivity.time) + " s. "
-                + "Your " + InputFragment.curChild.getWeakArm() + " hand did "
+                + "Your " + InputFragment.WeakArm + " hand did "
                 + String.format("%.2f", finalRatio) + "% of the work! Try again to beat your" +
                 " score.");
 
