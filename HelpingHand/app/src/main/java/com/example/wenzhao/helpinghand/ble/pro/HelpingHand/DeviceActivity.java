@@ -133,7 +133,19 @@ public class DeviceActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(ResultActivity.Finish == 1) finish();
+		if(ResultActivity.Finish == 1){
+			if (mBtGatt.size() != 0) {
+				for (BluetoothGatt gatt : mBtGatt) {
+					gatt.close();
+					gatt = null;
+				}
+			}
+			mBtGatt = null;
+			mBluetoothDevice =null;
+			unregisterReceiver(mGattUpdateReceiver1);
+			this.mProfiles = null;
+			finish();
+		}
 		startTime = System.currentTimeMillis();
 		ratioOverTime.clear();
 		final IntentFilter fi = new IntentFilter();
