@@ -142,9 +142,8 @@ public class DeviceActivity extends Activity {
 				}
 			}
 			mBtGatt = null;
-			mBluetoothDevice =null;
-
-			this.mProfiles = null;
+			if(this.mBluetoothDevice !=null) this.mBluetoothDevice =null;
+			if (this.mProfiles != null)this.mProfiles = null;
 			finish();
 		}
 		startTime = System.currentTimeMillis();
