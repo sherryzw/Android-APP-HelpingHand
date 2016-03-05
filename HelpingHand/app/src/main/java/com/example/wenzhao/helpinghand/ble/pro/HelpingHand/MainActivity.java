@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.BluetoothLeService;
+import com.example.wenzhao.helpinghand.ble.pro.Database.DatabaseHandler;
 import com.example.wenzhao.helpinghand.ble.pro.Fragment.ScanView;
 
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ public class MainActivity extends FragmentActivity {
 		serviceList2 = new ArrayList<BluetoothGattService>();
 		charList1 = new ArrayList<BluetoothGattCharacteristic>();
 		charList2 = new ArrayList<BluetoothGattCharacteristic>();
+		DatabaseHandler.initHandler(this);
 		//开启ScanView Fragment
 		mScanView = ScanView.newInstance();
 		getSupportFragmentManager().beginTransaction()

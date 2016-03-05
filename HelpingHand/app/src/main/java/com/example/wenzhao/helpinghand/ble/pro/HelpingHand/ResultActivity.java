@@ -13,6 +13,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.ti.ble.sensortag.R;
+import com.example.wenzhao.helpinghand.ble.pro.Database.ChildInfo;
+import com.example.wenzhao.helpinghand.ble.pro.Database.DatabaseHandler;
+import com.example.wenzhao.helpinghand.ble.pro.Fragment.ActivityChoiceFragment;
 import com.example.wenzhao.helpinghand.ble.pro.Fragment.InputFragment;
 
 import java.util.Locale;
@@ -27,7 +30,6 @@ public class ResultActivity extends Activity {
     private double forsum2;
     private double finalRatio = 0;
     private String text;
-    private TextToSpeech mTts;
     private final static int CHECK_CODE = 1;
     TextView resultText;
     RatingBar ratingBar;
@@ -63,7 +65,6 @@ public class ResultActivity extends Activity {
             sum2 += DeviceActivity.M2OverTime.get(i);
             sum1 += DeviceActivity.M1OverTime.get(i);
         }
-        //finalRatio /= (DeviceActivity.ratioOverTime.size() - 1);
         if (sum1<sum2){
             finalRatio = 100*sum1/(sum2+sum1);
         }else{
@@ -72,13 +73,16 @@ public class ResultActivity extends Activity {
         setImage(finalRatio);
         setRating(finalRatio);
 
+        //add to database
+        ChildInfo newentry = new ChildInfo(ActivityChoiceFragment.TableActivity,finalRatio);
+        DatabaseHandler.getHandler().addValue(newentry);
+
         resultText.setText("Finished in " + String.format("%.1f", DeviceActivity.time) + " s. "
                 + "Your " + InputFragment.WeakArm + " hand did "
                 + String.format("%.2f", finalRatio) + "% of the work! Try again to beat your" +
                 " score.");
         text = resultText.getText().toString();
-        checkTts();
-        //sayTts(text);
+
         btnReplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,14 +103,17 @@ public class ResultActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        final Handler handler = new Handler();
-        Runnable mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                sayTts(text);
-            }
-        };
-        handler.postDelayed(mRunnable,1000);
+        if (!InputFragment.AbleToRead) {
+            final Handler handler = new Handler();
+            Runnable mRunnable = new Runnable() {
+                @Override
+                public void run() {
+
+                    DeviceActivity.getTts().speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                }
+            };
+            handler.postDelayed(mRunnable, 1000);
+        }
     }
 
 
@@ -127,46 +134,5 @@ public class ResultActivity extends Activity {
         if((rating >=0 && rating <25)||(rating >75 && rating <=100)) imageView.setImageResource(R.drawable.sadface);
         if((rating >=25 && rating <50)||(rating >=50 && rating <=75)) imageView.setImageResource(R.drawable.smileface);
     }
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-    public void checkTts(){
-        Intent checkIntent = new Intent();
-        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-
-        startActivityForResult(checkIntent, CHECK_CODE);
-
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CHECK_CODE){
-            if(resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS){
-
-                mTts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int status) {
-
-                        if(status == TextToSpeech.SUCCESS){
-
-                            int result = mTts.setLanguage(Locale.US);
-
-                            if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
-                                Log.e("error","不支持");
-                            }
-                        }
-                    }
-                });
-            }else{
-                //否则安装一个
-                Intent installIntent = new Intent();
-                installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                startActivity(installIntent);
-            }
-        }
-    }
-    private void sayTts(String text){
-        mTts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
 
 }

@@ -10,21 +10,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.ACCInfo.SensorTagGatt;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.BluetoothLeService;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.GenericBluetoothProfile;
+import com.example.wenzhao.helpinghand.ble.pro.Database.DatabaseHandler;
 import com.example.wenzhao.helpinghand.ble.pro.Fragment.InputFragment;
+import com.example.wenzhao.helpinghand.ble.pro.Fragment.InstrcFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DeviceActivity extends Activity {
 	// BLE
@@ -35,6 +40,8 @@ public class DeviceActivity extends Activity {
 	private boolean ActivateTwo;
 	private  double realtimesum1;
 	private  double realtimesum2;
+	public static TextToSpeech mTts;
+	private final static int CHECK_CODE = 1;
 
 	//GUI
 	private TextView infoText = null;
@@ -101,6 +108,7 @@ public class DeviceActivity extends Activity {
 						@Override
 						public void run() {
 							p.enableService();
+							Log.i("Device Activity"," enabled");
 						}
 					});
 				}
@@ -110,6 +118,8 @@ public class DeviceActivity extends Activity {
 		});
 		worker.start();
 
+		checkTts();
+		//
 		final Intent mResultIntent = new Intent(this, ResultActivity.class);
 		btnFinish.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -120,6 +130,7 @@ public class DeviceActivity extends Activity {
 				startActivity(mResultIntent);
 			}
 		});
+
 	}
 
 
@@ -156,6 +167,8 @@ public class DeviceActivity extends Activity {
 		startTime = System.currentTimeMillis();
 		M1OverTime.clear();
 		M2OverTime.clear();
+		realtimesum1 = 0;
+		realtimesum2 = 0;
 		final IntentFilter fi = new IntentFilter();
 		fi.addAction(BluetoothLeService.ACTION_DATA_READ);
 		fi.addAction(BluetoothLeService.ACTION_DATA_NOTIFY);
@@ -171,6 +184,7 @@ public class DeviceActivity extends Activity {
 					BluetoothGatt.GATT_SUCCESS);
 
 			if (BluetoothLeService.ACTION_DATA_NOTIFY.equals(action)) {
+				//Log.i("Device Activity","  # 1 sensor notified");
 				// Notification
 				String uuidStr = intent.getStringExtra(BluetoothLeService.EXTRA_UUID);
 				for (BluetoothGattCharacteristic tempC : MainActivity.charList1) {
@@ -192,6 +206,7 @@ public class DeviceActivity extends Activity {
 			}
 
 			if (BluetoothLeService.ACTION_DATA_NOTIFY1.equals(action)) {
+				//Log.i("Device Activity","  # 2 sensor notified");
 				// Notification
 				ActivateTwo = true;
 				String uuidStr = intent.getStringExtra(BluetoothLeService.EXTRA_UUID);
@@ -206,8 +221,7 @@ public class DeviceActivity extends Activity {
 							double ax1 = GenericBluetoothProfile.accData1.x;
 							double ay1 = GenericBluetoothProfile.accData1.y;
 							double az1 = 1+GenericBluetoothProfile.accData1.z;
-							//ratio = Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) / (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1) + Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2));
-							//ratio = ratio * 100;
+
 
 							if(Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2)>0.06){
 								M2OverTime.add(Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2));
@@ -229,11 +243,66 @@ public class DeviceActivity extends Activity {
 							}
 							ratioText1.setText("Weak arm(" + InputFragment.WeakArm
 									+ ")" + String.format(":%.2f", ratio) + "%");
+
+							// real-time feedback
+							if ((System.currentTimeMillis()-startTime<15050) && (System.currentTimeMillis()-startTime>15000) && (ratio<20.0)){
+								if (!InputFragment.AbleToRead){
+									String text = "Please use your "+InputFragment.WeakArm + " more.";
+									sayTts(text);
+								}else {
+									String text = "Please use your "+InputFragment.WeakArm + " more.";
+									Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+								}
+							}
+							break;
 						}
-						break;
 					}
 				}
 			}
 		}
 	};
+
+	//~~~~~~~~~~~~~~~~~~~~~~TextToSpeech~~~~~~~~~~~~~~~~~~~~~~~~~//
+	public void checkTts(){
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+
+		startActivityForResult(checkIntent, CHECK_CODE);
+
+	}
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == CHECK_CODE){
+			if(resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS){
+
+				mTts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+					@Override
+					public void onInit(int status) {
+
+						if(status == TextToSpeech.SUCCESS){
+
+							int result = mTts.setLanguage(Locale.US);
+
+							if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
+								Log.e("error","not supported");
+							}
+						}
+					}
+				});
+			}else{
+				Intent installIntent = new Intent();
+				installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+				startActivity(installIntent);
+			}
+		}
+	}
+	private void sayTts(String text){
+		mTts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+	}
+
+	public static TextToSpeech getTts(){
+		return mTts;
+	}
 }
