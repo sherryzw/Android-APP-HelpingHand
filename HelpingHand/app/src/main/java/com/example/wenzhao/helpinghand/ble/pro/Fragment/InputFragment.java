@@ -101,13 +101,7 @@ public class InputFragment extends Fragment {
             public void onClick(View v) {
                 String tempName = nickNameText.getText().toString();
                 ChildName = tempName;
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                Fragment activityChoiceFragment = ActivityChoiceFragment.newInstance();
-                ft.replace(R.id.InsContainer, activityChoiceFragment);
-                ft.addToBackStack("Switch to Activity Choice Fragment");
-                ft.commit();
+                getActivity().finish();
             }
         });
 

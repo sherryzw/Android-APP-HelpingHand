@@ -87,10 +87,6 @@ public class ScanView extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
-    if(ResultActivity.Finish == 1){
-      ResultActivity.Finish = 0;
-      getActivity().finish();
-    }
   }
 
   public void notifyDataSetChanged() {

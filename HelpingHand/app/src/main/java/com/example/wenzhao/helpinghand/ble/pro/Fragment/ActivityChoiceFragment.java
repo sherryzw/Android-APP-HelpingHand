@@ -3,6 +3,8 @@ package com.example.wenzhao.helpinghand.ble.pro.Fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,9 +49,6 @@ public class ActivityChoiceFragment extends Fragment {
         TableActivity = radioButton.getText().toString();
         Log.i("radioGroup",TableActivity);
 
-
-
-
         textViewName.setText("For "+InputFragment.ChildName+":");
         textViewWeakArm.setText("Weak arm: "+InputFragment.WeakArm);
 
@@ -74,8 +73,13 @@ public class ActivityChoiceFragment extends Fragment {
         btnNextChoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                getActivity().finish();
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                Fragment processFragment = ProcessFragment.newInstance();
+                ft.replace(R.id.DevContainer, processFragment);
+                ft.addToBackStack("Switch to Process Fragment");
+                ft.commit();
             }
         });
 

@@ -57,11 +57,11 @@ public class MainActivity extends FragmentActivity {
 
 	private boolean mInitialised = false;
 
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Intent mInstrcIntent = new Intent(this, InstrcActivity.class);
 		startActivityForResult(mInstrcIntent, REQ_SCAN_DEV);
-
 		Intent bindIntent = new Intent(this, BluetoothLeService.class);
 		startService(bindIntent);
 		dnum = 0;
@@ -89,14 +89,20 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+	}
+
+	@Override
 	public void onDestroy() {
-		super.onDestroy();
+		Log.e("Destroy", "MainActivity");
 		mDeviceList = null;
 		mBtAdapter = null;
 		serviceList1 = null;
 		serviceList2 = null;
 		charList1 = null;
 		charList2 = null;
+		super.onDestroy();
 	}
 
 	@Override

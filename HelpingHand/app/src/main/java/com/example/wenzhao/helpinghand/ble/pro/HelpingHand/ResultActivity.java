@@ -1,7 +1,6 @@
 package com.example.wenzhao.helpinghand.ble.pro.HelpingHand;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -17,8 +16,7 @@ import com.example.wenzhao.helpinghand.ble.pro.Database.ChildInfo;
 import com.example.wenzhao.helpinghand.ble.pro.Database.DatabaseHandler;
 import com.example.wenzhao.helpinghand.ble.pro.Fragment.ActivityChoiceFragment;
 import com.example.wenzhao.helpinghand.ble.pro.Fragment.InputFragment;
-
-import java.util.Locale;
+import com.example.wenzhao.helpinghand.ble.pro.Fragment.ProcessFragment;
 
 public class ResultActivity extends Activity {
     private Button btnReplay;
@@ -35,7 +33,7 @@ public class ResultActivity extends Activity {
     RatingBar ratingBar;
     ImageView imageView;
 
-    public static int Finish = 0;
+    public static int Replace = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +49,19 @@ public class ResultActivity extends Activity {
         sum2 = 0;
         forsum1 = 0;
         forsum2 = 0;
-        for (int i = 1;i < DeviceActivity.M1OverTime.size();i++){
-            forsum1+= DeviceActivity.M1OverTime.get(i);
+        for (int i = 1;i < ProcessFragment.M1OverTime.size();i++){
+            forsum1+= ProcessFragment.M1OverTime.get(i);
         }
-        Log.i("~~ average sum1~~"," = "+forsum1/DeviceActivity.M1OverTime.size());
+        Log.i("~~ average sum1~~"," = "+forsum1/ProcessFragment.M1OverTime.size());
 
-        for (int i = 1;i < DeviceActivity.M2OverTime.size();i++){
-            forsum2+= DeviceActivity.M2OverTime.get(i);
+        for (int i = 1;i < ProcessFragment.M2OverTime.size();i++){
+            forsum2+= ProcessFragment.M2OverTime.get(i);
         }
-        Log.i("~~ average sum2~~"," = "+forsum2/DeviceActivity.M2OverTime.size());
+        Log.i("~~ average sum2~~"," = "+forsum2/ProcessFragment.M2OverTime.size());
 
-        for(int i = 1;i < Math.min(DeviceActivity.M2OverTime.size(), DeviceActivity.M1OverTime.size());i++) {
-            sum2 += DeviceActivity.M2OverTime.get(i);
-            sum1 += DeviceActivity.M1OverTime.get(i);
+        for(int i = 1;i < Math.min(ProcessFragment.M2OverTime.size(), ProcessFragment.M1OverTime.size());i++) {
+            sum2 += ProcessFragment.M2OverTime.get(i);
+            sum1 += ProcessFragment.M1OverTime.get(i);
         }
         if (sum1<sum2){
             finalRatio = 100*sum1/(sum2+sum1);
@@ -77,7 +75,7 @@ public class ResultActivity extends Activity {
         ChildInfo newentry = new ChildInfo(ActivityChoiceFragment.TableActivity,finalRatio);
         DatabaseHandler.getHandler().addValue(newentry);
 
-        resultText.setText("Finished in " + String.format("%.1f", DeviceActivity.time) + " s. "
+        resultText.setText("Finished in " + String.format("%.1f", ProcessFragment.time) + " s. "
                 + "Your " + InputFragment.WeakArm + " hand did "
                 + String.format("%.2f", finalRatio) + "% of the work! Try again to beat your" +
                 " score.");
@@ -93,7 +91,7 @@ public class ResultActivity extends Activity {
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Finish = 1;
+                Replace = 1;
                 finish();
             }
         });
@@ -108,8 +106,7 @@ public class ResultActivity extends Activity {
             Runnable mRunnable = new Runnable() {
                 @Override
                 public void run() {
-
-                    DeviceActivity.getTts().speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                    ProcessFragment.getTts().speak(text, TextToSpeech.QUEUE_FLUSH, null);
                 }
             };
             handler.postDelayed(mRunnable, 1000);
