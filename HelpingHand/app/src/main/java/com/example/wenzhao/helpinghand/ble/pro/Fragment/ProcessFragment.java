@@ -155,7 +155,6 @@ public class ProcessFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 number = (number+1)%3;
-                Log.i("~~~~~~~~~number","="+number);
                 linearLayout.removeAllViews();
                 Player newplayer = new Player(getActivity(),number);
                 linearLayout.addView(newplayer);
@@ -181,6 +180,9 @@ public class ProcessFragment extends Fragment {
         startTime = System.currentTimeMillis();
         M1OverTime.clear();
         M2OverTime.clear();
+        gravity1[0]= 0.0;
+        gravity1[1]= 0.0;
+        gravity1[2]= 0.0;
         realtimesum1 = 0;
         realtimesum2 = 0;
         final IntentFilter fi = new IntentFilter();
@@ -278,7 +280,7 @@ public class ProcessFragment extends Fragment {
                                     + ")" + String.format(":%.2f", ratio) + "%");
 
                             // real-time feedback
-                            if ((System.currentTimeMillis()-startTime<15050) && (System.currentTimeMillis()-startTime>15000) && (ratio<20.0)){
+                            if ((System.currentTimeMillis()-startTime<15100) && (System.currentTimeMillis()-startTime>15000) && (ratio<20.0)){
                                 if (!InputFragment.AbleToRead){
                                     String text = "Please use your "+InputFragment.WeakArm + " more.";
                                     sayTts(text);

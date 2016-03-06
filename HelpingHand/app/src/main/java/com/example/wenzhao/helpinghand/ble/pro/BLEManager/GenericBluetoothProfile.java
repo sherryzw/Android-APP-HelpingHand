@@ -55,7 +55,7 @@ public class GenericBluetoothProfile {
 	public void enableService() {
 		mBTLeService.writeCharacteristic(this.configC, mBTGatt, new byte[]{0x7F, 0x02});
 		this.mBTLeService.setCharacteristicNotification(this.dataC,mBTGatt, true);
-		this.periodWasUpdated(50);
+		this.periodWasUpdated(100);
 	}
 
 	public boolean isDataC(BluetoothGattCharacteristic c) {
