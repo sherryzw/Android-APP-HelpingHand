@@ -183,6 +183,9 @@ public class ProcessFragment extends Fragment {
         gravity1[0]= 0.0;
         gravity1[1]= 0.0;
         gravity1[2]= 0.0;
+        gravity2[0]= 0.0;
+        gravity2[1]= 0.0;
+        gravity2[2]= 0.0;
         realtimesum1 = 0;
         realtimesum2 = 0;
         final IntentFilter fi = new IntentFilter();
