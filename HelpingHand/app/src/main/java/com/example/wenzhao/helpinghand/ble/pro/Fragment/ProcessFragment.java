@@ -64,6 +64,11 @@ public class ProcessFragment extends Fragment {
     public static float time = 0;
     long startTime;
 
+    //low-pass filter
+    final double alpha = 0.8;
+    private double[] gravity1 = new double[]{0,0,0};
+    private double[] gravity2 = new double[]{0,0,0};
+
     public static ProcessFragment newInstance() {
         ProcessFragment fragment = new ProcessFragment();
         Bundle args = new Bundle();
@@ -216,9 +221,6 @@ public class ProcessFragment extends Fragment {
                         GenericBluetoothProfile p = mProfiles.get(0);
                         if (p.isDataC(tempC)) {
                             p.didUpdateValueForCharacteristic(tempC, 0);
-                            double ax1 = GenericBluetoothProfile.accData1.x;
-                            double ay1 = GenericBluetoothProfile.accData1.y;
-                            double az1 = 1+GenericBluetoothProfile.accData1.z;
                         }
                         break;
                     }
@@ -234,11 +236,24 @@ public class ProcessFragment extends Fragment {
                             p.didUpdateValueForCharacteristic(tempC, 1);
                             double ax2 = GenericBluetoothProfile.accData2.x;
                             double ay2 = GenericBluetoothProfile.accData2.y;
-                            double az2 = 1+GenericBluetoothProfile.accData2.z;
+                            double az2 = GenericBluetoothProfile.accData2.z;
                             double ax1 = GenericBluetoothProfile.accData1.x;
                             double ay1 = GenericBluetoothProfile.accData1.y;
-                            double az1 = 1+GenericBluetoothProfile.accData1.z;
+                            double az1 = GenericBluetoothProfile.accData1.z;
 
+                            //low-pass filter
+                            gravity1[0] = alpha * gravity1[0] + (1 - alpha) * ax1;
+                            gravity1[1] = alpha * gravity1[1] + (1 - alpha) * ay1;
+                            gravity1[2] = alpha * gravity1[2] + (1 - alpha) * az1;
+                            ax1 = ax1 - gravity1[0];
+                            ay1 = ay1 - gravity1[1];
+                            az1 = az1 - gravity1[2];
+                            gravity2[0] = alpha * gravity2[0] + (1 - alpha) * ax2;
+                            gravity2[1] = alpha * gravity2[1] + (1 - alpha) * ay2;
+                            gravity2[2] = alpha * gravity2[2] + (1 - alpha) * az2;
+                            ax2 = ax2 - gravity2[0];
+                            ay2 = ay2 - gravity2[1];
+                            az2 = az2 - gravity2[2];
 
                             if(Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2)>0.06){
                                 M2OverTime.add(Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2));
@@ -253,6 +268,7 @@ public class ProcessFragment extends Fragment {
                             }else{
                                 M1OverTime.add(0.0);
                             }
+
                             if (realtimesum1<realtimesum2) {
                                 ratio = 100 *realtimesum1/(realtimesum1+realtimesum2);
                             }else {
