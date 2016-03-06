@@ -29,6 +29,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_ACTIVITY = "activity";
     public static final String COLUMN_RATIO = "ratio";
+    public static final String COLUMN_TIME= "time";
 
     private static final String DATABASE_NAME = "current.db";
     private static final int DATABASE_VERSION = 2;
@@ -69,7 +70,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "("
                 + COLUMN_ID        + " integer primary key autoincrement,"
                 + COLUMN_ACTIVITY + " text not null, "
-                + COLUMN_RATIO     + " text not null"
+                + COLUMN_RATIO     + " text not null, "
+                + COLUMN_TIME      + " text not null"
                 + ");";
 
         db.execSQL(DATABASE_CREATE);
@@ -154,6 +156,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put (COLUMN_ACTIVITY, entry.getActivity());
         values.put(COLUMN_RATIO,entry.getFinalRatio());
+        values.put(COLUMN_TIME,entry.getFinishtime());
 
         // Inserting into database
         db.insert(TABLE_ENTRIES, null, values);
@@ -181,7 +184,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ChildInfo entry = new ChildInfo(
                 Long.parseLong(cursor.getString(0)),    // ID
                 cursor.getString(1),                    //Activity
-                Double.parseDouble(cursor.getString(2)) //Ratio
+                Double.parseDouble(cursor.getString(2)), //Ratio
+                Double.parseDouble(cursor.getString(3)) // finish time
                 );
 
         db.close();
@@ -213,7 +217,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ChildInfo entry = new ChildInfo(
                         Long.parseLong(cursor.getString(0)),    // ID
                         cursor.getString(1),                    // Activity
-                        Double.parseDouble(cursor.getString(2)) // final ratio
+                        Double.parseDouble(cursor.getString(2)), // final ratio
+                        Double.parseDouble(cursor.getString(3))  // finish time
                 );
                 // Adding contact to list
                 dataEntryList.add(entry);
@@ -255,7 +260,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ChildInfo entry = new ChildInfo(
                         Long.parseLong(cursor.getString(0)),    // ID
                         cursor.getString(1),                    // Activity
-                        Double.parseDouble(cursor.getString(2)) // final ratio
+                        Double.parseDouble(cursor.getString(2)), // final ratio
+                        Double.parseDouble(cursor.getString(3)) //finish time
                 );
                 // Adding contact to list
                 dataEntryList.add(entry);

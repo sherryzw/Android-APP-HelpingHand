@@ -72,7 +72,7 @@ public class ResultActivity extends Activity {
         setRating(finalRatio);
 
         //add to database
-        ChildInfo newentry = new ChildInfo(ActivityChoiceFragment.TableActivity,finalRatio);
+        ChildInfo newentry = new ChildInfo(ActivityChoiceFragment.TableActivity,finalRatio,ProcessFragment.time);
         DatabaseHandler.getHandler().addValue(newentry);
 
         resultText.setText("Finished in " + String.format("%.1f", ProcessFragment.time) + " s. "

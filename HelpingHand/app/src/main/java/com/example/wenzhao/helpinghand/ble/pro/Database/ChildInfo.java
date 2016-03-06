@@ -8,21 +8,25 @@ import java.util.List;
 public class ChildInfo {
     private long id;
     private String activity;
-    private Double ratio;
+    private double ratio;
+    private double finishtime;
+
 
     public ChildInfo(){
 
     }
 
-    public ChildInfo( String activity, double finalRatio){
+    public ChildInfo( String activity, double finalRatio, double finishtime){
         this.activity = activity;
         this.ratio = finalRatio;
+        this.finishtime = finishtime;
     }
 
-    public ChildInfo(long id, String activity,double finalRatio ){
+    public ChildInfo(long id, String activity,double finalRatio ,double finishtime){
         this.id = id;
         this.activity = activity;
         this.ratio = finalRatio;
+        this.finishtime = finishtime;
     }
     //setter
 
@@ -37,11 +41,13 @@ public class ChildInfo {
     public void setFinalRatio(double finalRatio ){
         this.ratio = finalRatio;
     }
+
+    public void setFinishtime(double finishtime ){
+        this.finishtime = finishtime;
+    }
     //getter
 
-    public double getFinalRatio() {
-        return ratio;
-    }
+
 
     public long getId() {
         return id;
@@ -51,4 +57,11 @@ public class ChildInfo {
         return activity;
     }
 
+    public double getFinalRatio() {
+        return ratio;
+    }
+
+    public  double  getFinishtime(){
+        return finishtime;
+    }
 }
