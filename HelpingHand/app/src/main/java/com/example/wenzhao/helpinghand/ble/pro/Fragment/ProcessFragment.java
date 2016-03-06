@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import com.example.wenzhao.helpinghand.ble.pro.BLEManager.BluetoothLeService;
 import com.example.wenzhao.helpinghand.ble.pro.BLEManager.GenericBluetoothProfile;
 import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity;
 import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ResultActivity;
+import com.example.wenzhao.helpinghand.ble.pro.Utils.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,11 +51,12 @@ public class ProcessFragment extends Fragment {
     //GUI
     private TextView infoText = null;
     private TextView ratioText1 = null;
-    private ImageView imageView1 = null;
-    private ImageView imageView2 = null;
-    private ImageView imageView3 = null;
+    private LinearLayout linearLayout;
+    private Player myView;
+    private int number;
 
     private Button btnFinish;
+    private Button btnNext;
     public double ratio;
     public static List<Double> M1OverTime;
     public static List<Double> M2OverTime;
@@ -81,6 +84,7 @@ public class ProcessFragment extends Fragment {
         M2OverTime = new ArrayList<Double>();
         realtimesum1 = 0;
         realtimesum1 = 0;
+        number = 0;
     }
 
     @Override
@@ -90,14 +94,12 @@ public class ProcessFragment extends Fragment {
         ratioText1 = (TextView) view.findViewById(R.id.ratio1);
         infoText = (TextView) view.findViewById(R.id.textView18);
         btnFinish = (Button) view.findViewById(R.id.btn_finish);
+        btnNext = (Button) view.findViewById(R.id.btn_next);
+        linearLayout = (LinearLayout)view.findViewById(R.id.linear);
+        myView = new Player(this.getActivity(), number);
+        linearLayout.addView(myView);
 
-        imageView1 = (ImageView) view.findViewById(R.id.imageView3);
-        imageView2 = (ImageView) view.findViewById(R.id.imageView4);
-        imageView3 = (ImageView) view.findViewById(R.id.imageView5);
 
-        imageView1.setImageResource(R.drawable.tabletop1);
-        imageView2.setImageResource(R.drawable.tabletop2);
-        imageView3.setImageResource(R.drawable.tabletop3);
 
         infoText.setText("Keep going, " + InputFragment.ChildName +
                 ". Use both hands to make these towers.");
@@ -144,6 +146,17 @@ public class ProcessFragment extends Fragment {
                 startActivity(mResultIntent);
             }
         });
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                number = (number+1)%3;
+                Log.i("~~~~~~~~~number","="+number);
+                linearLayout.removeAllViews();
+                Player newplayer = new Player(getActivity(),number);
+                linearLayout.addView(newplayer);
+            }
+        });
+
         return view;
     }
 

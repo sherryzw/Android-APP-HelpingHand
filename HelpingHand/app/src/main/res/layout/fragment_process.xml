@@ -18,9 +18,9 @@
         android:textColor="#ca5948"
         android:background="@drawable/shape"
         android:id="@+id/btn_finish"
-        android:layout_marginBottom="13dp"
+        android:layout_marginBottom="32dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignEnd="@+id/linear" />
 
     <TextView
         android:layout_width="320dp"
@@ -32,27 +32,24 @@
         android:layout_below="@+id/ratio1"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="130dp"
-        android:id="@+id/imageView3"
-        android:layout_marginTop="22dp"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/linear"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_below="@+id/textView18"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="54dp"></LinearLayout>
 
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="130dp"
-        android:id="@+id/imageView4"
-        android:layout_below="@+id/imageView3"
-        android:layout_centerHorizontal="true" />
-
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="130dp"
-        android:id="@+id/imageView5"
-        android:layout_below="@+id/imageView4"
-        android:layout_alignEnd="@+id/imageView4" />
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="Next"
+        android:textColor="#ca5948"
+        android:background="@drawable/shape"
+        android:id="@+id/btn_next"
+        android:layout_alignTop="@+id/btn_finish"
+        android:layout_alignStart="@+id/linear" />
 
 
 </RelativeLayout>
