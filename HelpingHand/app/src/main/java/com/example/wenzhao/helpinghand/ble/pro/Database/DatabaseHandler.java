@@ -171,7 +171,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_ENTRIES, new String[]{
                 COLUMN_ID,
                 COLUMN_ACTIVITY,
-                COLUMN_RATIO
+                COLUMN_RATIO,
+                COLUMN_TIME
 
         }
                 , COLUMN_ID + "=?", new String[]{
@@ -203,7 +204,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_ENTRIES, new String[]{
                 COLUMN_ID,
                 COLUMN_ACTIVITY,
-                COLUMN_RATIO
+                COLUMN_RATIO,
+                COLUMN_TIME
 
         }
                 , COLUMN_ACTIVITY + "=?" , new String[]{
@@ -250,7 +252,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_ENTRIES, new String[] {
                 COLUMN_ID,
                 COLUMN_ACTIVITY,
-                COLUMN_RATIO
+                COLUMN_RATIO,
+                COLUMN_TIME
         }
                 ,null, null, null, null, null, null);
 
