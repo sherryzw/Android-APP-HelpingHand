@@ -37,7 +37,7 @@ public class Player extends View{
         super(context);
         bitmapId1 = new int[]{R.drawable.a1, R.drawable.a2, R.drawable.a3, R.drawable.a4, R.drawable.a5, R.drawable.a6,};
         bitmapId2 = new int[]{R.drawable.b1, R.drawable.b2, R.drawable.b3, R.drawable.b4, R.drawable.b5, R.drawable.b6, R.drawable.b7,};
-        bitmapId3 = new int[]{R.drawable.c1, R.drawable.c2, R.drawable.c3, R.drawable.c3, R.drawable.c4, R.drawable.c5, R.drawable.c6, R.drawable.c7, R.drawable.c8, R.drawable.c9};
+        bitmapId3 = new int[]{R.drawable.c1, R.drawable.c2, R.drawable.c3, R.drawable.c4, R.drawable.c5, R.drawable.c6, R.drawable.c7, R.drawable.c8, R.drawable.c9};
         bmp1 = new Bitmap[bitmapId1.length];
         bmp2 = new Bitmap[bitmapId2.length];
         bmp3 = new Bitmap[bitmapId3.length];
