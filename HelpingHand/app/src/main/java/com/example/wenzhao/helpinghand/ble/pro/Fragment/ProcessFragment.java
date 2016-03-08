@@ -104,8 +104,6 @@ public class ProcessFragment extends Fragment {
         myView = new Player(this.getActivity(), number);
         linearLayout.addView(myView);
 
-
-
         infoText.setText("Keep going, " + InputFragment.ChildName +
                 ". Use both hands to make these towers.");
 
@@ -168,6 +166,16 @@ public class ProcessFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if(ResultActivity.Replace == 1){
+            M1OverTime.clear();
+            M2OverTime.clear();
+            gravity1[0]= 0.0;
+            gravity1[1]= 0.0;
+            gravity1[2]= 0.0;
+            gravity2[0]= 0.0;
+            gravity2[1]= 0.0;
+            gravity2[2]= 0.0;
+            realtimesum1 = 0;
+            realtimesum2 = 0;
             ResultActivity.Replace = 0;
             FragmentManager fm = getActivity().getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
