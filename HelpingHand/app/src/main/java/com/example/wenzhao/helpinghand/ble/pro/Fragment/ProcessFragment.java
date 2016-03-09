@@ -145,6 +145,7 @@ public class ProcessFragment extends Fragment {
             public void onClick(View v) {
                 long endTime = System.currentTimeMillis() - startTime;
                 time = (float) endTime / 1000;
+                ResultActivity.finalRatio = ratio;
                 getActivity().unregisterReceiver(mGattUpdateReceiver1);
                 startActivity(mResultIntent);
             }

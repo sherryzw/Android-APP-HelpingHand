@@ -29,7 +29,7 @@ public class ResultActivity extends Activity {
     private double sum2;
     private double forsum1;
     private double forsum2;
-    private double finalRatio = 0;
+    public static double finalRatio = 0;
     private String text;
     private final static int CHECK_CODE = 1;
     TextView resultText;
@@ -50,29 +50,7 @@ public class ResultActivity extends Activity {
 
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         imageView = (ImageView)findViewById(R.id.imageView2);
-        sum1 = 0;
-        sum2 = 0;
-        forsum1 = 0;
-        forsum2 = 0;
-        for (int i = 1;i < ProcessFragment.M1OverTime.size();i++){
-            forsum1+= ProcessFragment.M1OverTime.get(i);
-        }
-        Log.i("~~ average sum1~~"," = "+forsum1/ProcessFragment.M1OverTime.size());
 
-        for (int i = 1;i < ProcessFragment.M2OverTime.size();i++){
-            forsum2+= ProcessFragment.M2OverTime.get(i);
-        }
-        Log.i("~~ average sum2~~"," = "+forsum2/ProcessFragment.M2OverTime.size());
-
-        for(int i = 1;i < Math.min(ProcessFragment.M2OverTime.size(), ProcessFragment.M1OverTime.size());i++) {
-            sum2 += ProcessFragment.M2OverTime.get(i);
-            sum1 += ProcessFragment.M1OverTime.get(i);
-        }
-        if (sum1<sum2){
-            finalRatio = 100*sum1/(sum2+sum1);
-        }else{
-            finalRatio = 100*sum2 / (sum1 + sum2);
-        }
         setImage(finalRatio);
         setRating(finalRatio);
 
@@ -81,8 +59,7 @@ public class ResultActivity extends Activity {
         DatabaseHandler.getHandler().addValue(newentry);
         Log.e("error", String.valueOf(DatabaseHandler.getHandler().getDBCount()));
 
-        resultText.setText("Finished in " + String.format("%.1f", ProcessFragment.time) + " s. "
-                + "Your " + InputFragment.WeakArm + " hand did "
+        resultText.setText("Your " + InputFragment.WeakArm + " hand did "
                 + String.format("%.2f", finalRatio) + "% of the work! Try again to beat your" +
                 " score.");
         text = resultText.getText().toString();
