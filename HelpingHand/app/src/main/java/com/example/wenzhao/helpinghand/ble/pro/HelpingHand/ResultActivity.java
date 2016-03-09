@@ -1,6 +1,7 @@
 package com.example.wenzhao.helpinghand.ble.pro.HelpingHand;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -20,7 +21,9 @@ import com.example.wenzhao.helpinghand.ble.pro.Fragment.ProcessFragment;
 
 public class ResultActivity extends Activity {
     private Button btnReplay;
-    private Button btnExit;
+    private Button btnChange;
+    private Button btnShow;
+    private Button btnClear;
 
     private double sum1;
     private double sum2;
@@ -42,7 +45,9 @@ public class ResultActivity extends Activity {
 
         resultText = (TextView)findViewById(R.id.textView17);
         btnReplay = (Button)findViewById(R.id.btn_replay);
-        btnExit = (Button)findViewById(R.id.btn_exit);
+        btnChange = (Button)findViewById(R.id.btn_exit);
+        btnShow = (Button)findViewById(R.id.show);
+        btnClear = (Button)findViewById(R.id.clear);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         imageView = (ImageView)findViewById(R.id.imageView2);
         sum1 = 0;
@@ -74,6 +79,7 @@ public class ResultActivity extends Activity {
         //add to database
         ChildInfo newentry = new ChildInfo(ActivityChoiceFragment.TableActivity,finalRatio,ProcessFragment.time);
         DatabaseHandler.getHandler().addValue(newentry);
+        Log.e("error", String.valueOf(DatabaseHandler.getHandler().getDBCount()));
 
         resultText.setText("Finished in " + String.format("%.1f", ProcessFragment.time) + " s. "
                 + "Your " + InputFragment.WeakArm + " hand did "
@@ -88,11 +94,26 @@ public class ResultActivity extends Activity {
             }
         });
 
-        btnExit.setOnClickListener(new View.OnClickListener() {
+        btnChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Replace = 1;
                 finish();
+            }
+        });
+
+        btnShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ResultActivity.this,ShowDataActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHandler.getHandler().deleteDatabase();
             }
         });
 

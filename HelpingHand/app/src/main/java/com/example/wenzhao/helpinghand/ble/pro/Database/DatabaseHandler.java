@@ -34,14 +34,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "current.db";
     private static final int DATABASE_VERSION = 2;
 
-    /*private static final String DATABASE_CREATE = "CREATE TABLE "
-            + TABLE_ENTRIES
-            + "("
-            + COLUMN_ID        + " integer primary key autoincrement,"
-            + COLUMN_ACTIVITY + " text not null,"
-            + COLUMN_RATIO     + " text not null"
-            + ");";
-*/
     private DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
@@ -86,88 +78,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    private void deleteDatabase () {
+    public void deleteDatabase() {
         mContext.deleteDatabase(DATABASE_NAME);
         databasehandler = null;
         DatabaseHandler.initHandler(mContext);
     }
 
-    public static String getDBPathDir () {
-        return BACKUP_DB_PATH_DIR;
-    }
-
-    public void exportDatabase(String name) throws IOException {
-        // Closes all database connections to commit to mem
-        databasehandler.close();
-        // Determines paths
-        String outFileName = BACKUP_DB_PATH_DIR + name + ".db";
-
-        // Checks if destination folder exists and create if not
-        File createOutFile = new File(BACKUP_DB_PATH_DIR);
-        if (!createOutFile.exists()){
-            createOutFile.mkdir();
-        }
-
-        File fromDB = new File(CURRENT_DB_PATH);
-        File toDB = new File(outFileName);
-        // Copy the database to the new location
-        copyFile(new FileInputStream(fromDB), new FileOutputStream(toDB));
-        Log.d("export Database", "copy succeeded");
-        // Delete Existing Database
-        deleteDatabase();
-    }
-
-    public void importDatabase (String name) throws IOException {
-        // Closes all database connections to commit to mem
-        databasehandler.close();
-        // Determines paths
-        String inFileName = BACKUP_DB_PATH_DIR + name;
-
-        File fromDB = new File(inFileName);
-        File toDB = new File(CURRENT_DB_PATH);
-        // Copy the database to the new location
-        copyFile(new FileInputStream(fromDB), new FileOutputStream(toDB));
-        Log.d("Import Database", "succeeded");
-    }
-    private static void copyFile(FileInputStream fromFile, FileOutputStream toFile) throws IOException {
-        FileChannel fromChannel = null;
-        FileChannel toChannel = null;
-        try {
-            fromChannel = fromFile.getChannel();
-            toChannel = toFile.getChannel();
-            fromChannel.transferTo(0, fromChannel.size(), toChannel);
-        } finally {
-            try {
-                if (fromChannel != null) {
-                    fromChannel.close();
-                }
-            } finally {
-                if (toChannel != null) {
-                    toChannel.close();
-                }
-            }
-        }
-    }
-
-    // Adding new value
-    public void addValue(ChildInfo entry) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put (COLUMN_ACTIVITY, entry.getActivity());
-        values.put(COLUMN_RATIO,entry.getFinalRatio());
-        values.put(COLUMN_TIME,entry.getFinishtime());
-
-        // Inserting into database
-        db.insert(TABLE_ENTRIES, null, values);
-        db.close();
-    }
 
     public ChildInfo getValue( int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-
-        // Uses a cursor to query from the database.
-        // Provides the strings we want from the query and the query parameters
         Cursor cursor = db.query(TABLE_ENTRIES, new String[]{
                 COLUMN_ID,
                 COLUMN_ACTIVITY,
@@ -193,46 +112,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return entry;
     }
 
-    public List<ChildInfo> getActivityValues(String activity) {
-        List<ChildInfo> dataEntryList = new ArrayList<ChildInfo>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_ENTRIES;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Uses a cursor to query from the database.
-        // Provides the strings we want from the query and the query parameters
-        Cursor cursor = db.query(TABLE_ENTRIES, new String[]{
-                COLUMN_ID,
-                COLUMN_ACTIVITY,
-                COLUMN_RATIO,
-                COLUMN_TIME
-
-        }
-                , COLUMN_ACTIVITY + "=?" , new String[]{
-                activity
-        }
-                ,null, null, null, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                ChildInfo entry = new ChildInfo(
-                        Long.parseLong(cursor.getString(0)),    // ID
-                        cursor.getString(1),                    // Activity
-                        Double.parseDouble(cursor.getString(2)), // final ratio
-                        Double.parseDouble(cursor.getString(3))  // finish time
-                );
-                // Adding contact to list
-                dataEntryList.add(entry);
-            } while (cursor.moveToNext());
-        }
-
-        // return contact list
-        return dataEntryList;
-    }
-
-
-
     public void deleteValue(ChildInfo entry) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -241,14 +120,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+    public void addValue(ChildInfo entry) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put (COLUMN_ACTIVITY, entry.getActivity());
+        values.put(COLUMN_RATIO,entry.getFinalRatio());
+        values.put(COLUMN_TIME,entry.getFinishtime());
+
+        db.insert(TABLE_ENTRIES, null, values);
+        db.close();
+    }
+
     public List<ChildInfo> getAllValues() {
         List<ChildInfo> dataEntryList = new ArrayList<ChildInfo>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_ENTRIES;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Uses a cursor to query from the database.
-        // Provides the strings we want from the query and the query parameters
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_ENTRIES, new String[] {
                 COLUMN_ID,
                 COLUMN_ACTIVITY,
@@ -256,8 +144,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 COLUMN_TIME
         }
                 ,null, null, null, null, null, null);
-
-        // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 ChildInfo entry = new ChildInfo(
@@ -266,26 +152,64 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         Double.parseDouble(cursor.getString(2)), // final ratio
                         Double.parseDouble(cursor.getString(3)) //finish time
                 );
-                // Adding contact to list
                 dataEntryList.add(entry);
             } while (cursor.moveToNext());
         }
-
-        // return contact list
         return dataEntryList;
     }
 
-    public int getValuesCount() {
+    public List<ChildInfo> getActivityValues(String activity) {
+        List<ChildInfo> dataEntryList = new ArrayList<ChildInfo>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(TABLE_ENTRIES, new String[]{
+                COLUMN_ID,
+                COLUMN_ACTIVITY,
+                COLUMN_RATIO,
+                COLUMN_TIME
+        }
+                , COLUMN_ACTIVITY + "=?" , new String[]{
+                activity
+        }
+                ,null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                ChildInfo entry = new ChildInfo(
+                        Long.parseLong(cursor.getString(0)),    // ID
+                        cursor.getString(1),                    // Activity
+                        Double.parseDouble(cursor.getString(2)), // final ratio
+                        Double.parseDouble(cursor.getString(3))  // finish time
+                );
+                dataEntryList.add(entry);
+            } while (cursor.moveToNext());
+        }
+        return dataEntryList;
+    }
+
+    public int getDBCount() {
         String countQuery = "SELECT  * FROM " + TABLE_ENTRIES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
         cursor.close();
+        return count;
+    }
 
-        // return count
-        return cursor.getCount();
+    public int getActivityCount(String activity){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ENTRIES, new String[]{
+                COLUMN_ID,
+                COLUMN_ACTIVITY,
+                COLUMN_RATIO,
+                COLUMN_TIME
+        }
+                , COLUMN_ACTIVITY + "=?", new String[]{
+                activity
+        }
+                , null, null, null, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
 }
-
-
 

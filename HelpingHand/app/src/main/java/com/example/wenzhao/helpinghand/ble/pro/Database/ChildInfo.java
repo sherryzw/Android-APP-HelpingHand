@@ -1,9 +1,5 @@
 package com.example.wenzhao.helpinghand.ble.pro.Database;
 
-import android.app.Activity;
-
-import java.lang.Double;import java.lang.String;import java.util.ArrayList;
-import java.util.List;
 
 public class ChildInfo {
     private long id;
