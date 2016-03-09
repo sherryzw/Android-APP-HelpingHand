@@ -3,6 +3,8 @@ package com.example.wenzhao.helpinghand.ble.pro.HelpingHand;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -10,6 +12,8 @@ import android.widget.Toast;
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.Database.ChildInfo;
 import com.example.wenzhao.helpinghand.ble.pro.Database.DatabaseHandler;
+import com.example.wenzhao.helpinghand.ble.pro.Fragment.InputFragment;
+import com.example.wenzhao.helpinghand.ble.pro.Fragment.ProcessFragment;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -26,21 +30,30 @@ public class ShowDataActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_data);
-        btnBack = (Button) findViewById(R.id.btn_back);
         btnClear = (Button)findViewById(R.id.clear);
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHandler.getHandler().deleteDatabase();
+                Toast.makeText(ShowDataActivity.this, "Already Cleared", Toast.LENGTH_SHORT).show();
+                onResume();
+            }
+        });
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnBack = (Button) findViewById(R.id.btn_back);
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        btnClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseHandler.getHandler().deleteDatabase();
-                Toast.makeText(ShowDataActivity.this, "Already Cleared", Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
         LineChart lineChart = (LineChart) findViewById(R.id.chart);
         ArrayList<Entry> entries1 = new ArrayList<>();
@@ -110,12 +123,14 @@ public class ShowDataActivity extends Activity {
 
         ArrayList<String> labels = new ArrayList<String>();
         for(int i = 1;i <= maxCount;i++)
-        labels.add(String.valueOf(i));
+            labels.add(String.valueOf(i));
 
         LineData data = new LineData(labels,dataSets);
         lineChart.setData(data);
         lineChart.animateY(2000);
         lineChart.setDescription("Helping Hand");
         lineChart.invalidate();
+
     }
+
 }
