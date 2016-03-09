@@ -16,11 +16,10 @@
         android:text="Replay"
         android:id="@+id/btn_replay"
         android:background="@drawable/shape"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="78dp"
         android:textColor="#ca5948"
-        android:layout_marginStart="36dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignStart="@+id/ratingBar" />
 
     <Button
         android:layout_width="120dp"
@@ -67,19 +66,8 @@
         android:text="Show Data"
         android:id="@+id/show"
         android:background="@drawable/shape"
-        android:layout_marginBottom="29dp"
         android:textColor="#ca5948"
-        android:layout_above="@+id/btn_exit"
-        android:layout_alignStart="@+id/btn_exit" />
-
-    <Button
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:text="Clear Data"
-        android:id="@+id/clear"
-        android:background="@drawable/shape"
-        android:textColor="#ca5948"
-        android:layout_alignTop="@+id/show"
-        android:layout_alignStart="@+id/btn_replay" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

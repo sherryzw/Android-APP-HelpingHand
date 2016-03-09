@@ -23,7 +23,7 @@ public class ResultActivity extends Activity {
     private Button btnReplay;
     private Button btnChange;
     private Button btnShow;
-    private Button btnClear;
+
 
     private double sum1;
     private double sum2;
@@ -47,7 +47,7 @@ public class ResultActivity extends Activity {
         btnReplay = (Button)findViewById(R.id.btn_replay);
         btnChange = (Button)findViewById(R.id.btn_exit);
         btnShow = (Button)findViewById(R.id.show);
-        btnClear = (Button)findViewById(R.id.clear);
+
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         imageView = (ImageView)findViewById(R.id.imageView2);
         sum1 = 0;
@@ -107,13 +107,6 @@ public class ResultActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(ResultActivity.this,ShowDataActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        btnClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseHandler.getHandler().deleteDatabase();
             }
         });
 

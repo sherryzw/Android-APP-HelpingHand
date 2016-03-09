@@ -26,4 +26,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp" />
 
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:text="Clear Data"
+        android:id="@+id/clear"
+        android:background="@drawable/shape"
+        android:textColor="#ca5948"
+        android:layout_above="@+id/btn_back"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="37dp" />
+
 </RelativeLayout>

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.Database.ChildInfo;
@@ -19,16 +20,25 @@ import java.util.List;
 
 public class ShowDataActivity extends Activity {
     Button btnBack;
+    Button btnClear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_data);
         btnBack = (Button) findViewById(R.id.btn_back);
+        btnClear = (Button)findViewById(R.id.clear);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHandler.getHandler().deleteDatabase();
+                Toast.makeText(ShowDataActivity.this, "Already Cleared", Toast.LENGTH_SHORT).show();
             }
         });
 
