@@ -274,7 +274,7 @@ public class ProcessFragment extends Fragment {
                                 M1OverTime.add(0.0);
                             }
 
-                            if (realtimesum1<realtimesum2) {
+                            if (InputFragment.WeakArm == "Left") {
                                 ratio = 100 *realtimesum1/(realtimesum1+realtimesum2);
                             }else {
                                 ratio = 100 *realtimesum2/(realtimesum1+realtimesum2);

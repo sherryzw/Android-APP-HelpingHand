@@ -55,14 +55,16 @@
         android:layout_marginBottom="17dp" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Please ensure both sensors are connected"
-        android:textSize="25dp"
-        android:textColor="#ffffff"
+        android:text="Please first turn on left hand sensor."
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="#fc0e0e"
         android:layout_centerVertical="true"
         android:id="@+id/textView13"
         android:layout_alignTop="@+id/device_list"
         android:layout_above="@+id/showimg"
-        android:layout_toEndOf="@+id/device_list" />
+        android:layout_toEndOf="@+id/device_list"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

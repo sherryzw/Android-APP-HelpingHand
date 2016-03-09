@@ -1,6 +1,8 @@
 package com.example.wenzhao.helpinghand.ble.pro.Fragment;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -53,9 +55,7 @@ public class InputFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     checkBoxRight.setChecked(false);
-                    WeakArm = "Left";
-                }else{
-                    WeakArm = "";
+                    WeakArm = "Right";
                 }
             }
         });
@@ -65,9 +65,7 @@ public class InputFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     checkBoxLeft.setChecked(false);
-                    WeakArm = "Right";
-                }else{
-                    WeakArm = "";
+                    WeakArm = "Left";
                 }
             }
         });
@@ -101,6 +99,35 @@ public class InputFragment extends Fragment {
             public void onClick(View v) {
                 String tempName = nickNameText.getText().toString();
                 ChildName = tempName;
+                if (ChildName.isEmpty()) {
+                    AlertDialog.Builder adBuilder = new AlertDialog.Builder(getActivity());
+                    adBuilder.setMessage("Press Enter your nickname").setCancelable(true);
+                    adBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = adBuilder.create();
+                    alertDialog.show();
+                    return;
+                }
+
+                if (WeakArm == null) {
+                    AlertDialog.Builder adBuilder = new AlertDialog.Builder(getActivity());
+                    adBuilder.setMessage("Press Enter your dominant arm").setCancelable(true);
+                    adBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = adBuilder.create();
+                    alertDialog.show();
+                    return;
+                }
+
+
                 getActivity().finish();
             }
         });
