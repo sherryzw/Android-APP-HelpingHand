@@ -22,10 +22,10 @@
         android:textColor="#ca5948"
         android:background="@drawable/shape"
         android:id="@+id/btn_finish"
-        android:layout_marginBottom="32dp"
-        android:layout_alignParentBottom="true"
+        android:textSize="18dp"
+        android:layout_below="@+id/linear"
         android:layout_alignEnd="@+id/linear"
-        android:textSize="18dp" />
+        android:layout_marginTop="53dp" />
 
     <TextView
         android:layout_width="320dp"
@@ -59,9 +59,9 @@
         android:textColor="#ca5948"
         android:background="@drawable/shape"
         android:id="@+id/btn_next"
+        android:textSize="18dp"
         android:layout_alignTop="@+id/btn_finish"
-        android:layout_alignStart="@+id/linear"
-        android:textSize="18dp" />
+        android:layout_alignStart="@+id/linear" />
 
 
 </RelativeLayout>

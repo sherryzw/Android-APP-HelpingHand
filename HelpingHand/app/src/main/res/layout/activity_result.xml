@@ -16,10 +16,10 @@
         android:text="Replay"
         android:id="@+id/btn_replay"
         android:background="@drawable/shape"
-        android:layout_marginBottom="78dp"
+        android:layout_marginBottom="42dp"
         android:textColor="#ca5948"
-        android:layout_alignParentBottom="true"
         android:textSize="18dp"
+        android:layout_above="@+id/show"
         android:layout_alignParentStart="true" />
 
     <Button
@@ -48,7 +48,7 @@
         android:textSize="20dp"
         android:textColor="#ca5948"
         android:id="@+id/textView17"
-        android:layout_below="@+id/imageView2"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
     <RatingBar
@@ -68,8 +68,9 @@
         android:id="@+id/show"
         android:background="@drawable/shape"
         android:textColor="#ca5948"
+        android:textSize="18dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:textSize="18dp" />
+        android:layout_marginBottom="47dp" />
 
 </RelativeLayout>

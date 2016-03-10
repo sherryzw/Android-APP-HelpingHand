@@ -58,7 +58,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Please first turn on left hand sensor."
-        android:typeface="serif"
         android:gravity="center"
         android:textSize="20dp"
         android:textColor="#fc0e0e"
