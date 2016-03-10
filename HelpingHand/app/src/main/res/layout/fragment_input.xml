@@ -33,7 +33,7 @@
         android:textSize="20dp"
         android:id="@+id/textView6"
         android:layout_marginTop="23dp"
-        android:textColor="#e40af4"
+        android:textColor="#fa0043"
         android:layout_below="@+id/textView3"
         android:layout_alignStart="@+id/textView7" />
 
@@ -45,7 +45,7 @@
         android:layout_marginTop="15dp"
         android:layout_below="@+id/textView6"
         android:layout_alignStart="@+id/textView3"
-        android:textColor="#ca5948"
+        android:textColor="#530117"
         android:textSize="18dp" />
 
     <EditText
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:text="Dominant arm:"
         android:id="@+id/textView8"
-        android:textColor="#ca5948"
+        android:textColor="#530117"
         android:textSize="18dp"
         android:layout_centerVertical="true"
         android:layout_alignStart="@+id/editText" />
@@ -75,7 +75,7 @@
         android:layout_below="@+id/textView8"
         android:layout_alignStart="@+id/textView8"
         android:checked="false"
-        android:textColor="#e40af4" />
+        android:textColor="#fa0043" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -85,14 +85,14 @@
         android:checked="false"
         android:layout_alignTop="@+id/checkBoxLeft"
         android:layout_toEndOf="@+id/textView8"
-        android:textColor="#e40af4" />
+        android:textColor="#fa0043" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Able to read:"
         android:id="@+id/textView9"
-        android:textColor="#ca5948"
+        android:textColor="#530117"
         android:textSize="18dp"
         android:layout_below="@+id/checkBoxLeft"
         android:layout_alignStart="@+id/checkBoxLeft" />
@@ -103,7 +103,7 @@
         android:text="Yes"
         android:id="@+id/checkBoxYes"
         android:checked="false"
-        android:textColor="#e40af4"
+        android:textColor="#fa0043"
         android:layout_below="@+id/textView9"
         android:layout_alignStart="@+id/textView9" />
 
@@ -113,7 +113,7 @@
         android:text="No"
         android:id="@+id/checkBoxNo"
         android:checked="false"
-        android:textColor="#e40af4"
+        android:textColor="#fa0043"
         android:layout_alignTop="@+id/checkBoxYes"
         android:layout_toEndOf="@+id/textView8" />
 
