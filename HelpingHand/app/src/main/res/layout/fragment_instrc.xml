@@ -41,18 +41,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="● Two wrist-bands(T1 sensor tags)"
-        android:textSize="16dp"
+        android:textSize="18dp"
         android:id="@+id/textView3"
-        android:layout_below="@+id/textView2"
-        android:layout_alignStart="@+id/textView2"
-        android:layout_marginTop="23dp"
-        android:textColor="#f75681" />
+        android:textColor="#f75681"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/textView" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="● At least 1 off-screen tabletop game"
-        android:textSize="16dp"
+        android:textSize="18dp"
         android:id="@+id/textView4"
         android:layout_below="@+id/textView3"
         android:layout_alignStart="@+id/textView3"
@@ -67,7 +66,7 @@
         android:layout_alignStart="@+id/textView4"
         android:layout_marginTop="15dp"
         android:text="● Some voluntary arm movements for play"
-        android:textSize="16dp"
+        android:textSize="18dp"
         android:textColor="#f75681"/>
 
     <Button
