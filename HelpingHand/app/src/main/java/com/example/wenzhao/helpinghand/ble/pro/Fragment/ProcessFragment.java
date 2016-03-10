@@ -9,6 +9,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
@@ -47,6 +49,7 @@ public class ProcessFragment extends Fragment {
     private  double realtimesum2;
     public static TextToSpeech mTts;
     private final static int CHECK_CODE = 1;
+    private int times;
 
     //GUI
     private TextView infoText = null;
@@ -54,6 +57,7 @@ public class ProcessFragment extends Fragment {
     private LinearLayout linearLayout;
     private Player myView;
     private int number;
+    private ImageView activity_image;
 
     private Button btnFinish;
     private Button btnNext;
@@ -90,6 +94,7 @@ public class ProcessFragment extends Fragment {
         realtimesum1 = 0;
         realtimesum1 = 0;
         number = 0;
+        times = 0;
     }
 
     @Override
@@ -101,11 +106,19 @@ public class ProcessFragment extends Fragment {
         btnFinish = (Button) view.findViewById(R.id.btn_finish);
         btnNext = (Button) view.findViewById(R.id.btn_next);
         linearLayout = (LinearLayout)view.findViewById(R.id.linear);
-        myView = new Player(this.getActivity(), number);
-        linearLayout.addView(myView);
+        System.out.println(ActivityChoiceFragment.TableActivity);
+        if(ActivityChoiceFragment.TableActivity.equals("Block tower")){
+            myView = new Player(this.getActivity(), number);
+            linearLayout.addView(myView);
+        }
+        if(ActivityChoiceFragment.TableActivity.equals("Coin sorting")){
+            Resources res = this.getResources();
+            activity_image = (ImageView)view.findViewById(R.id.activity_image);
+            activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.coins));
+        }
 
-        infoText.setText("Keep going, " + InputFragment.ChildName +
-                ". Use both hands to make these towers.");
+        if(times!=0){infoText.setText("Keep going, " + InputFragment.ChildName +
+                ". Use both hands to make these towers.");}
 
         Thread worker = new Thread(new Runnable() {
             @Override
@@ -147,16 +160,19 @@ public class ProcessFragment extends Fragment {
                 time = (float) endTime / 1000;
                 ResultActivity.finalRatio = ratio;
                 getActivity().unregisterReceiver(mGattUpdateReceiver1);
+                times ++;
                 startActivity(mResultIntent);
             }
         });
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                number = (number+1)%3;
-                linearLayout.removeAllViews();
-                Player newplayer = new Player(getActivity(),number);
-                linearLayout.addView(newplayer);
+                if(ActivityChoiceFragment.TableActivity.equals("Block tower")){
+                    number = (number+1)%3;
+                    linearLayout.removeAllViews();
+                    Player newplayer = new Player(getActivity(),number);
+                    linearLayout.addView(newplayer);
+                }
             }
         });
 

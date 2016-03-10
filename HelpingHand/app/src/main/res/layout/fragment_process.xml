@@ -43,7 +43,13 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_below="@+id/textView18"
-        android:layout_centerHorizontal="true"></LinearLayout>
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/activity_image" />
+    </LinearLayout>
 
     <Button
         android:layout_width="100dp"
