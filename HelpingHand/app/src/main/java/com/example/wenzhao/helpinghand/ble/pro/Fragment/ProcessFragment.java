@@ -106,6 +106,7 @@ public class ProcessFragment extends Fragment {
         btnFinish = (Button) view.findViewById(R.id.btn_finish);
         btnNext = (Button) view.findViewById(R.id.btn_next);
         linearLayout = (LinearLayout)view.findViewById(R.id.linear);
+        activity_image = (ImageView)view.findViewById(R.id.activity_image);
         System.out.println(ActivityChoiceFragment.TableActivity);
         if(ActivityChoiceFragment.TableActivity.equals("Block tower")){
             myView = new Player(this.getActivity(), number);
@@ -113,8 +114,11 @@ public class ProcessFragment extends Fragment {
         }
         if(ActivityChoiceFragment.TableActivity.equals("Coin sorting")){
             Resources res = this.getResources();
-            activity_image = (ImageView)view.findViewById(R.id.activity_image);
             activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.coins));
+        }
+        if(ActivityChoiceFragment.TableActivity.equals("Playdough fun")){
+            Resources res = this.getResources();
+            activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.p1));
         }
 
         if(times!=0){infoText.setText("Keep going, " + InputFragment.ChildName +
@@ -172,6 +176,15 @@ public class ProcessFragment extends Fragment {
                     linearLayout.removeAllViews();
                     Player newplayer = new Player(getActivity(),number);
                     linearLayout.addView(newplayer);
+                }
+                if(ActivityChoiceFragment.TableActivity.equals("Playdough fun")){
+                    Resources res = getActivity().getResources();
+                    number = (number+1)%2;
+                    if (number == 1 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.p2));
+                    }else if (number == 0 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.p1));
+                    }
                 }
             }
         });
