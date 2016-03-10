@@ -121,8 +121,7 @@ public class ProcessFragment extends Fragment {
             activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd1));
         }
 
-        if(times!=0){infoText.setText("Keep going, " + InputFragment.ChildName +
-                ". Use both hands to make these towers.");}
+
 
         Thread worker = new Thread(new Runnable() {
             @Override
@@ -326,16 +325,21 @@ public class ProcessFragment extends Fragment {
                             ratioText1.setText("Weak arm(" + InputFragment.WeakArm
                                     + ")" + String.format(":%.2f", ratio) + "%");
 
+
                             // real-time feedback
-                            if ((System.currentTimeMillis()-startTime<15100) && (System.currentTimeMillis()-startTime>15000) && (ratio<20.0)){
-                                if (!InputFragment.AbleToRead){
-                                    String text = "Please use your "+InputFragment.WeakArm + " more.";
-                                    sayTts(text);
-                                }else {
-                                    String text = "Please use your "+InputFragment.WeakArm + " more.";
-                                    Toast.makeText(getActivity().getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-                                }
+                            if(ratio<20.0) {
+                               // if ((System.currentTimeMillis() - startTime >8100) && (System.currentTimeMillis() - startTime < 8100)) {
+                                    if (!InputFragment.AbleToRead) {
+                                        String text = "Please use your " + InputFragment.WeakArm + " more.";
+                                        sayTts(text);
+                                    } else {
+                                        String text = "please use your " + InputFragment.WeakArm + " more.";
+                                        infoText.setText("Keep going, " + InputFragment.ChildName + ". And "
+                                                + text);
+                                    }
+                                //}
                             }
+                            else {infoText.setText("");}
                             break;
                         }
                     }
