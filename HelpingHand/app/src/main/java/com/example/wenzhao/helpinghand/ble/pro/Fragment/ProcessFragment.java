@@ -118,7 +118,7 @@ public class ProcessFragment extends Fragment {
         }
         if(ActivityChoiceFragment.TableActivity.equals("Playdough fun")){
             Resources res = this.getResources();
-            activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.p1));
+            activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd1));
         }
 
         if(times!=0){infoText.setText("Keep going, " + InputFragment.ChildName +
@@ -179,11 +179,17 @@ public class ProcessFragment extends Fragment {
                 }
                 if(ActivityChoiceFragment.TableActivity.equals("Playdough fun")){
                     Resources res = getActivity().getResources();
-                    number = (number+1)%2;
-                    if (number == 1 ){
-                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.p2));
-                    }else if (number == 0 ){
-                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.p1));
+                    number = (number+1)%5;
+                    if (number == 0 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd1));
+                    }else if (number == 1 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd2));
+                    }else if (number == 2 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd3));
+                    }else if (number == 3 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd4));
+                    }else if (number == 4 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd5));
                     }
                 }
             }
