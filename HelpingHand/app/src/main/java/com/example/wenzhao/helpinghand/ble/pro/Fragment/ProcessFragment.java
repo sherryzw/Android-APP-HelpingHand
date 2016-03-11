@@ -60,8 +60,6 @@ public class ProcessFragment extends Fragment {
     private Button btnFinish;
     private Button btnNext;
     public double ratio;
-    public static List<Double> M1OverTime;
-    public static List<Double> M2OverTime;
 
     public static float time = 0;
     long startTime;
@@ -87,8 +85,6 @@ public class ProcessFragment extends Fragment {
         mBluetoothDevice = BluetoothLeService.getDevice();
         mBtGatt = BluetoothLeService.getBtGatt();
         mProfiles = new ArrayList<GenericBluetoothProfile>();
-        M1OverTime = new ArrayList<Double>();
-        M2OverTime = new ArrayList<Double>();
         realtimesum1 = 0;
         realtimesum1 = 0;
         number = 0;
@@ -195,8 +191,6 @@ public class ProcessFragment extends Fragment {
     public void onResume() {
         super.onResume();
         startTime = System.currentTimeMillis();
-        M1OverTime.clear();
-        M2OverTime.clear();
         gravity1[0]= 0.0;
         gravity1[1]= 0.0;
         gravity1[2]= 0.0;
@@ -288,17 +282,11 @@ public class ProcessFragment extends Fragment {
                             az2 = az2 - gravity2[2];
 
                             if(Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2)>0.06){
-                                M2OverTime.add(Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2));
                                 realtimesum2 += Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2);
-                            }else{
-                                M2OverTime.add(0.0);
                             }
 
                             if (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1)>0.06){
-                                M1OverTime.add(Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1));
                                 realtimesum1 +=Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1);
-                            }else{
-                                M1OverTime.add(0.0);
                             }
 
                             if (InputFragment.WeakArm == "Left") {
