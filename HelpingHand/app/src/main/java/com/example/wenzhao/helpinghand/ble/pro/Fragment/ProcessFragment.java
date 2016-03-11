@@ -48,7 +48,6 @@ public class ProcessFragment extends Fragment {
     private  double realtimesum2;
     public static TextToSpeech mTts;
     private final static int CHECK_CODE = 1;
-    private int times;
 
     //GUI
     private TextView infoText = null;
@@ -93,7 +92,6 @@ public class ProcessFragment extends Fragment {
         realtimesum1 = 0;
         realtimesum1 = 0;
         number = 0;
-        times = 0;
     }
 
     @Override
@@ -119,8 +117,6 @@ public class ProcessFragment extends Fragment {
             Resources res = this.getResources();
             activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd1));
         }
-
-
 
         Thread worker = new Thread(new Runnable() {
             @Override
@@ -162,7 +158,6 @@ public class ProcessFragment extends Fragment {
                 time = (float) endTime / 1000;
                 ResultActivity.finalRatio = ratio;
                 getActivity().unregisterReceiver(mGattUpdateReceiver1);
-                times ++;
                 startActivity(mResultIntent);
             }
         });
@@ -199,26 +194,6 @@ public class ProcessFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(ResultActivity.Replace == 1){
-            M1OverTime.clear();
-            M2OverTime.clear();
-            gravity1[0]= 0.0;
-            gravity1[1]= 0.0;
-            gravity1[2]= 0.0;
-            gravity2[0]= 0.0;
-            gravity2[1]= 0.0;
-            gravity2[2]= 0.0;
-            realtimesum1 = 0;
-            realtimesum2 = 0;
-            ResultActivity.Replace = 0;
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            Fragment activityChoiceFragment = ActivityChoiceFragment.newInstance();
-            ft.replace(R.id.DevContainer, activityChoiceFragment);
-            ft.addToBackStack("Switch to Activity Choice Fragment");
-            ft.commit();
-        }
         startTime = System.currentTimeMillis();
         M1OverTime.clear();
         M2OverTime.clear();
@@ -230,6 +205,16 @@ public class ProcessFragment extends Fragment {
         gravity2[2]= 0.0;
         realtimesum1 = 0;
         realtimesum2 = 0;
+        if(ResultActivity.Replace == 1){
+            ResultActivity.Replace = 0;
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            Fragment activityChoiceFragment = ActivityChoiceFragment.newInstance();
+            ft.replace(R.id.DevContainer, activityChoiceFragment);
+            ft.addToBackStack("Switch to Activity Choice Fragment");
+            ft.commit();
+        }
         final IntentFilter fi = new IntentFilter();
         fi.addAction(BluetoothLeService.ACTION_DATA_READ);
         fi.addAction(BluetoothLeService.ACTION_DATA_NOTIFY);
@@ -323,11 +308,8 @@ public class ProcessFragment extends Fragment {
                             }
                             ratioText1.setText("Weak arm(" + InputFragment.WeakArm
                                     + ")" + String.format(":%.2f", ratio) + "%");
-
-
                             // real-time feedback
                             if(ratio<20.0) {
-                               // if ((System.currentTimeMillis() - startTime >8100) && (System.currentTimeMillis() - startTime < 8100)) {
                                     if (!InputFragment.AbleToRead) {
                                         String text = "Please use your " + InputFragment.WeakArm + " more.";
                                         sayTts(text);
@@ -336,7 +318,6 @@ public class ProcessFragment extends Fragment {
                                         infoText.setText("Keep going, " + InputFragment.ChildName + ". And "
                                                 + text);
                                     }
-                                //}
                             }
                             else {infoText.setText("");}
                             break;
