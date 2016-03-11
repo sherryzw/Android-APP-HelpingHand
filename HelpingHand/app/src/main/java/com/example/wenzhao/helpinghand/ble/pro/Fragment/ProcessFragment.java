@@ -47,6 +47,7 @@ public class ProcessFragment extends Fragment {
     private  double realtimesum1;
     private  double realtimesum2;
     public static TextToSpeech mTts;
+    private boolean speakFirstTime = true;
     private final static int CHECK_CODE = 1;
 
     //GUI
@@ -298,16 +299,20 @@ public class ProcessFragment extends Fragment {
                                     + ")" + String.format(":%.2f", ratio) + "%");
                             // real-time feedback
                             if(ratio<20.0) {
-                                    if (!InputFragment.AbleToRead) {
-                                        String text = "Please use your " + InputFragment.WeakArm + " more.";
+                                    if ((!InputFragment.AbleToRead)&&(speakFirstTime)) {
+                                        String text = "Please use your " + InputFragment.WeakArm + " hand more.";
                                         sayTts(text);
-                                    } else {
-                                        String text = "please use your " + InputFragment.WeakArm + " more.";
+                                        speakFirstTime = false;
+                                    } else if(!InputFragment.AbleToRead){
+                                        String text = "please use your " + InputFragment.WeakArm + " hand more.";
                                         infoText.setText("Keep going, " + InputFragment.ChildName + ". And "
                                                 + text);
                                     }
                             }
-                            else {infoText.setText("");}
+                            else {
+                                infoText.setText("");
+                                speakFirstTime = true;
+                            }
                             break;
                         }
                     }
