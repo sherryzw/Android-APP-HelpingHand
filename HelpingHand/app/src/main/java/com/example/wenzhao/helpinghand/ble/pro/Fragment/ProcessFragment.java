@@ -53,6 +53,7 @@ public class ProcessFragment extends Fragment {
     //GUI
     private TextView infoText = null;
     private TextView ratioText1 = null;
+    private TextView indicatorText = null;
     private LinearLayout linearLayout;
     private Player myView;
     private int number;
@@ -61,6 +62,7 @@ public class ProcessFragment extends Fragment {
     private Button btnFinish;
     private Button btnNext;
     public double ratio;
+    private double notifyTimes = 0;
 
     public static float time = 0;
     long startTime;
@@ -97,6 +99,7 @@ public class ProcessFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_process, container, false);
         ratioText1 = (TextView) view.findViewById(R.id.ratio1);
         infoText = (TextView) view.findViewById(R.id.textView18);
+        indicatorText = (TextView) view.findViewById(R.id.textView19);
         btnFinish = (Button) view.findViewById(R.id.btn_finish);
         btnNext = (Button) view.findViewById(R.id.btn_next);
         linearLayout = (LinearLayout)view.findViewById(R.id.linear);
@@ -200,6 +203,7 @@ public class ProcessFragment extends Fragment {
         gravity2[2]= 0.0;
         realtimesum1 = 0;
         realtimesum2 = 0;
+        notifyTimes = 0;
         if(ResultActivity.Replace == 1){
             ResultActivity.Replace = 0;
             FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -282,13 +286,25 @@ public class ProcessFragment extends Fragment {
                             ay2 = ay2 - gravity2[1];
                             az2 = az2 - gravity2[2];
 
-                            if(Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2)>0.06){
+                            if((Math.sqrt(ax2*ax2 + ay2*ay2 + az2*az2)>0.06)&&(notifyTimes == 15)){
                                 realtimesum2 += Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2);
+                                Log.e("first",String.valueOf(Math.sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2)));
                             }
 
-                            if (Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1)>0.06){
+                            if((Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1)>0.06)&&(notifyTimes == 15)){
                                 realtimesum1 +=Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1);
+                                Log.e("second",String.valueOf(Math.sqrt(ax1*ax1 + ay1*ay1 + az1*az1)));
                             }
+                            if(notifyTimes <= 14){
+                                notifyTimes++;
+                                realtimesum2 = 1;
+                                realtimesum1 = 1;
+                                indicatorText.setText("Ready...");
+                            }else{
+                                indicatorText.setText("Go!");
+                            }
+
+                            Log.e("times",String.valueOf(notifyTimes));
 
                             if (InputFragment.WeakArm == "Left") {
                                 ratio = 100 *realtimesum1/(realtimesum1+realtimesum2);
