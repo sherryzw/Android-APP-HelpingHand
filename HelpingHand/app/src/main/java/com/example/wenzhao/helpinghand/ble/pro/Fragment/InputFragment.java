@@ -29,6 +29,7 @@ public class InputFragment extends Fragment {
     CheckBox checkBoxRight;
     CheckBox checkBoxYes;
     CheckBox checkBoxNo;
+    int checker = 0;
 
     public static InputFragment newInstance(){
         InputFragment fragment = new InputFragment();
@@ -74,8 +75,10 @@ public class InputFragment extends Fragment {
                 if (isChecked) {
                     checkBoxNo.setChecked(false);
                     AbleToRead = true;
+                    checker = 1;
                 } else {
                     AbleToRead = false;
+                    checker = 0;
                 }
             }
         });
@@ -86,8 +89,10 @@ public class InputFragment extends Fragment {
                 if (isChecked) {
                     checkBoxYes.setChecked(false);
                     AbleToRead =false;
+                    checker = 1;
                 } else {
                     AbleToRead = false;
+                    checker = 0;
                 }
             }
         });
@@ -99,7 +104,7 @@ public class InputFragment extends Fragment {
                 ChildName = tempName;
                 if (ChildName.isEmpty()) {
                     AlertDialog.Builder adBuilder = new AlertDialog.Builder(getActivity());
-                    adBuilder.setMessage("Press Enter your nickname").setCancelable(true);
+                    adBuilder.setMessage("Please Enter your nickname").setCancelable(true);
                     adBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -113,7 +118,7 @@ public class InputFragment extends Fragment {
 
                 if (WeakArm == null) {
                     AlertDialog.Builder adBuilder = new AlertDialog.Builder(getActivity());
-                    adBuilder.setMessage("Press Enter your dominant arm").setCancelable(true);
+                    adBuilder.setMessage("Please Enter your dominant arm").setCancelable(true);
                     adBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -125,7 +130,19 @@ public class InputFragment extends Fragment {
                     return;
                 }
 
-
+                if (checker == 0) {
+                    AlertDialog.Builder adBuilder = new AlertDialog.Builder(getActivity());
+                    adBuilder.setMessage("Please choose able to read").setCancelable(true);
+                    adBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = adBuilder.create();
+                    alertDialog.show();
+                    return;
+                }
                 getActivity().finish();
             }
         });
