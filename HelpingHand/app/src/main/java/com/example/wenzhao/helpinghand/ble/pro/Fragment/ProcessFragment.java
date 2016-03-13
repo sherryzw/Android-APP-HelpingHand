@@ -118,6 +118,11 @@ public class ProcessFragment extends Fragment {
             activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd1));
         }
 
+        if(ActivityChoiceFragment.TableActivity.equals("Necklace making")){
+            Resources res = this.getResources();
+            activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n1));
+        }
+
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -185,6 +190,29 @@ public class ProcessFragment extends Fragment {
                         activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.pd5));
                     }
                 }
+
+                if(ActivityChoiceFragment.TableActivity.equals("Necklace making")){
+                    Resources res = getActivity().getResources();
+                    number = (number+1)%8;
+                    if (number == 0 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n1));
+                    }else if (number == 1 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n2));
+                    }else if (number == 2 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n3));
+                    }else if (number == 3 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n4));
+                    }else if (number == 4 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n5));
+                    }else if (number == 5 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n6));
+                    }else if (number == 6 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n7));
+                    }else if (number == 7 ){
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n8));
+                    }
+                }
+
             }
         });
 

@@ -98,7 +98,8 @@
             android:id="@+id/radioGroupButton3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Necklace making" />
+            android:text="Necklace making"
+            android:checked="false" />
 
         <RadioButton
             android:id="@+id/radioGroupButton4"
