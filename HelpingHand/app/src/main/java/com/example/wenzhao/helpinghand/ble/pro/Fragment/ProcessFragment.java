@@ -205,9 +205,9 @@ public class ProcessFragment extends Fragment {
                     }else if (number == 4 ){
                         activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n5));
                     }else if (number == 5 ){
-                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n6));
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n6));
                     }else if (number == 6 ){
-                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n7));
+                        activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n7));
                     }else if (number == 7 ){
                         activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n8));
                     }
