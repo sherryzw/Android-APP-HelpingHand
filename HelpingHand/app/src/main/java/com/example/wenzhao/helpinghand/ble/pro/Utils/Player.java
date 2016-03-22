@@ -53,9 +53,11 @@ public class Player extends View{
             public void run() {
                 // TODO Auto-generated method stub
                 while (workFlag) {
-
                     currPicIndex = (currPicIndex + 1) % bitmapId.length;//更改图片的ID
                     Player.this.postInvalidate();//刷新屏幕，导致屏幕重绘
+                    if(currPicIndex == bitmapId.length-1 ){
+                        break;
+                    }
                     try {
                         Thread.sleep(3000);//到此处暂停3秒钟,然后继续执行run函数,即实现每隔3秒钟刷新屏幕一次
                     } catch (InterruptedException e) {
