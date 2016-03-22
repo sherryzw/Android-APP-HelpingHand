@@ -34,8 +34,11 @@ public class InstrcFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_instrc, container, false);
 
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/SimpleLife.ttf");
-        TextView t2 = (TextView) view.findViewById(R.id.textView2);
-        t2.setTypeface(font);
+        TextView t0 = (TextView) view.findViewById(R.id.textView);
+        t0.setTypeface(font);
+        TextView t1 = (TextView) view.findViewById(R.id.textView1);
+        t1.setTypeface(font);
+
 
         btnBegin = (Button)view.findViewById(R.id.btn_begin);
         btnBegin.setOnClickListener(new View.OnClickListener() {
