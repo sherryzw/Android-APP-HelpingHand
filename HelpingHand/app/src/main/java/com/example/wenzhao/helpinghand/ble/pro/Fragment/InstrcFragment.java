@@ -1,5 +1,6 @@
 package com.example.wenzhao.helpinghand.ble.pro.Fragment;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.renderscript.ScriptGroup;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ti.ble.sensortag.R;
 
@@ -30,6 +32,11 @@ public class InstrcFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_instrc, container, false);
+
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/SimpleLife.ttf");
+        TextView t2 = (TextView) view.findViewById(R.id.textView2);
+        t2.setTypeface(font);
+
         btnBegin = (Button)view.findViewById(R.id.btn_begin);
         btnBegin.setOnClickListener(new View.OnClickListener() {
             @Override
