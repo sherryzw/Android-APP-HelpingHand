@@ -1,5 +1,7 @@
 package com.example.wenzhao.helpinghand.ble.pro.Utils;
 
+
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -11,10 +13,11 @@ import android.view.View;
 
 import com.example.ti.ble.sensortag.R;
 
+
 /**
- * Created by lenovo on 2016/3/5.
+ * Created by lenovo on 2016/3/22.
  */
-public class Player extends View{
+public class Player2 extends View {
 
     int COMPONENT_WIDTH;//控件的宽度
     int COMPONENT_HEIGHT;//控件的高度
@@ -29,24 +32,20 @@ public class Player extends View{
     int[] bitmapId;
     int[] bitmapId1;//图片编号ID
     int[] bitmapId2;
-    int[] bitmapId3;
     boolean workFlag = true;//播放图片的线程标识位
 
 
-    public Player(Context context, int number) {
+    public Player2(Context context, int number) {
         super(context);
-        bitmapId1 = new int[]{R.drawable.a1, R.drawable.a2, R.drawable.a3, R.drawable.a4, R.drawable.a5, R.drawable.a6,};
-        bitmapId2 = new int[]{R.drawable.b1, R.drawable.b2, R.drawable.b3, R.drawable.b4, R.drawable.b5, R.drawable.b6, R.drawable.b7,};
-        bitmapId3 = new int[]{R.drawable.c1, R.drawable.c2, R.drawable.c3, R.drawable.c4, R.drawable.c5, R.drawable.c6, R.drawable.c7, R.drawable.c8, R.drawable.c9};
+        bitmapId1 = new int[]{R.drawable.pm1, R.drawable.pm2, R.drawable.pm3};
+        bitmapId2 = new int[]{R.drawable.pm4, R.drawable.pm5, R.drawable.pm6, R.drawable.pm7};
         bmp1 = new Bitmap[bitmapId1.length];
         bmp2 = new Bitmap[bitmapId2.length];
-        bmp3 = new Bitmap[bitmapId3.length];
+
         switch (number){
             case 0: initBitmap(bmp1 ,bitmapId1);
-                    break;
-            case 1:initBitmap(bmp2, bitmapId2);
                 break;
-            case 2 :initBitmap(bmp3, bitmapId3);
+            case 1:initBitmap(bmp2, bitmapId2);
                 break;
         }
         new Thread() {
@@ -55,9 +54,9 @@ public class Player extends View{
                 while (workFlag) {
 
                     currPicIndex = (currPicIndex + 1) % bitmapId.length;//更改图片的ID
-                    Player.this.postInvalidate();//刷新屏幕，导致屏幕重绘
+                    Player2.this.postInvalidate();//刷新屏幕，导致屏幕重绘
                     try {
-                        Thread.sleep(3000);//到此处暂停3秒钟,然后继续执行run函数,即实现每隔3秒钟刷新屏幕一次
+                        Thread.sleep(3000);//
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -92,5 +91,6 @@ public class Player extends View{
         canvas.drawBitmap(bmp[currPicIndex], 0, 0, null);//绘制图片
     }
 }
+
 
 

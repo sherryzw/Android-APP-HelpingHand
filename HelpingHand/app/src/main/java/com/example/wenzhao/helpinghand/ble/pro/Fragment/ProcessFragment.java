@@ -32,6 +32,7 @@ import com.example.wenzhao.helpinghand.ble.pro.BLEManager.GenericBluetoothProfil
 import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.MainActivity;
 import com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ResultActivity;
 import com.example.wenzhao.helpinghand.ble.pro.Utils.Player;
+import com.example.wenzhao.helpinghand.ble.pro.Utils.Player2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class ProcessFragment extends Fragment {
     private TextView indicatorText = null;
     private LinearLayout linearLayout;
     private Player myView;
+    private Player2 myView2;
     private int number;
     private ImageView activity_image;
 
@@ -121,6 +123,10 @@ public class ProcessFragment extends Fragment {
         if(ActivityChoiceFragment.TableActivity.equals("Necklace making")){
             Resources res = this.getResources();
             activity_image.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.n1));
+        }
+        if(ActivityChoiceFragment.TableActivity.equals("Pantomime (on-screen)")){
+            myView2 = new Player2(this.getActivity(), number);
+            linearLayout.addView(myView2);
         }
 
         Thread worker = new Thread(new Runnable() {
