@@ -2,6 +2,7 @@ package com.example.wenzhao.helpinghand.ble.pro.HelpingHand;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -12,8 +13,6 @@ import android.widget.Toast;
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.Database.ChildInfo;
 import com.example.wenzhao.helpinghand.ble.pro.Database.DatabaseHandler;
-import com.example.wenzhao.helpinghand.ble.pro.Fragment.InputFragment;
-import com.example.wenzhao.helpinghand.ble.pro.Fragment.ProcessFragment;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -25,12 +24,15 @@ import java.util.List;
 public class ShowDataActivity extends Activity {
     Button btnBack;
     Button btnClear;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_data);
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/SimpleLife.ttf");
         btnClear = (Button)findViewById(R.id.clear);
+        btnClear.setTypeface(font);
+        btnBack = (Button) findViewById(R.id.btn_back);
+        btnBack.setTypeface(font);
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,8 +47,6 @@ public class ShowDataActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        btnBack = (Button) findViewById(R.id.btn_back);
-
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

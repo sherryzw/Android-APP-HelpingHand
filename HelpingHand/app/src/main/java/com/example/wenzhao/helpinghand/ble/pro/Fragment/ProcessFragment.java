@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
@@ -63,7 +64,7 @@ public class ProcessFragment extends Fragment {
 
     private Button btnFinish;
     private Button btnNext;
-    public double ratio;
+    public int ratio;
     private double notifyTimes = 0;
 
     public static float time = 0;
@@ -98,12 +99,18 @@ public class ProcessFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/SimpleLife.ttf");
+        Typeface font1 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/snoopy_reg-webfont.otf");
         View view = inflater.inflate(R.layout.fragment_process, container, false);
         ratioText1 = (TextView) view.findViewById(R.id.ratio1);
+        ratioText1.setTypeface(font1);
         infoText = (TextView) view.findViewById(R.id.textView18);
         indicatorText = (TextView) view.findViewById(R.id.textView19);
+        indicatorText.setTypeface(font);
         btnFinish = (Button) view.findViewById(R.id.btn_finish);
+        btnFinish.setTypeface(font);
         btnNext = (Button) view.findViewById(R.id.btn_next);
+        btnNext.setTypeface(font);
         linearLayout = (LinearLayout)view.findViewById(R.id.linear);
         activity_image = (ImageView)view.findViewById(R.id.activity_image);
         System.out.println(ActivityChoiceFragment.TableActivity);
@@ -341,21 +348,25 @@ public class ProcessFragment extends Fragment {
                             Log.e("times",String.valueOf(notifyTimes));
 
                             if (InputFragment.WeakArm == "Left") {
-                                ratio = 100 *realtimesum1/(realtimesum1+realtimesum2);
+                                ratio = (int)(100 *realtimesum1/(realtimesum1+realtimesum2));
                             }else {
-                                ratio = 100 *realtimesum2/(realtimesum1+realtimesum2);
+                                ratio = (int)(100 *realtimesum2/(realtimesum1+realtimesum2));
                             }
                             ratioText1.setText("Weak arm(" + InputFragment.WeakArm
-                                    + ")" + String.format(":%.2f", ratio) + "%");
+                                    + ")" + String.format(":%d", ratio) + "%");
                             // real-time feedback
                             if(ratio<20.0) {
                                     if ((!InputFragment.AbleToRead)&&(speakFirstTime)) {
-                                        String text = "Please use your " + InputFragment.WeakArm + " hand more.";
+                                        String text = InputFragment.ChildName + "Please use your " + InputFragment.WeakArm + " hand more.";
                                         sayTts(text);
                                         speakFirstTime = false;
                                     } else if(!InputFragment.AbleToRead){
                                         String text = "please use your " + InputFragment.WeakArm + " hand more.";
-                                        infoText.setText("Keep going, " + InputFragment.ChildName + ". And "
+                                        infoText.setText("Keep going, " + InputFragment.ChildName + "\n "
+                                                + text);
+                                    }else if(InputFragment.AbleToRead){
+                                        String text = "please use your " + InputFragment.WeakArm + " hand more.";
+                                        infoText.setText("Keep going, " + InputFragment.ChildName + "\n "
                                                 + text);
                                     }
                             }

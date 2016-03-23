@@ -8,8 +8,8 @@
         android:id="@+id/ratio1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textColor="#2e50e9"
+        android:textSize="25dp"
+        android:textColor="#000000"
         android:gravity="center"
         android:layout_marginTop="56dp"
         android:layout_alignParentTop="true"
@@ -19,7 +19,7 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="Done"
-        android:textColor="#ca5948"
+        android:textColor="#f75681"
         android:background="@drawable/shape"
         android:id="@+id/btn_finish"
         android:textSize="18dp"
@@ -27,13 +27,13 @@
         android:layout_alignEnd="@+id/linear"
         android:layout_marginTop="53dp" />
 
-    <TextView
+    <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text=""
         android:textSize="20dp"
-        android:textColor="#42ecf5"
+        android:textColor="#f75681"
         android:id="@+id/textView18"
         android:layout_below="@+id/ratio1"
         android:layout_centerHorizontal="true" />
@@ -57,7 +57,7 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="Next"
-        android:textColor="#ca5948"
+        android:textColor="#f75681"
         android:background="@drawable/shape"
         android:id="@+id/btn_next"
         android:textSize="18dp"
@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textSize="25dp"
-        android:textColor="#ca5948"
+        android:textColor="#f75681"
         android:id="@+id/textView19"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"

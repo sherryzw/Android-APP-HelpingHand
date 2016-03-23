@@ -2,6 +2,7 @@ package com.example.wenzhao.helpinghand.ble.pro.HelpingHand;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -23,15 +24,10 @@ public class ResultActivity extends Activity {
     private Button btnReplay;
     private Button btnChange;
     private Button btnShow;
+    boolean speakOnce;
 
-
-    private double sum1;
-    private double sum2;
-    private double forsum1;
-    private double forsum2;
-    public static double finalRatio = 0;
+    public static int finalRatio = 0;
     private String text;
-    private final static int CHECK_CODE = 1;
     TextView resultText;
     RatingBar ratingBar;
     ImageView imageView;
@@ -42,11 +38,17 @@ public class ResultActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-
+        speakOnce = true;
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/SimpleLife.ttf");
+        Typeface font1 = Typeface.createFromAsset(getAssets(), "fonts/snoopy_reg-webfont.otf");
         resultText = (TextView)findViewById(R.id.textView17);
+        resultText.setTypeface(font1);
         btnReplay = (Button)findViewById(R.id.btn_replay);
+        btnReplay.setTypeface(font);
         btnChange = (Button)findViewById(R.id.btn_exit);
+        btnChange.setTypeface(font);
         btnShow = (Button)findViewById(R.id.show);
+        btnShow.setTypeface(font);
 
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         imageView = (ImageView)findViewById(R.id.imageView2);
@@ -60,7 +62,7 @@ public class ResultActivity extends Activity {
         Log.e("error", String.valueOf(DatabaseHandler.getHandler().getDBCount()));
 
         resultText.setText("Your " + InputFragment.WeakArm + " hand did "
-                + String.format("%.2f", finalRatio) + "% of the work! Try again to beat your" +
+                + String.format("%d", finalRatio) + "% of the work! Try again to beat your" +
                 " score.");
         text = resultText.getText().toString();
 
@@ -92,7 +94,7 @@ public class ResultActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!InputFragment.AbleToRead) {
+        if (!InputFragment.AbleToRead && speakOnce) {
             final Handler handler = new Handler();
             Runnable mRunnable = new Runnable() {
                 @Override
@@ -101,6 +103,7 @@ public class ResultActivity extends Activity {
                 }
             };
             handler.postDelayed(mRunnable, 1000);
+            speakOnce = false;
         }
     }
 
