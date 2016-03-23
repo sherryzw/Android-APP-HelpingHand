@@ -4,9 +4,10 @@
     android:layout_height="match_parent"
     android:background="@drawable/app_icon">
 
-    <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/openTitle"
         android:text="Helping Hand"
         android:textSize="36dp"
         android:layout_centerVertical="true"

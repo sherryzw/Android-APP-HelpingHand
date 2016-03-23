@@ -39,18 +39,18 @@
     <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="❤ Two wrist-bands(T1 sensor tags)"
+        android:text="❤ Two wrist-bands(TI sensor tags)"
         android:textSize="20dp"
         android:id="@+id/textView3"
         android:textColor="#000000"
+        android:textIsSelectable="false"
         android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/textView"
-        android:textIsSelectable="false" />
+        android:layout_alignStart="@+id/textView" />
 
     <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="❤ At least 1 off-screen tabletop game"
+        android:text="❤ Off-screen tabletop game"
         android:textSize="20dp"
         android:id="@+id/textView4"
         android:layout_below="@+id/textView3"
@@ -79,5 +79,15 @@
         android:textColor="#f75681"
         android:background="@drawable/shape"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Instruction for Parents"
+        android:textSize="28dp"
+        android:id="@+id/textView20"
+        android:textColor="#f75659"
+        android:layout_above="@+id/textView3"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

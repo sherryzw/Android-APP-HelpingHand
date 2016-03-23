@@ -1,6 +1,7 @@
 package com.example.wenzhao.helpinghand.ble.pro.Fragment;
 
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.ti.ble.sensortag.R;
 
@@ -29,6 +31,9 @@ public class OpenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View openView = inflater.inflate(R.layout.fragment_open, container, false);
+        TextView t = (TextView)openView.findViewById(R.id.openTitle);
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/SimpleLife.ttf");
+        t.setTypeface(font);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
