@@ -47,20 +47,20 @@
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:text="Start"
-        android:textColor="#ffffff"
+        android:textColor="#f75681"
         android:textSize="20dp"
         android:background="@drawable/shape"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="17dp" />
 
-    <TextView
+    <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Please first turn on left hand sensor."
         android:gravity="center"
-        android:textSize="20dp"
-        android:textColor="#fc0e0e"
+        android:textSize="30dp"
+        android:textColor="#f75681"
         android:layout_centerVertical="true"
         android:id="@+id/textView13"
         android:layout_alignTop="@+id/device_list"

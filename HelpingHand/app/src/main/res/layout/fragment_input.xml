@@ -33,7 +33,7 @@
         android:textSize="23dp"
         android:id="@+id/textView6"
         android:layout_marginTop="23dp"
-        android:textColor="#fa0043"
+        android:textColor="#f75681"
         android:layout_below="@+id/textView3"
         android:layout_alignStart="@+id/textView7" />
 
@@ -77,7 +77,7 @@
         android:layout_below="@+id/textView8"
         android:layout_alignStart="@+id/textView8"
         android:checked="false"
-        android:textColor="#fa0043"
+        android:textColor="#f75681"
         android:textSize="20dp" />
 
     <CheckBox
@@ -88,7 +88,7 @@
         android:checked="false"
         android:layout_alignTop="@+id/checkBoxLeft"
         android:layout_toEndOf="@+id/textView8"
-        android:textColor="#fa0043"
+        android:textColor="#f75681"
         android:textSize="20dp" />
 
     <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
@@ -107,7 +107,7 @@
         android:text="Yes"
         android:id="@+id/checkBoxYes"
         android:checked="false"
-        android:textColor="#fa0043"
+        android:textColor="#f75681"
         android:layout_below="@+id/textView9"
         android:layout_alignStart="@+id/textView9"
         android:textSize="20dp" />
@@ -118,7 +118,7 @@
         android:text="No"
         android:id="@+id/checkBoxNo"
         android:checked="false"
-        android:textColor="#fa0043"
+        android:textColor="#f75681"
         android:layout_alignTop="@+id/checkBoxYes"
         android:layout_toEndOf="@+id/textView8"
         android:textSize="20dp" />
@@ -129,7 +129,7 @@
         android:text="Next"
         android:textSize="20dp"
         android:id="@+id/btn_next_input"
-        android:textColor="#fb43bb"
+        android:textColor="#f75681"
         android:background="@drawable/shape"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

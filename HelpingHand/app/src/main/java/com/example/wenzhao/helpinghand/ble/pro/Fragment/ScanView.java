@@ -3,6 +3,7 @@ package com.example.wenzhao.helpinghand.ble.pro.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -47,7 +48,10 @@ public class ScanView extends Fragment {
     View view = inflater.inflate(R.layout.fragment_scan, container, false);
     mActivity = (MainActivity)getActivity();
     // Initialize widgets
+    Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/SimpleLife.ttf");
     mBtnStart = (Button) view.findViewById(R.id.btn_start);
+    mBtnStart.setTypeface(font);
+
     mDeviceListView = (ListView) view.findViewById(R.id.device_list);
     mDeviceListView.setClickable(true);
     mDeviceListView.setOnItemClickListener(mDeviceClickListener);
