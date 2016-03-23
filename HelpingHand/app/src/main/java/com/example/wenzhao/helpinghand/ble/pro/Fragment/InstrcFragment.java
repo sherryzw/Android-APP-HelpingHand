@@ -42,6 +42,7 @@ public class InstrcFragment extends Fragment {
         t2.setTypeface(font);
 
         btnBegin = (Button)view.findViewById(R.id.btn_begin);
+        btnBegin.setTypeface(font);
         btnBegin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

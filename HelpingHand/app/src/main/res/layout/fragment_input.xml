@@ -37,7 +37,7 @@
         android:layout_below="@+id/textView3"
         android:layout_alignStart="@+id/textView7" />
 
-    <TextView
+    <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nickname:"
@@ -57,10 +57,9 @@
         android:layout_below="@+id/textView7"
         android:layout_alignStart="@+id/textView7"
         android:background="@drawable/shapeforedittext"
-        android:layout_alignEnd="@+id/btn_next_input"
-        android:textColor="#fa0043" />
+        android:layout_alignEnd="@+id/btn_next_input" />
 
-    <TextView
+    <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dominant arm:"
@@ -92,7 +91,7 @@
         android:textColor="#fa0043"
         android:textSize="20dp" />
 
-    <TextView
+    <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Able to read:"

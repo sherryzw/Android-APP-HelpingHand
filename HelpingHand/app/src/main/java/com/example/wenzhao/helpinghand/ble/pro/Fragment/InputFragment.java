@@ -55,12 +55,17 @@ public class InputFragment extends Fragment {
 
 
         btnNextInput = (Button)view.findViewById(R.id.btn_next_input);
+        btnNextInput.setTypeface(font);
         nickNameText = (EditText)view.findViewById(R.id.editText);
+        nickNameText.setTypeface(font);
         checkBoxLeft = (CheckBox)view.findViewById(R.id.checkBoxLeft);
+        checkBoxLeft.setTypeface(font);
         checkBoxRight = (CheckBox)view.findViewById(R.id.checkBoxRight);
+        checkBoxRight.setTypeface(font);
         checkBoxYes = (CheckBox)view.findViewById(R.id.checkBoxYes);
+        checkBoxYes.setTypeface(font);
         checkBoxNo = (CheckBox)view.findViewById(R.id.checkBoxNo);
-
+        checkBoxNo.setTypeface(font);
         checkBoxLeft.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
