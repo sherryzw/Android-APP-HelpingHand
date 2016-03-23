@@ -57,7 +57,7 @@
     <com.example.wenzhao.helpinghand.ble.pro.Utils.CustomFontTextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Please first turn on left hand sensor."
+        android:text="Please first turn on \n left hand sensor."
         android:gravity="center"
         android:textSize="30dp"
         android:textColor="#f75681"
