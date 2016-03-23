@@ -38,7 +38,8 @@ public class InstrcFragment extends Fragment {
         t0.setTypeface(font);
         TextView t1 = (TextView) view.findViewById(R.id.textView1);
         t1.setTypeface(font);
-
+        TextView t2 = (TextView) view.findViewById(R.id.textView2);
+        t2.setTypeface(font);
 
         btnBegin = (Button)view.findViewById(R.id.btn_begin);
         btnBegin.setOnClickListener(new View.OnClickListener() {

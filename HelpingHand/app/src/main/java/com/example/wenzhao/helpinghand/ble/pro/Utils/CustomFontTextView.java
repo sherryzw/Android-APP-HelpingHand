@@ -24,7 +24,7 @@ public class CustomFontTextView extends TextView{
     }
     private void init(Context context) {
         AssetManager assertMgr = context.getAssets();
-        Typeface font = Typeface.createFromAsset(assertMgr,"fonts/tabitha.ttf" );
+        Typeface font = Typeface.createFromAsset(assertMgr,"fonts/snoopy_reg-webfont.otf" );
         setTypeface(font);
 
     }

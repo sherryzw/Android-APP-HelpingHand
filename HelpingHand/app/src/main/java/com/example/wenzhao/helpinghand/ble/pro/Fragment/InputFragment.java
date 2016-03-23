@@ -3,6 +3,7 @@ package com.example.wenzhao.helpinghand.ble.pro.Fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.ti.ble.sensortag.R;
 import com.example.wenzhao.helpinghand.ble.pro.Database.ChildInfo;
@@ -42,6 +44,16 @@ public class InputFragment extends Fragment {
         curChild = new ChildInfo();
 
         View view = inflater.inflate(R.layout.fragment_input, container, false);
+
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/SimpleLife.ttf");
+        TextView t0 = (TextView) view.findViewById(R.id.textView2);
+        t0.setTypeface(font);
+        TextView t1 = (TextView) view.findViewById(R.id.textView3);
+        t1.setTypeface(font);
+        TextView t2 = (TextView) view.findViewById(R.id.textView6);
+        t2.setTypeface(font);
+
+
         btnNextInput = (Button)view.findViewById(R.id.btn_next_input);
         nickNameText = (EditText)view.findViewById(R.id.editText);
         checkBoxLeft = (CheckBox)view.findViewById(R.id.checkBoxLeft);

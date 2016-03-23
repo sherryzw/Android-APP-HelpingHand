@@ -59,7 +59,7 @@ public class Player extends View{
                         break;
                     }
                     try {
-                        Thread.sleep(3000);//到此处暂停3秒钟,然后继续执行run函数,即实现每隔3秒钟刷新屏幕一次
+                        Thread.sleep(1500);//到此处暂停3秒钟,然后继续执行run函数,即实现每隔3秒钟刷新屏幕一次
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
