@@ -15,6 +15,7 @@
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
 
+
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
@@ -51,9 +52,12 @@
             android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ResultActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" />
         <activity
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ShowDataActivity">
-        </activity>
+            android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.ShowDataActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+        <activity
+            android:name="com.example.wenzhao.helpinghand.ble.pro.HelpingHand.StickerActivity"
+            android:label="@string/title_activity_sticker"
+            android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
     </application>
 
 </manifest>

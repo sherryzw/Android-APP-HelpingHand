@@ -211,5 +211,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
+    public int getActivityValuesCount(String activity,float percentage) {
+        int count = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(TABLE_ENTRIES, new String[]{
+                COLUMN_ID,
+                COLUMN_ACTIVITY,
+                COLUMN_RATIO,
+                COLUMN_TIME
+        }
+                , COLUMN_ACTIVITY + "=?", new String[]{
+                activity
+        }
+                , null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                ChildInfo entry = new ChildInfo(
+                        Long.parseLong(cursor.getString(0)),    // ID
+                        cursor.getString(1),                    // Activity
+                        Double.parseDouble(cursor.getString(2)), // final ratio
+                        Double.parseDouble(cursor.getString(3))  // finish time
+                );
+                if(entry.getFinalRatio() >= percentage){
+                    count++;
+                }
+            } while (cursor.moveToNext());
+        }
+        return count;
+    }
+
 }
 

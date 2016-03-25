@@ -24,6 +24,7 @@ public class ResultActivity extends Activity {
     private Button btnReplay;
     private Button btnChange;
     private Button btnShow;
+    private Button btnSticker;
     boolean speakOnce;
 
     public static int finalRatio = 0;
@@ -49,6 +50,8 @@ public class ResultActivity extends Activity {
         btnChange.setTypeface(font);
         btnShow = (Button)findViewById(R.id.show);
         btnShow.setTypeface(font);
+        btnSticker = (Button)findViewById(R.id.sticker_btn);
+        btnSticker.setTypeface(font);
 
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         imageView = (ImageView)findViewById(R.id.imageView2);
@@ -85,6 +88,14 @@ public class ResultActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ResultActivity.this,ShowDataActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnSticker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ResultActivity.this,StickerActivity.class);
                 startActivity(intent);
             }
         });
