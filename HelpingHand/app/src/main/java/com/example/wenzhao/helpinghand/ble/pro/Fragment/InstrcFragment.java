@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ti.ble.sensortag.R;
@@ -40,6 +41,8 @@ public class InstrcFragment extends Fragment {
         t1.setTypeface(font);
         TextView t2 = (TextView) view.findViewById(R.id.textView2);
         t2.setTypeface(font);
+        ImageView img = (ImageView)view.findViewById(R.id.imageView9);
+        img.setImageResource(R.drawable.instru);
 
         btnBegin = (Button)view.findViewById(R.id.btn_begin);
         btnBegin.setTypeface(font);
