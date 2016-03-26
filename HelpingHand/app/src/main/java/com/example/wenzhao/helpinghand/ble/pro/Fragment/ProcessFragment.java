@@ -357,15 +357,15 @@ public class ProcessFragment extends Fragment {
                             // real-time feedback
                             if(ratio<20.0) {
                                     if ((!InputFragment.AbleToRead)&&(speakFirstTime)) {
-                                        String text = InputFragment.ChildName + "Please use your " + InputFragment.WeakArm + " hand more.";
+                                        String text = InputFragment.ChildName + ". Please use your " + InputFragment.WeakArm + " hand more.";
                                         sayTts(text);
                                         speakFirstTime = false;
                                     } else if(!InputFragment.AbleToRead){
-                                        String text = "please use your " + InputFragment.WeakArm + " hand more.";
+                                        String text = " Please use your " + InputFragment.WeakArm + " hand more.";
                                         infoText.setText("Keep going, " + InputFragment.ChildName + "\n "
                                                 + text);
                                     }else if(InputFragment.AbleToRead){
-                                        String text = "please use your " + InputFragment.WeakArm + " hand more.";
+                                        String text = ". Please use your " + InputFragment.WeakArm + " hand more.";
                                         infoText.setText("Keep going, " + InputFragment.ChildName + "\n "
                                                 + text);
                                     }

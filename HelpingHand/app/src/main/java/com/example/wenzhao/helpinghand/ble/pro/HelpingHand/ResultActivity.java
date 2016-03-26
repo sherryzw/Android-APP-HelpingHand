@@ -63,11 +63,13 @@ public class ResultActivity extends Activity {
         ChildInfo newentry = new ChildInfo(ActivityChoiceFragment.TableActivity,finalRatio,ProcessFragment.time);
         DatabaseHandler.getHandler().addValue(newentry);
         Log.e("error", String.valueOf(DatabaseHandler.getHandler().getDBCount()));
+            resultText.setText("Your " + InputFragment.WeakArm + " hand did "
+                    + String.format("%d", finalRatio) + "% of the work! Try again to beat your" +
+                    " score.");
 
-        resultText.setText("Your " + InputFragment.WeakArm + " hand did "
-                + String.format("%d", finalRatio) + "% of the work! Try again to beat your" +
-                " score.");
-        text = resultText.getText().toString();
+        text = InputFragment.ChildName+". Try again to beat your score.";
+
+
 
         btnReplay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +112,11 @@ public class ResultActivity extends Activity {
             Runnable mRunnable = new Runnable() {
                 @Override
                 public void run() {
+                   if (finalRatio>= 40)
+                   { ProcessFragment.getTts().speak("Awesome! "+text, TextToSpeech.QUEUE_FLUSH, null);
+                   }else{
                     ProcessFragment.getTts().speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                   }
                 }
             };
             handler.postDelayed(mRunnable, 1000);
@@ -120,21 +126,21 @@ public class ResultActivity extends Activity {
 
 
     private void setRating(double rating){
-        if((rating >=0 && rating <5)||(rating >95 && rating <=100)) ratingBar.setRating((float)0.5);
-        if((rating >=5 && rating <10)||(rating >90 && rating <=95)) ratingBar.setRating((float)1);
-        if((rating >=10 && rating <15)||(rating >85 && rating <=90)) ratingBar.setRating((float)1.5);
-        if((rating >=15 && rating <20)||(rating >80 && rating <=85)) ratingBar.setRating((float)2);
-        if((rating >=20 && rating <25)||(rating >75 && rating <=80)) ratingBar.setRating((float)2.5);
-        if((rating >=25 && rating <30)||(rating >70 && rating <=75)) ratingBar.setRating((float)3);
-        if((rating >=30 && rating <35)||(rating >65 && rating <=70)) ratingBar.setRating((float)3.5);
-        if((rating >=35 && rating <40)||(rating >60 && rating <=65)) ratingBar.setRating((float)4);
-        if((rating >=40 && rating <45)||(rating >55 && rating <=60)) ratingBar.setRating((float)4.5);
-        if((rating >=45 && rating <=50)||(rating >50 && rating <=55)) ratingBar.setRating((float)5);
+        if(rating >=0 && rating <5) ratingBar.setRating((float)0.5);
+        if(rating >=5 && rating <10) ratingBar.setRating((float)1);
+        if(rating >=10 && rating <15) ratingBar.setRating((float)1.5);
+        if(rating >=15 && rating <20) ratingBar.setRating((float)2);
+        if(rating >=20 && rating <25) ratingBar.setRating((float)2.5);
+        if(rating >=25 && rating <30) ratingBar.setRating((float)3);
+        if(rating >=30 && rating <35) ratingBar.setRating((float)3.5);
+        if(rating >=35 && rating <40) ratingBar.setRating((float)4);
+        if(rating >=40 && rating <45) ratingBar.setRating((float)4.5);
+        if(rating >=45 ) ratingBar.setRating((float)5);
     }
 
     private void setImage(double rating){
-        if((rating >=0 && rating <25)||(rating >75 && rating <=100)) imageView.setImageResource(R.drawable.sadface);
-        if((rating >=25 && rating <50)||(rating >=50 && rating <=75)) imageView.setImageResource(R.drawable.smileface);
+        if(rating >=0 && rating <25) imageView.setImageResource(R.drawable.sadface);
+        if(rating >=25 && rating <50) imageView.setImageResource(R.drawable.smileface);
     }
 
 }
