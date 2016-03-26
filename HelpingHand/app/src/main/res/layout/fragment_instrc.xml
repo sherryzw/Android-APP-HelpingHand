@@ -38,7 +38,7 @@
     <Button
         android:layout_width="180dp"
         android:layout_height="50dp"
-        android:text="Ready to begin"
+        android:text="Next"
         android:textSize="20dp"
         android:id="@+id/btn_begin"
         android:layout_marginBottom="44dp"

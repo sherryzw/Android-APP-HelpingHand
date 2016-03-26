@@ -18,6 +18,8 @@ import com.example.ti.ble.sensortag.R;
 
 public class InstrcFragment extends Fragment {
     Button btnBegin;
+    boolean start = false;
+    ImageView img;
 
     public static InstrcFragment newInstance() {
         InstrcFragment fragment = new InstrcFragment();
@@ -41,21 +43,29 @@ public class InstrcFragment extends Fragment {
         t1.setTypeface(font);
         TextView t2 = (TextView) view.findViewById(R.id.textView2);
         t2.setTypeface(font);
-        ImageView img = (ImageView)view.findViewById(R.id.imageView9);
+        img = (ImageView)view.findViewById(R.id.imageView9);
         img.setImageResource(R.drawable.instru);
 
+
         btnBegin = (Button)view.findViewById(R.id.btn_begin);
+
         btnBegin.setTypeface(font);
         btnBegin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                Fragment inputFragment = InputFragment.newInstance();
-                ft.replace(R.id.InsContainer, inputFragment);
-                ft.addToBackStack("Switch to Input Fragment");
-                ft.commit();
+                if (start == false) {
+                    img.setImageResource(R.drawable.instru2);
+                    btnBegin.setText("Ready to begin");
+                    start = true;
+                } else {
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    Fragment inputFragment = InputFragment.newInstance();
+                    ft.replace(R.id.InsContainer, inputFragment);
+                    ft.addToBackStack("Switch to Input Fragment");
+                    ft.commit();
+                }
             }
         });
         return view;
