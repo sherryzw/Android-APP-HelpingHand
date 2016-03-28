@@ -135,12 +135,12 @@ public class ResultActivity extends Activity {
         if(rating >=30 && rating <35) ratingBar.setRating((float)3.5);
         if(rating >=35 && rating <40) ratingBar.setRating((float)4);
         if(rating >=40 && rating <45) ratingBar.setRating((float)4.5);
-        if(rating >=45 ) ratingBar.setRating((float)5);
+        if(rating >=45) ratingBar.setRating((float)5);
     }
 
     private void setImage(double rating){
-        if(rating >=0 && rating <25) imageView.setImageResource(R.drawable.sadface);
-        if(rating >=25 && rating <50) imageView.setImageResource(R.drawable.smileface);
+        if(rating >=0) imageView.setImageResource(R.drawable.sadface);
+        if(rating >=25) imageView.setImageResource(R.drawable.smileface);
     }
 
 }
